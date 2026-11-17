@@ -15,7 +15,10 @@
 
   <div class="container hero-grid">
     <div>
-      <span class="hero-kicker">1–11-sinflar • Litsenziyalangan xususiy maktab • Est. {{ site_settings.founded_year|default:2022 }}</span>
+      <div style="display:flex; align-items:center; gap:14px; margin-bottom:16px; flex-wrap:wrap;">
+        <img class="crest-medallion" src="{{ site_settings.resolved_logo_url }}" alt="Turon Odob-Ilm maktabi gerbi">
+        <span class="hero-kicker" style="margin-bottom:0;">1–11-sinflar • Litsenziyalangan xususiy maktab • Est. {{ site_settings.founded_year|default:2022 }}</span>
+      </div>
       <h1>{{ site_settings.hero_title }}</h1>
       <p class="lead">{{ site_settings.hero_subtitle }}</p>
       <div class="hero-cta-group">
@@ -29,44 +32,28 @@
     </div>
 
     {% if primary_branch %}
-    <div>
-      <div class="hero-campus-showcase">
-        <button type="button" style="border:none; padding:0; background:none; width:100%; cursor:pointer; display:block;"
-                data-lightbox-src="{% static 'official_media/facade.jpg' %}"
-                data-lightbox-title="Turon Odob-Ilm xususiy maktabi (Est. 2022) — Furqat filiali"
-                data-lightbox-alt="Turon Odob-Ilm maktabi binosi"
-                data-lightbox-source="https://www.turonodob-ilm.uz/images/facade.jpg">
-          <img src="{% static 'official_media/facade.jpg' %}" alt="Turon Odob-Ilm xususiy maktabi binosi">
-        </button>
-        <div class="hero-campus-caption">
-          <span><strong>Est. 2022</strong> • Furqat filiali binosi</span>
-          <span class="badge badge-gold">HD ko‘rish</span>
-        </div>
+    <aside class="hero-card" aria-label="Furqat filiali tezkor xarita va aloqa kartasi">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px;">
+        <h2 style="margin:0;">{{ primary_branch.name }}</h2>
+        <span class="badge badge-gold">Asosiy filial</span>
       </div>
-
-      <aside class="hero-card" aria-label="Furqat filiali tezkor xarita va aloqa kartasi">
-        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:10px;">
-          <h2 style="margin:0;">{{ primary_branch.name }}</h2>
-          <span class="badge badge-gold">Asosiy filial</span>
-        </div>
-        <ul class="meta-list">
-          <li><strong>Manzil:</strong> {{ primary_branch.address }}</li>
-          <li><strong>Ish vaqti:</strong> {{ primary_branch.working_hours }}</li>
-          <li><strong>Telefon:</strong> <a href="tel:{{ primary_branch.phone|cut:' ' }}">{{ primary_branch.phone }}</a></li>
-        </ul>
-        <div class="map-btn-grid">
-          {% for link in map_links %}
-            {% if link.link_type != 'review' %}
-            <a href="{{ link.get_tracked_url }}" target="_blank" rel="noopener noreferrer"
-               class="btn {% if link.platform == 'google' %}btn-primary{% else %}btn-outline{% endif %} btn-sm">
-              {{ link.label }}
-            </a>
-            {% endif %}
-          {% endfor %}
-          <a href="{% url 'core:contact' %}" class="btn btn-gold btn-sm" data-track-cta="Hero card: Biz bilan bog'lanish">Biz bilan bog‘lanish</a>
-        </div>
-      </aside>
-    </div>
+      <ul class="meta-list">
+        <li><strong>Manzil:</strong> {{ primary_branch.address }}</li>
+        <li><strong>Ish vaqti:</strong> {{ primary_branch.working_hours }}</li>
+        <li><strong>Telefon:</strong> <a href="tel:{{ primary_branch.phone|cut:' ' }}">{{ primary_branch.phone }}</a></li>
+      </ul>
+      <div class="map-btn-grid">
+        {% for link in map_links %}
+          {% if link.link_type != 'review' %}
+          <a href="{{ link.get_tracked_url }}" target="_blank" rel="noopener noreferrer"
+             class="btn {% if link.platform == 'google' %}btn-primary{% else %}btn-outline{% endif %} btn-sm">
+            {{ link.label }}
+          </a>
+          {% endif %}
+        {% endfor %}
+        <a href="{% url 'core:contact' %}" class="btn btn-gold btn-sm span-2" data-track-cta="Hero card: Biz bilan bog'lanish">Biz bilan bog‘lanish</a>
+      </div>
+    </aside>
     {% endif %}
   </div>
 </section>
