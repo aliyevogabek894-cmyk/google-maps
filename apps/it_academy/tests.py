@@ -3,7 +3,7 @@ from django.core.management import call_command
 from django.test import TestCase
 from django.urls import reverse
 
-from apps.it_academy.models import GameModule, ITCourse, ITProject
+from apps.it_academy.models import FutureCareerVideo, GameModule, ITCourse, ITProject
 
 
 class ItAcademyTests(TestCase):
@@ -12,6 +12,7 @@ class ItAcademyTests(TestCase):
         self.assertGreaterEqual(ITCourse.objects.count(), 3)
         self.assertGreaterEqual(ITProject.objects.count(), 1)
         self.assertGreaterEqual(GameModule.objects.count(), 8)
+        self.assertEqual(FutureCareerVideo.objects.count(), 4)
 
         res = self.client.get(reverse("it_academy:index"))
         self.assertEqual(res.status_code, 200)
@@ -21,3 +22,7 @@ class ItAcademyTests(TestCase):
         self.assertIn("teacher-aliyev.jpg", html)
         self.assertIn("aliyev-turon.netlify.app", html)
         self.assertIn("it-lab-active.jpg", html)
+        self.assertIn("it-class-ubuntu.jpg", html)
+        self.assertIn("it-class-os-ai.jpg", html)
+        self.assertIn("career-ceo.mp4", html)
+        self.assertIn("career-dentist.mp4", html)

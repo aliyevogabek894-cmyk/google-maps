@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import GameModule, ITCourse, ITProject
+from .models import FutureCareerVideo, GameModule, ITCourse, ITProject
 
 
 @admin.register(ITCourse)
@@ -20,3 +20,9 @@ class GameModuleAdmin(admin.ModelAdmin):
     list_display = ("title", "category", "grade_range", "is_featured", "is_active", "sort_order")
     list_filter = ("category", "is_featured", "is_active")
     search_fields = ("title", "subtitle", "methodology")
+
+
+@admin.register(FutureCareerVideo)
+class FutureCareerVideoAdmin(admin.ModelAdmin):
+    list_display = ("career_badge", "title", "sort_order", "is_active")
+    list_filter = ("is_active",)

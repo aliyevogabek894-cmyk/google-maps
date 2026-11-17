@@ -16,7 +16,7 @@ from apps.content.models import (
     Teacher,
 )
 from apps.core.models import SiteSettings
-from apps.it_academy.models import GameModule, ITCourse, ITProject
+from apps.it_academy.models import FutureCareerVideo, GameModule, ITCourse, ITProject
 from apps.reviews.models import ReviewConsent, WebsiteReview
 
 
@@ -436,6 +436,54 @@ class Command(BaseCommand):
                 },
             )
 
+        # IT va Sun'iy intellekt bilan kelajak kasblariga yo'l videolari
+        career_videos_data = [
+            (
+                "IT va Biznes boshqaruvi (CEO)",
+                "Tadbirkor / CEO",
+                "“Assalomu alaykum! Mana IT’dan yaxshi o‘qiganim uchun biznesmen bo‘ldim. Ota-onamga rahmat!”",
+                "Zamonaviy tadbirkorlik, raqamli tahlil va IT loyihalarni boshqarish orqali kelajakda o‘z biznesini yaratish osonlashadi.",
+                "official_media/videos/career-ceo.mp4",
+                10,
+            ),
+            (
+                "IT va Davlat / Kiberxavfsizlik",
+                "Ichki ishlar mutaxassisi",
+                "“Assalomu alaykum! Mana IT’dan yaxshi o‘qiganim uchun ichki ishlarda ishlayapman.”",
+                "Axborot xavfsizligi, raqamli tizimlar va kiberhimoya bilimlari huquq-tartibot hamda davlat xizmatida katta ustunlik beradi.",
+                "official_media/videos/career-officer.mp4",
+                20,
+            ),
+            (
+                "IT va Sun’iy intellekt ilm-fani",
+                "Olim / Tadqiqotchi",
+                "“Assalomu alaykum! Mana IT’dan yaxshi o‘qiganim uchun olim bo‘ldim.”",
+                "Fizika, kimyo, biologiya va matematika fanlarini IT hamda Sun’iy intellekt bilan birlashtirib ilmiy kashfiyotlar qilish oson.",
+                "official_media/videos/career-scientist.mp4",
+                30,
+            ),
+            (
+                "IT va Zamonaviy Tibbiyot",
+                "Stomatolog / Shifokor",
+                "“Assalomu alaykum! Mana IT’dan yaxshi o‘qiganim uchun stomatolog bo‘ldim. Ota-onamga rahmat!”",
+                "Bugungi tibbiyot 3D diagnostika, raqamli tasvir va AI tahlilisiz ishlamaydi — IT bilgan shifokor zamon bilan hamnafas bo‘ladi.",
+                "official_media/videos/career-dentist.mp4",
+                40,
+            ),
+        ]
+        for title, badge, quote, desc, vid_path, order in career_videos_data:
+            FutureCareerVideo.objects.update_or_create(
+                title=title,
+                defaults={
+                    "career_badge": badge,
+                    "quote_text": quote,
+                    "description": desc,
+                    "static_video_path": vid_path,
+                    "sort_order": order,
+                    "is_active": True,
+                },
+            )
+
         # Rahbariyat va Ustozlar (Director Hayotbek + IT Ustozi Aliyev Og'abek)
         Teacher.objects.filter(is_demo=True).delete()
         Teacher.objects.update_or_create(
@@ -552,6 +600,24 @@ class Command(BaseCommand):
                 "Sinfxonada o‘quvchilarning dars tayyorlash jarayoni",
                 "Jamoaviy va individual ta’lim muhiti",
                 50,
+            ),
+            (
+                "Operatsion tizimlar va Linux/Ubuntu amaliyoti",
+                "it_lab",
+                "official_media/it-class-ubuntu.jpg",
+                "",
+                "O‘quvchilar IT xonasida kompyuterda Linux Ubuntu va amaliy darslarni bajarishmoqda",
+                "Zamonaviy kompyuter xonasida amaliy dars va daftar bilan ishlash",
+                22,
+            ),
+            (
+                "SMM, Linux, Windows, macOS va AI darsi",
+                "it_lab",
+                "official_media/it-class-os-ai.jpg",
+                "",
+                "IT sinfida SMM, Linux, Windows, macOS yo‘nalishlari va Sun’iy intellekt bilan ishlash",
+                "O‘quvchilar Sun’iy intellekt va operatsion tizimlar bo‘yicha topshiriq bajarmoqda",
+                24,
             ),
         ]
         for title, cat, static_path, src_url, alt, caption, order in official_photos:

@@ -1,4 +1,5 @@
-"""IT va dasturlash yo'nalishi, kurslar hamda o'quvchi loyihalari modellari."""
+"""IT va dasturlash yo'nalishi, kurslar, o'yin modullari va AI kelajak kasblari modellari."""
+from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.templatetags.static import static
 
@@ -148,3 +149,38 @@ class GameModule(models.Model):
 
     def __str__(self):
         return f"{self.title} ({self.grade_range})"
+
+
+class FutureCareerVideo(models.Model):
+    """IT va Sun'iy intellekt yordamida kelajak kasblariga yo'l videolari."""
+
+    title = models.CharField("Sarlavha", max_length=150)
+    career_badge = models.CharField("Kasb nomi", max_length=80)
+    quote_text = models.CharField("Video iqtibosi", max_length=240)
+    description = models.TextField("Izoh")
+    video_file = models.FileField(
+        "MP4 Video fayl",
+        upload_to="it_career_videos/",
+        blank=True,
+        null=True,
+        validators=[FileExtensionValidator(["mp4", "webm"])],
+    )
+    static_video_path = models.CharField("Standart video yo‘li", max_length=255, blank=True)
+    sort_order = models.PositiveSmallIntegerField("Tartib", default=10)
+    is_active = models.BooleanField("Faol", default=True)
+
+    class Meta:
+        verbose_name = "Kelajak kasbi videosi"
+        verbose_name_plural = "IT & AI kelajak kasblari videolari"
+        ordering = ["sort_order", "id"]
+
+    @property
+    def resolved_video_url(self) -> str:
+        if self.video_file:
+            return self.video_file.url
+        if self.static_video_path:
+            return static(self.static_video_path)
+        return ""
+
+    def __str__(self):
+        return f"{self.career_badge}: {self.title}"

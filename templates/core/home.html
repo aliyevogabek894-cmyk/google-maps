@@ -274,6 +274,45 @@
 </section>
 {% endif %}
 
+<!-- 04C — IT VA SUN'IY INTELLEKT BILAN KELAJAK KASBLARI -->
+{% if career_videos %}
+<section class="section reveal">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <span class="section-kicker">IT va Sun’iy intellekt • Kelajak sari</span>
+        <h2>IT va Sun’iy intellekt bilan kelajak kasblariga yo‘l — bu IT bilan oson!</h2>
+        <p>O‘quvchilarimiz qaysi sohani tanlashmasin — biznes, huquq-tartibot, ilm-fan yoki zamonaviy tibbiyot — IT va Sun’iy intellekt ko‘nikmalari bilan o‘z orzusidagi kasbga yanada oson va ishonchli erishadilar.</p>
+      </div>
+      <a href="{% url 'it_academy:index' %}" class="btn btn-outline btn-sm">IT Akademiyada batafsil</a>
+    </div>
+
+    <div class="career-video-grid">
+      {% for cv in career_videos %}
+      <article class="career-video-card">
+        <div class="career-video-frame">
+          {% if cv.resolved_video_url %}
+          <video controls playsinline preload="metadata" aria-label="{{ cv.title }}">
+            <source src="{{ cv.resolved_video_url }}" type="video/mp4">
+          </video>
+          {% endif %}
+        </div>
+        <div class="career-video-body">
+          <div style="display:flex; justify-content:space-between; gap:6px; align-items:center; flex-wrap:wrap;">
+            <span class="badge badge-gold">{{ cv.career_badge }}</span>
+            <span class="badge badge-tech">IT + AI</span>
+          </div>
+          <h3>{{ cv.title }}</h3>
+          <p class="career-quote">{{ cv.quote_text }}</p>
+          <p style="font-size:0.86rem; color:var(--muted); margin:4px 0 0;">{{ cv.description }}</p>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
 <!-- 05 — TA'LIM BOSQICHLARI (1-4, 5-9, 10-11) -->
 {% if programs %}
 <section class="section section-alt reveal">

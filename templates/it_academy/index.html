@@ -71,6 +71,74 @@
   </div>
 </section>
 
+<!-- IT XONADAGI JONLI DARSLAR (YANGI RASMLAR) -->
+{% if it_photos %}
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <span class="section-kicker">Amaliy dars jarayoni</span>
+        <h2>IT, Linux, Windows, macOS, SMM va Sun’iy intellekt mashg‘ulotlari</h2>
+        <p>Kompyuter xonasida o‘quvchilar real operatsion tizimlar va Sun’iy intellekt vositalari bilan amaliy ishlamoqdalar.</p>
+      </div>
+    </div>
+    <div class="grid grid-3">
+      {% for photo in it_photos %}
+      <article class="card card-hover-lift" style="padding:14px;">
+        {% if photo.resolved_image_url %}
+          <button type="button" style="border:none; padding:0; background:none; width:100%; cursor:pointer;"
+                  data-lightbox-src="{{ photo.resolved_image_url }}"
+                  data-lightbox-title="{{ photo.title }}"
+                  data-lightbox-alt="{{ photo.alt_text|default:photo.title }}">
+            <img class="card-img" src="{{ photo.resolved_image_url }}" alt="{{ photo.alt_text|default:photo.title }}" loading="lazy">
+          </button>
+        {% endif %}
+        <h3 style="font-size:1.02rem;">{{ photo.title }}</h3>
+        {% if photo.caption %}<p style="font-size:0.88rem; color:var(--muted); margin:0;">{{ photo.caption }}</p>{% endif %}
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- IT VA SUN'IY INTELLEKT BILAN KELAJAK KASBLARI -->
+{% if career_videos %}
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <span class="section-kicker">IT + Sun’iy intellekt • Kelajak kasblari</span>
+        <h2>IT bilan kelajakdagi kasbingizga erishish oson!</h2>
+        <p>Biznes, davlat xizmati, ilm-fan yoki tibbiyot — har bir zamonaviy kasbda IT va Sun’iy intellekt eng kuchli tayanchdir.</p>
+      </div>
+    </div>
+    <div class="career-video-grid">
+      {% for cv in career_videos %}
+      <article class="career-video-card">
+        <div class="career-video-frame">
+          {% if cv.resolved_video_url %}
+          <video controls playsinline preload="metadata" aria-label="{{ cv.title }}">
+            <source src="{{ cv.resolved_video_url }}" type="video/mp4">
+          </video>
+          {% endif %}
+        </div>
+        <div class="career-video-body">
+          <div style="display:flex; justify-content:space-between; gap:6px; align-items:center; flex-wrap:wrap;">
+            <span class="badge badge-gold">{{ cv.career_badge }}</span>
+            <span class="badge badge-tech">IT + AI</span>
+          </div>
+          <h3>{{ cv.title }}</h3>
+          <p class="career-quote">{{ cv.quote_text }}</p>
+          <p style="font-size:0.86rem; color:var(--muted); margin:4px 0 0;">{{ cv.description }}</p>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
 <!-- IT WORLD O'YINLARI KATALOGI -->
 <section class="it-world-band">
   <div class="container">

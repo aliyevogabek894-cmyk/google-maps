@@ -1,13 +1,14 @@
 from django.shortcuts import render
 
 from apps.content.models import GalleryItem, NewsPost, Teacher
-from .models import GameModule, ITCourse, ITProject
+from .models import FutureCareerVideo, GameModule, ITCourse, ITProject
 
 
 def it_academy_view(request):
-    """IT Akademiya: IT ustozi, kurslar, IT WORLD o'yin metodikasi va loyihalar."""
+    """IT Akademiya: IT ustozi, kurslar, IT WORLD o'yin metodikasi, kelajak kasblari videolari va loyihalar."""
     courses = ITCourse.objects.filter(is_active=True)
     projects = ITProject.objects.filter(is_published=True).select_related("course", "branch")
+    career_videos = FutureCareerVideo.objects.filter(is_active=True)
     it_photos = GalleryItem.objects.filter(is_published=True, category="it_lab")
     it_news = NewsPost.objects.filter(is_published=True).order_by("-published_at")[:3]
     it_teacher = Teacher.objects.filter(is_active=True, static_photo_path="official_media/teacher-aliyev.jpg").first()
@@ -28,6 +29,7 @@ def it_academy_view(request):
         {
             "courses": courses,
             "projects": projects,
+            "career_videos": career_videos,
             "it_photos": it_photos,
             "it_news": it_news,
             "it_teacher": it_teacher,

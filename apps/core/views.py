@@ -8,7 +8,7 @@ from django.urls import reverse
 from apps.analytics.services import record_analytics_event
 from apps.branches.models import Branch
 from apps.content.models import EducationProgram, GalleryItem, NewsPost, OfficialDocument, SchoolService, Teacher
-from apps.it_academy.models import GameModule, ITCourse, ITProject
+from apps.it_academy.models import FutureCareerVideo, GameModule, ITCourse, ITProject
 from apps.reviews.models import WebsiteReview
 from .forms import ContactMessageForm
 from .models import SiteSettings
@@ -29,7 +29,8 @@ def home_view(request):
     it_courses = ITCourse.objects.filter(is_active=True)[:4]
     it_projects = ITProject.objects.filter(is_published=True)[:3]
     featured_games = GameModule.objects.filter(is_active=True, is_featured=True)[:6]
-    gallery_photos = GalleryItem.objects.filter(is_published=True, media_type="photo").select_related("branch")[:6]
+    career_videos = FutureCareerVideo.objects.filter(is_active=True)[:4]
+    gallery_photos = GalleryItem.objects.filter(is_published=True, media_type="photo").select_related("branch")[:9]
     gallery_videos = GalleryItem.objects.filter(is_published=True, media_type="video").select_related("branch")[:4]
     hero_photo = GalleryItem.objects.filter(is_published=True, category="campus", media_type="photo").first()
     it_lab_photo = GalleryItem.objects.filter(is_published=True, category="it_lab", media_type="photo").first()
@@ -59,6 +60,7 @@ def home_view(request):
             "it_courses": it_courses,
             "it_projects": it_projects,
             "featured_games": featured_games,
+            "career_videos": career_videos,
             "gallery_photos": gallery_photos,
             "gallery_videos": gallery_videos,
             "hero_photo": hero_photo,
