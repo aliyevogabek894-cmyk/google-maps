@@ -50,6 +50,10 @@ class CorePublicAndSeoTests(TestCase):
         self.assertIn("Disallow: /boshqaruv/", robots)
         self.assertIn("Sitemap:", robots)
 
+        health = self.client.get(reverse("core:healthz"))
+        self.assertEqual(health.status_code, 200)
+        self.assertEqual(health.content, b"ok")
+
     def test_admission_and_contact_forms(self):
         call_command("seed_demo")
         furqat = Branch.objects.get(slug="furqat")

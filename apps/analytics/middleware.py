@@ -11,6 +11,7 @@ IGNORED_PREFIXES = (
     "/favicon.ico",
     "/robots.txt",
     "/sitemap.xml",
+    "/healthz/",
 )
 
 

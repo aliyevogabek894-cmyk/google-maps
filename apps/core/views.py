@@ -125,6 +125,11 @@ def privacy_policy_view(request):
     return render(request, "core/privacy.html", {"site_settings": site_settings})
 
 
+def healthz_view(request):
+    """Server salomatligini tekshirish uchun yengil endpoint (analitikaga yozilmaydi)."""
+    return HttpResponse("ok", content_type="text/plain")
+
+
 def robots_txt_view(request):
     """Qidiruv tizimlari uchun robots.txt."""
     sitemap_url = request.build_absolute_uri(reverse("sitemap"))

@@ -58,6 +58,14 @@
    python manage.py runserver
    ```
 
+## Tekin serverga (Render) deploy qilish
+
+Repozitoriy ildizida `render.yaml`, `build.sh` va `.python-version` fayllari tayyorlangan:
+1. [Render Dashboard](https://dashboard.render.com/) ga GitHub akkauntingiz bilan kiring.
+2. **New + -> Blueprint** bo‘limini tanlab `aliyevogabek894-cmyk/google-maps` repozitoriysini ulang (yoki to‘g‘ridan-to‘g‘ri havola: `https://render.com/deploy?repo=https://github.com/aliyevogabek894-cmyk/google-maps`).
+3. So‘ralganda admin uchun `DJANGO_SUPERUSER_USERNAME`, `DJANGO_SUPERUSER_EMAIL` va `DJANGO_SUPERUSER_PASSWORD` qiymatlarini kiriting va **Apply / Deploy** tugmasini bosing.
+4. Eslatma: Render’ning bepul PostgreSQL bazasi 30 kundan so‘ng tugaydi (doimiy bepul baza uchun Neon/Supabase PostgreSQL ulash mumkin), bepul Web Service esa faolsizlikdan keyin ~30–50 soniyada uyg‘onadi.
+
 ## Ishga tushirishdan oldingi tekshiruv ro‘yxati
 
 1. Google Business Profile’da (`https://business.google.com/`) `FPGX+82H, A-376, Chirkay` manzili aynan Furqat filiali ekanligini tasdiqlang, dublikat yaratmang.
