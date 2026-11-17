@@ -14,3 +14,5 @@ logs/*
 .DS_Store
 Thumbs.db
 .gh_pages_dist/
+xarita_rasmlari/
+turon_xarita_rasmlar_va_matn.zip

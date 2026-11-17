@@ -4,6 +4,7 @@ from __future__ import annotations
 import os
 import re
 import shutil
+import stat
 import sys
 from pathlib import Path
 
@@ -63,10 +64,15 @@ def _rewrite_html(html: str, depth: int, map_targets: dict[str, str]) -> str:
     return ATTR_URL_RE.sub(_replace_attr, html)
 
 
+def _remove_readonly(func, path, _exc_info):
+    os.chmod(path, stat.S_IWRITE)
+    func(path)
+
+
 def export_static_site(output_dir: Path) -> dict[str, int]:
     """Barcha ommaviy sahifalarni va media fayllarni output_dir papkasiga eksport qiladi."""
     if output_dir.exists():
-        shutil.rmtree(output_dir)
+        shutil.rmtree(output_dir, onexc=_remove_readonly)
     output_dir.mkdir(parents=True, exist_ok=True)
 
     call_command("seed_demo")

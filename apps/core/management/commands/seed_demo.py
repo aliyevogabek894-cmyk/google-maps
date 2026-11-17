@@ -1,5 +1,6 @@
 """Turon Odob-Ilm (Furqat filiali) uchun tasdiqlangan rasmiy ma'lumotlar, media katalog va rollarni yuklash."""
 from datetime import date, datetime, timezone as dt_timezone
+from decimal import Decimal
 
 from django.core.management.base import BaseCommand
 from django.utils import timezone
@@ -72,16 +73,17 @@ class Command(BaseCommand):
                 "name": "Turon Odob-Ilm — Furqat filiali",
                 "city_or_district": "Farg‘ona viloyati, Furqat tumani",
                 "address": "Farg‘ona viloyati, Furqat tumani, Yangi MFY, Surpa, dom 405",
-                "landmark": "Rasmiy saytdan olingan manzil (Google xaritadagi 'FPGX+82H, A-376, Chirkay' bilan solishtirib tasdiqlang)",
+                "landmark": "A-376 yo‘li bo‘yida, Chirkay / Navbahor hududi (Google Maps Plus-kod: FPGX+82H)",
                 "phone": "+998 55 808 55 75",
                 "email": "info@turonodobilm.uz",
                 "working_hours": "Dushanba–Juma: 08:00–17:00 • Shanba: 08:00–13:00",
+                "latitude": Decimal("40.475827"),
+                "longitude": Decimal("70.746438"),
                 "google_verification_status": "pending",
                 "yandex_verification_status": "verified",
                 "verification_note": (
-                    "Eslatma: Rasmiy saytda 'Yangi MFY, Surpa, dom 405', avvalgi Google skrinshotida esa "
-                    "'FPGX+82H, A-376, Chirkay' ko'ringan. Google Business Profile egaligini tasdiqlab, "
-                    "barcha xarita manzillarini birlashtiring."
+                    "Google Business Profile (aliyevogabek894@gmail.com) uchun jonli video tasdiqlash yuborilgan "
+                    "(ko'rib chiqish jarayonida). Xarita koordinatalari: 40.475827, 70.746438 (FPGX+82H)."
                 ),
                 "description": (
                     "Turon Odob-Ilm xususiy maktabining asosiy filiali. 1–11-sinflar, o‘zbek va rus "
@@ -122,7 +124,7 @@ class Command(BaseCommand):
                 "google",
                 "profile",
                 "Google Maps’da ko‘rish",
-                "https://www.google.com/maps/search/?api=1&query=Turon+Odob+Ilm+Furqat",
+                "https://www.google.com/maps/place/Turon+odob-ilm+xususiy+maktabi/@40.4758271,70.7464378,17z/data=!3m1!4b1!4m6!3m5!1s0x38ba934614489b8d:0x845165f9529b8a06!8m2!3d40.4758271!4d70.7464378!16s%2Fg%2F11tdf6s1yk?hl=uz",
                 False,
                 40,
             ),
@@ -130,7 +132,7 @@ class Command(BaseCommand):
                 "google",
                 "directions",
                 "Yo‘nalish olish (Google)",
-                "https://www.google.com/maps/dir/?api=1&destination=Turon+Odob+Ilm+Furqat",
+                "https://www.google.com/maps/dir/?api=1&destination=40.4758271,70.7464378",
                 False,
                 50,
             ),
@@ -138,7 +140,7 @@ class Command(BaseCommand):
                 "google",
                 "review",
                 "Google’da fikr qoldirish",
-                "https://www.google.com/maps/search/?api=1&query=Turon+Odob+Ilm+Furqat",
+                "https://www.google.com/maps/place/Turon+odob-ilm+xususiy+maktabi/@40.4758271,70.7464378,17z/data=!3m1!4b1!4m6!3m5!1s0x38ba934614489b8d:0x845165f9529b8a06!8m2!3d40.4758271!4d70.7464378!16s%2Fg%2F11tdf6s1yk?hl=uz",
                 False,
                 60,
             ),
