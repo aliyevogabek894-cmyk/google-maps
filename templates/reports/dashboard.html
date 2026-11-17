@@ -1,0 +1,158 @@
+{% extends "reports/base_admin.html" %}
+{% load static %}
+{% block title %}Monitoring Dashboard — Turon Odob-Ilm{% endblock %}
+
+{% block content %}
+<div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:12px; margin-bottom:16px;">
+  <div>
+    <h1 style="margin:0; color:var(--navy);">Monitoring Dashboard</h1>
+    <p style="margin:2px 0 0; color:var(--muted);">Sayt faolligi, xarita tugmalari bosilishi va ota-onalar fikrlari bo‘yicha joriy ko‘rsatkichlar.</p>
+  </div>
+  <div style="display:flex; flex-wrap:wrap; gap:8px;">
+    <a href="{% url 'reports:export_xlsx' %}?date_from={{ filters.date_from|date:'Y-m-d' }}&date_to={{ filters.date_to|date:'Y-m-d' }}&branch={{ filters.branch_id }}&platform={{ filters.platform }}" class="btn btn-primary btn-sm">XLSX yuklab olish</a>
+    <a href="{% url 'reports:export_csv' %}?date_from={{ filters.date_from|date:'Y-m-d' }}&date_to={{ filters.date_to|date:'Y-m-d' }}&branch={{ filters.branch_id }}&platform={{ filters.platform }}" class="btn btn-outline btn-sm">CSV yuklab olish</a>
+    <a href="{% url 'reports:printable_report' %}?date_from={{ filters.date_from|date:'Y-m-d' }}&date_to={{ filters.date_to|date:'Y-m-d' }}&branch={{ filters.branch_id }}&platform={{ filters.platform }}" target="_blank" class="btn btn-gold btn-sm">Chop etish / PDF</a>
+  </div>
+</div>
+
+<!-- Sana va filial filtri -->
+<form method="get" class="filter-bar">
+  <div class="field">
+    <label class="form-label" for="date_from">Boshlanish sanasi</label>
+    <input class="form-input" type="date" id="date_from" name="date_from" value="{{ filters.date_from|date:'Y-m-d' }}">
+  </div>
+  <div class="field">
+    <label class="form-label" for="date_to">Tugash sanasi</label>
+    <input class="form-input" type="date" id="date_to" name="date_to" value="{{ filters.date_to|date:'Y-m-d' }}">
+  </div>
+  <div class="field">
+    <label class="form-label" for="granularity">Grafik davri</label>
+    <select class="form-select" id="granularity" name="granularity">
+      <option value="day" {% if filters.granularity == 'day' %}selected{% endif %}>Kunlik</option>
+      <option value="week" {% if filters.granularity == 'week' %}selected{% endif %}>Haftalik</option>
+      <option value="month" {% if filters.granularity == 'month' %}selected{% endif %}>Oylik</option>
+    </select>
+  </div>
+  <div class="field">
+    <label class="form-label" for="branch">Filial</label>
+    <select class="form-select" id="branch" name="branch">
+      <option value="">Barcha filiallar</option>
+      {% for b in branches %}
+        <option value="{{ b.pk }}" {% if filters.branch_id == b.pk|stringformat:'s' %}selected{% endif %}>{{ b.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div>
+    <button type="submit" class="btn btn-primary">Filtrlash</button>
+  </div>
+</form>
+
+<!-- Asosiy KPI kartalar -->
+<div class="kpi-grid">
+  <div class="kpi-card">
+    <div class="kpi-label">Tashriflar (anonim sessiya)</div>
+    <div class="kpi-value">{{ summary.total_visits }}</div>
+    <div class="kpi-note">Tanlangan davrda unikal tashriflar</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">Sahifalar ko‘rishlari</div>
+    <div class="kpi-value">{{ summary.total_page_views }}</div>
+    <div class="kpi-note">Botlarsiz ommaviy sahifalar</div>
+  </div>
+  <div class="kpi-card gold">
+    <div class="kpi-label">Google tugmasi bosilishi (saytdan)</div>
+    <div class="kpi-value">{{ summary.google_clicks }}</div>
+    <div class="kpi-note">Faqat sayt ichidan o‘tishlar soni</div>
+  </div>
+  <div class="kpi-card gold">
+    <div class="kpi-label">Yandex tugmasi bosilishi (saytdan)</div>
+    <div class="kpi-value">{{ summary.yandex_clicks }}</div>
+    <div class="kpi-note">Faqat sayt ichidan o‘tishlar soni</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">Sayt ichidagi fikrlar</div>
+    <div class="kpi-value">{{ summary.review_counts.total }}</div>
+    <div class="kpi-note">
+      Moderatsiyada: <strong>{{ summary.review_counts.pending }}</strong> •
+      Tasdiqlangan: <strong>{{ summary.review_counts.approved }}</strong> •
+      Rad etilgan: <strong>{{ summary.review_counts.rejected }}</strong>
+    </div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">Yangi arizalar va murojaatlar</div>
+    <div class="kpi-value">{{ summary.admissions_new }} / {{ summary.contacts_new }}</div>
+    <div class="kpi-note">Qabul arizalari / Aloqa xabarlari</div>
+  </div>
+</div>
+
+<div class="alert alert-info">
+  <strong>Muhim metodik eslatma:</strong> Yuqoridagi “Google tugmasi” va “Yandex tugmasi” raqamlari faqat maktab saytidagi havolalar bosilishini aks ettiradi.
+  Bular Google Search yoki Yandex Maps’dagi rasmiy qidiruv ko‘rsatkichlari emas. Rasmiy ko‘rsatkichlar alohida <a href="{% url 'reports:platform_metrics' %}"><strong>Rasmiy Google/Yandex</strong></a> bo‘limida manba va sana bilan ko‘rsatiladi.
+</div>
+
+<!-- Grafik va Qo'shimcha jadvallar -->
+<div class="grid grid-2" style="grid-template-columns: 1.5fr 1fr; align-items:start; margin-bottom:20px;">
+  <div class="card">
+    <h3>Sayt ko‘rishlari va xarita tugmalari dinamikasi</h3>
+    <div class="chart-box">
+      <canvas id="trafficChart" class="chart-canvas" aria-label="Sayt trafigi va xarita tugmalari grafigi"></canvas>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Xavfsizlik va Integratsiya holati</h3>
+    <ul style="padding-left:18px; margin:0 0 14px;">
+      <li><strong>Google Business API:</strong> {{ google_adapter.message }}</li>
+      <li><strong>Yandex Business API:</strong> {{ yandex_adapter.message }}</li>
+      <li><strong>HTTPS majburiy yo‘naltirish:</strong> {% if security_status.https_redirect %}Yoqilgan{% else %}Lokal/Dev rejim{% endif %}</li>
+      <li><strong>2FA holati:</strong> {% if security_status.user_2fa %}Faol{% else %}Tavsiya etiladi (Admin uchun 2FA tayyor){% endif %}</li>
+    </ul>
+    <a href="{% url 'reports:platform_metrics' %}" class="btn btn-outline btn-sm">Rasmiy statistikani kiritish / ko‘rish</a>
+  </div>
+</div>
+
+<div class="grid grid-2">
+  <div class="card">
+    <h3>Eng ko‘p ko‘rilgan sahifalar</h3>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>Sahifa</th><th>Ko‘rishlar</th></tr></thead>
+        <tbody>
+          {% for row in summary.top_pages %}
+          <tr><td><code>{{ row.page_path }}</code></td><td><strong>{{ row.count }}</strong></td></tr>
+          {% empty %}
+          <tr><td colspan="2">Hozircha ma’lumot yo‘q.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>So‘nggi administrator amallari (Audit)</h3>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>Vaqt</th><th>Xodim</th><th>Amal</th></tr></thead>
+        <tbody>
+          {% for log in recent_audit %}
+          <tr>
+            <td>{{ log.created_at|date:"d.m H:i" }}</td>
+            <td>{{ log.actor_username|default:"Tizim" }}</td>
+            <td>{{ log.summary }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="3">Audit yozuvlari hali yo‘q.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+{{ summary.chart_data|json_script:"dashboardChartData" }}
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" defer></script>
+<script src="{% static 'js/dashboard.js' %}" defer></script>
+{% endblock %}

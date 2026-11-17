@@ -1,0 +1,147 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="csrf-token" content="{{ csrf_token }}">
+  <title>{% block title %}{{ site_settings.school_name|default:"Turon Odob-Ilm xususiy maktabi" }}{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}{{ site_settings.seo_default_description }}{% endblock %}">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{% block og_title %}{{ site_settings.school_name }}{% endblock %}">
+  <meta property="og:description" content="{% block og_description %}{{ site_settings.seo_default_description }}{% endblock %}">
+  <meta property="og:url" content="{{ request.build_absolute_uri }}">
+  <meta property="og:locale" content="uz_UZ">
+  <link rel="canonical" href="{{ request.build_absolute_uri }}">
+  <link rel="icon" type="image/svg+xml" href="{% static 'img/logo-turon.svg' %}">
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <a class="skip-link" href="#mainContent">Asosiy kontentga o‘tish</a>
+
+  {% if site_settings and site_settings.is_demo_mode %}
+  <div class="demo-topbar" role="status">
+    <div class="container">
+      <span><strong>Demo rejim:</strong> Ayrim manzil, matn va namunaviy yozuvlar “Demo ma’lumot” sifatida belgilangan. Rasmiy ma’lumotlar admin panel orqali yangilanadi.</span>
+      {% if portal_caps %}
+      <a href="{% url 'reports:dashboard' %}"><strong>Boshqaruv paneli &rarr;</strong></a>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <a class="brand" href="{% url 'core:home' %}">
+        {% if site_settings and site_settings.logo %}
+          <img src="{{ site_settings.logo.url }}" alt="{{ site_settings.school_name }} logotipi">
+        {% else %}
+          <img src="{% static 'img/logo-turon.svg' %}" alt="Turon Odob-Ilm emblemasi">
+        {% endif %}
+        <span>
+          <span class="brand-title">{{ site_settings.short_name|default:"Turon Odob-Ilm" }}</span>
+          <span class="brand-sub">Xususiy maktabi • Furqat filiali</span>
+        </span>
+      </a>
+
+      <button id="navToggle" class="nav-toggle" type="button" aria-expanded="false" aria-controls="siteNav" aria-label="Menyuni ochish">
+        Menyu
+      </button>
+
+      <nav id="siteNav" class="site-nav" aria-label="Asosiy navigatsiya">
+        <ul class="nav-links">
+          <li><a href="{% url 'core:home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">Bosh sahifa</a></li>
+          <li><a href="{% url 'core:about' %}" class="{% if request.resolver_match.url_name == 'about' %}active{% endif %}">Maktab haqida</a></li>
+          <li><a href="{% url 'content:education' %}" class="{% if request.resolver_match.url_name == 'education' %}active{% endif %}">Ta’lim</a></li>
+          <li><a href="{% url 'content:news_list' %}" class="{% if 'news' in request.resolver_match.url_name %}active{% endif %}">Yangiliklar</a></li>
+          <li><a href="{% url 'content:gallery' %}" class="{% if request.resolver_match.url_name == 'gallery' %}active{% endif %}">Galereya</a></li>
+          <li><a href="{% url 'branches:list' %}" class="{% if request.resolver_match.app_name == 'branches' %}active{% endif %}">Filiallar</a></li>
+          <li><a href="{% url 'reviews:list' %}" class="{% if request.resolver_match.app_name == 'reviews' %}active{% endif %}">Fikrlar</a></li>
+          <li><a href="{% url 'core:contact' %}" class="{% if request.resolver_match.url_name == 'contact' %}active{% endif %}">Aloqa</a></li>
+        </ul>
+        <div class="nav-actions">
+          <a href="{% url 'content:admission' %}" class="btn btn-gold btn-sm" data-track-cta="Navbar: Qabulga ariza">Qabulga ariza</a>
+          {% if portal_caps %}
+          <a href="{% url 'reports:dashboard' %}" class="btn btn-outline btn-sm">Panel</a>
+          {% endif %}
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="mainContent">
+    {% if messages %}
+    <div class="container" style="padding-top: 16px;">
+      {% for message in messages %}
+      <div class="alert {% if message.tags == 'success' %}alert-success{% elif message.tags == 'warning' %}alert-warning{% elif message.tags == 'error' %}alert-error{% else %}alert-info{% endif %}" role="alert">
+        {{ message }}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="grid grid-3">
+        <div>
+          <h3>{{ site_settings.school_name|default:"Turon Odob-Ilm xususiy maktabi" }}</h3>
+          <p>{{ site_settings.tagline }}</p>
+          {% if primary_branch %}
+          <p><strong>Asosiy filial:</strong> {{ primary_branch.name }}<br>{{ primary_branch.address }}</p>
+          {% endif %}
+        </div>
+        <div>
+          <h4>Bo‘limlar</h4>
+          <ul class="footer-links">
+            <li><a href="{% url 'core:about' %}">Maktab haqida</a></li>
+            <li><a href="{% url 'content:education' %}">Ta’lim va xizmatlar</a></li>
+            <li><a href="{% url 'content:admission' %}">Qabul shartlari va ariza</a></li>
+            <li><a href="{% url 'branches:list' %}">Filiallar va xarita</a></li>
+            <li><a href="{% url 'reviews:list' %}">Ota-onalar fikrlari</a></li>
+            <li><a href="{% url 'core:privacy' %}">Maxfiylik siyosati</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Aloqa va Boshqaruv</h4>
+          <ul class="footer-links">
+            <li>Telefon: {{ site_settings.primary_phone }}</li>
+            <li>Email: {{ site_settings.email }}</li>
+            {% if site_settings.telegram_url %}<li><a href="{{ site_settings.telegram_url }}" target="_blank" rel="noopener noreferrer">Telegram kanal</a></li>{% endif %}
+            {% if site_settings.instagram_url %}<li><a href="{{ site_settings.instagram_url }}" target="_blank" rel="noopener noreferrer">Instagram sahifa</a></li>{% endif %}
+            <li><a href="{% url 'accounts:login' %}">Xodimlar kirishi (Monitoring)</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; {{ current_year }} {{ site_settings.school_name }}. Barcha huquqlar himoyalangan.</span>
+        <span>Maxfiylikka mos ichki analitika • <a href="{% url 'core:privacy' %}">Maxfiylik siyosati</a></span>
+      </div>
+    </div>
+  </footer>
+
+  <div id="cookieBanner" class="cookie-banner" role="dialog" aria-live="polite" aria-label="Maxfiylik va analitika xabarnomasi">
+    <div>
+      Sayt sifatini yaxshilash va xarita tugmalaridan foydalanishni tahlil qilish uchun shaxsni aniqlamaydigan anonim analitikadan foydalaniladi.
+      <a href="{% url 'core:privacy' %}">Batafsil</a>
+    </div>
+    <button id="cookieAcceptBtn" class="btn btn-gold btn-sm" type="button">Tushunarli</button>
+  </div>
+
+  <div id="galleryLightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="Rasm ko‘rish oynasi">
+    <div class="lightbox-inner">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; gap:10px;">
+        <strong id="lightboxCaption">Maktab surati</strong>
+        <button id="lightboxClose" class="btn btn-outline btn-sm" type="button">Yopish</button>
+      </div>
+      <img id="lightboxImg" src="" alt="">
+    </div>
+  </div>
+
+  <script src="{% static 'js/main.js' %}"></script>
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

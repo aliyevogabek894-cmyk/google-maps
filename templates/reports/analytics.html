@@ -1,0 +1,102 @@
+{% extends "reports/base_admin.html" %}
+{% block title %}Batafsil statistika — Turon Odob-Ilm{% endblock %}
+
+{% block content %}
+<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
+  <div>
+    <h1 style="margin:0; color:var(--navy);">Batafsil sayt va xarita statistikasi</h1>
+    <p style="margin:2px 0 0; color:var(--muted);">Sana, platforma, sahifa va trafik manbasi bo‘yicha chuqur tahlil.</p>
+  </div>
+  <div style="display:flex; gap:8px;">
+    <a href="{% url 'reports:export_xlsx' %}?date_from={{ filters.date_from|date:'Y-m-d' }}&date_to={{ filters.date_to|date:'Y-m-d' }}&branch={{ filters.branch_id }}&platform={{ filters.platform }}&page_path={{ filters.page_path }}" class="btn btn-primary btn-sm">XLSX eksport</a>
+    <a href="{% url 'reports:export_csv' %}?date_from={{ filters.date_from|date:'Y-m-d' }}&date_to={{ filters.date_to|date:'Y-m-d' }}&branch={{ filters.branch_id }}&platform={{ filters.platform }}&page_path={{ filters.page_path }}" class="btn btn-outline btn-sm">CSV eksport</a>
+  </div>
+</div>
+
+<form method="get" class="filter-bar">
+  <div class="field">
+    <label class="form-label">Boshlanish</label>
+    <input class="form-input" type="date" name="date_from" value="{{ filters.date_from|date:'Y-m-d' }}">
+  </div>
+  <div class="field">
+    <label class="form-label">Tugash</label>
+    <input class="form-input" type="date" name="date_to" value="{{ filters.date_to|date:'Y-m-d' }}">
+  </div>
+  <div class="field">
+    <label class="form-label">Platforma</label>
+    <select class="form-select" name="platform">
+      <option value="all" {% if filters.platform == 'all' %}selected{% endif %}>Barchasi</option>
+      <option value="website" {% if filters.platform == 'website' %}selected{% endif %}>Rasmiy sayt</option>
+      <option value="google" {% if filters.platform == 'google' %}selected{% endif %}>Google tugmalari</option>
+      <option value="yandex" {% if filters.platform == 'yandex' %}selected{% endif %}>Yandex tugmalari</option>
+    </select>
+  </div>
+  <div class="field">
+    <label class="form-label">Filial</label>
+    <select class="form-select" name="branch">
+      <option value="">Barchasi</option>
+      {% for b in branches %}
+        <option value="{{ b.pk }}" {% if filters.branch_id == b.pk|stringformat:'s' %}selected{% endif %}>{{ b.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="field">
+    <label class="form-label">Sahifa yo‘li bo‘yicha</label>
+    <input class="form-input" type="text" name="page_path" value="{{ filters.page_path }}" placeholder="/qabul/">
+  </div>
+  <button type="submit" class="btn btn-primary">Qo‘llash</button>
+</form>
+
+<div class="grid grid-2" style="margin-bottom:20px;">
+  <div class="card">
+    <h3>Xarita tugmalari bosilishi (turlar kesimida)</h3>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>Filial</th><th>Platforma</th><th>Tugma</th><th>Bosishlar</th></tr></thead>
+        <tbody>
+          {% for row in summary.map_link_stats %}
+          <tr>
+            <td>{{ row.branch__name|default:"Umumiy" }}</td>
+            <td>{{ row.platform|upper }}</td>
+            <td>{{ row.map_link__label|default:"-" }}</td>
+            <td><strong>{{ row.clicks }}</strong></td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="4">Tanlangan davrda xarita tugmalari bosilmagan.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Qurilmalar va Trafik manbalari</h3>
+    <div class="grid grid-2">
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Qurilma</th><th>Soni</th></tr></thead>
+          <tbody>
+            {% for d in summary.device_rows %}
+            <tr><td>{{ d.label }}</td><td><strong>{{ d.count }}</strong></td></tr>
+            {% empty %}
+            <tr><td colspan="2">Ma’lumot yo‘q.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Manba (Referrer)</th><th>Soni</th></tr></thead>
+          <tbody>
+            {% for r in summary.top_referrers %}
+            <tr><td>{{ r.referrer_domain|default:"direct" }}</td><td><strong>{{ r.count }}</strong></td></tr>
+            {% empty %}
+            <tr><td colspan="2">Ma’lumot yo‘q.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

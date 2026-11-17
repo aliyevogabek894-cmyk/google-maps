@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Boshqaruv paneliga kirish — Turon Odob-Ilm</title>
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+</head>
+<body style="background: linear-gradient(135deg, #071528 0%, #0b1f3a 60%, #143258 100%); min-height:100vh; display:flex; align-items:center; justify-content:center; padding:18px;">
+  <div class="card card-gold-top" style="max-width: 440px; width:100%;">
+    <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px;">
+      <img src="{% static 'img/logo-turon.svg' %}" alt="Logo" width="44" height="44" style="border-radius:10px;">
+      <div>
+        <h1 style="margin:0; font-size:1.25rem; color:var(--navy);">Monitoring paneliga kirish</h1>
+        <small style="color:var(--muted);">Faqat vakolatli xodimlar uchun</small>
+      </div>
+    </div>
+
+    {% if messages %}
+      {% for message in messages %}
+      <div class="alert {% if message.tags == 'error' %}alert-error{% else %}alert-info{% endif %}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+
+    <form method="post" novalidate>
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ next }}">
+      {% for field in form %}
+      <div class="form-group">
+        <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}<div class="form-error">{{ field.errors.0 }}</div>{% endif %}
+      </div>
+      {% endfor %}
+      <button type="submit" class="btn btn-primary" style="width:100%;">Kirish</button>
+    </form>
+
+    <div style="margin-top:16px; text-align:center;">
+      <a href="{% url 'core:home' %}" style="font-size:0.9rem;">&larr; Bosh sahifaga qaytish</a>
+    </div>
+  </div>
+</body>
+</html>

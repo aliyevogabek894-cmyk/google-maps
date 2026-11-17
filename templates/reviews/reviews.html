@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% block title %}Ota-onalar fikrlari — {{ site_settings.school_name }}{% endblock %}
+
+{% block content %}
+<section class="page-banner">
+  <div class="container">
+    <h1>Ota-onalar fikrlari va sharhlar</h1>
+    <p>{{ site_settings.review_invitation_text }}</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <!-- B) Google Maps va Yandex Maps rasmiy sharh havolalari (barcha foydalanuvchilar uchun teng va neytral) -->
+    <div class="card card-gold-top" style="margin-bottom: 28px;">
+      <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:14px;">
+        <div>
+          <span class="badge badge-navy">Rasmiy xarita platformalari</span>
+          <h2 style="margin:8px 0 6px;">Google va Yandex’da mustaqil fikr qoldirish</h2>
+          <p style="margin:0; color:var(--muted); max-width:65ch;">
+            Google Maps yoki Yandex Maps’da fikringizni o‘zingiz bevosita rasmiy platformada yozishingiz mumkin.
+            Fikringiz ijobiy yoki tanqidiy bo‘lishidan qat’i nazar, barcha ota-onalar uchun bir xil havola taqdim etiladi.
+          </p>
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:10px;">
+          {% for mlink in review_map_links %}
+            <a href="{{ mlink.get_tracked_url }}" target="_blank" rel="noopener noreferrer"
+               class="btn {% if mlink.platform == 'google' %}btn-primary{% else %}btn-outline{% endif %}">
+              {{ mlink.label }} ({{ mlink.branch.name }})
+            </a>
+          {% empty %}
+            <span class="badge badge-demo">Xarita sharh havolalari admin paneldan qo‘shiladi</span>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-2" style="align-items: start;">
+      <!-- A) Sayt ichidagi fikrlar ro'yxati -->
+      <div>
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:14px;">
+          <h2 style="margin:0;">Sayt ichidagi tasdiqlangan fikrlar</h2>
+          {% if stats.total %}
+            <span class="badge badge-gold">O‘rtacha sayt bahosi: {{ stats.avg|floatformat:1 }} / 5 ({{ stats.total }} ta)</span>
+          {% endif %}
+        </div>
+
+        <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:16px;">
+          <a href="{% url 'reviews:list' %}" class="btn btn-sm {% if not selected_branch_slug %}btn-primary{% else %}btn-outline{% endif %}">Barchasi</a>
+          {% for b in branches %}
+            <a href="?filial={{ b.slug }}" class="btn btn-sm {% if selected_branch_slug == b.slug %}btn-primary{% else %}btn-outline{% endif %}">{{ b.name }}</a>
+          {% endfor %}
+        </div>
+
+        {% for rev in page_obj %}
+        <article class="card" style="margin-bottom:16px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px;">
+            <span class="stars" aria-label="{{ rev.rating }} dan 5 baho">
+              {% for i in "12345" %}{% if forloop.counter <= rev.rating %}&#9733;{% else %}&#9734;{% endif %}{% endfor %}
+            </span>
+            <div>
+              {% if rev.is_demo %}<span class="badge badge-demo">Demo</span>{% endif %}
+              <small style="color:var(--muted);">{{ rev.created_at|date:"d.m.Y" }}</small>
+            </div>
+          </div>
+          <p style="margin-top:0;">{{ rev.comment }}</p>
+          <div style="font-size:0.88rem; color:var(--muted);">
+            <strong>{{ rev.public_author_label }}</strong> • {{ rev.branch.name }}
+          </div>
+          {% if rev.admin_reply %}
+          <div class="alert alert-info" style="margin-top:12px; margin-bottom:0; font-size:0.9rem;">
+            <strong>Maktab ma’muriyati javobi:</strong> {{ rev.admin_reply }}
+          </div>
+          {% endif %}
+        </article>
+        {% empty %}
+        <div class="card"><p>Hozircha tasdiqlangan fikrlar mavjud emas.</p></div>
+        {% endfor %}
+
+        {% if page_obj.has_other_pages %}
+        <nav aria-label="Fikrlar sahifalash" style="display:flex; gap:8px; flex-wrap:wrap;">
+          {% if page_obj.has_previous %}
+            <a class="btn btn-outline btn-sm" href="?sahifa={{ page_obj.previous_page_number }}{% if selected_branch_slug %}&filial={{ selected_branch_slug }}{% endif %}">&larr; Oldingi</a>
+          {% endif %}
+          {% if page_obj.has_next %}
+            <a class="btn btn-outline btn-sm" href="?sahifa={{ page_obj.next_page_number }}{% if selected_branch_slug %}&filial={{ selected_branch_slug }}{% endif %}">Keyingi &rarr;</a>
+          {% endif %}
+        </nav>
+        {% endif %}
+      </div>
+
+      <!-- Sayt ichidagi fikr qoldirish formasi -->
+      <div class="card card-gold-top">
+        <h2>Saytga fikr yuborish</h2>
+        <p style="font-size:0.92rem; color:var(--muted);">
+          Fikringiz moderatsiyadan so‘ng saytda e’lon qilinadi. Telefon raqamingiz hech qachon ommaga chiqarilmaydi.
+        </p>
+        <form method="post" novalidate>
+          {% csrf_token %}
+          {{ form.website_url }}
+          {{ form.form_ts }}
+          {% if form.non_field_errors %}
+            <div class="alert alert-error">{{ form.non_field_errors }}</div>
+          {% endif %}
+
+          {% for field in form %}
+            {% if field.name != 'website_url' and field.name != 'form_ts' %}
+              <div class="form-group">
+                {% if field.name == 'rating' %}
+                  <span class="form-label">{{ field.label }}</span>
+                  <div class="rating-options">
+                    {% for choice in field %}
+                      <label>{{ choice.tag }}<span>{{ choice.choice_label }}</span></label>
+                    {% endfor %}
+                  </div>
+                {% elif field.name == 'accepted_privacy_policy' %}
+                  <label class="checkbox-row">
+                    {{ field }}
+                    <span>{{ site_settings.review_consent_text }} (<a href="{% url 'core:privacy' %}" target="_blank">Maxfiylik siyosati</a>)</span>
+                  </label>
+                {% else %}
+                  <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                  {{ field }}
+                {% endif %}
+                {% if field.errors %}<div class="form-error">{{ field.errors.0 }}</div>{% endif %}
+              </div>
+            {% endif %}
+          {% endfor %}
+
+          <button type="submit" class="btn btn-primary" style="width:100%;">Fikrni yuborish</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

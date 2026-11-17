@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}Ta’lim va xizmatlar — {{ site_settings.school_name }}{% endblock %}
+
+{% block content %}
+<section class="page-banner">
+  <div class="container">
+    <h1>Ta’lim va xizmatlar</h1>
+    <p>Sinf va fanlar, qo‘shimcha mashg‘ulotlar, to‘garaklar, kun tartibi, ovqatlanish va transport xizmatlari.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <h2>Sinflar va ta’lim dasturlari</h2>
+      <a href="{% url 'content:admission' %}" class="btn btn-gold btn-sm">Qabulga ariza topshirish</a>
+    </div>
+    <div class="grid grid-3">
+      {% for prog in programs %}
+      <article class="card card-gold-top">
+        <div style="display:flex; justify-content:space-between; gap:8px; margin-bottom:8px;">
+          <span class="badge badge-navy">{{ prog.grade_range }}</span>
+          {% if prog.is_demo %}<span class="badge badge-demo">Demo</span>{% endif %}
+        </div>
+        <h3>{{ prog.title }}</h3>
+        <p><strong>Asosiy fanlar:</strong> {{ prog.subjects_summary }}</p>
+        <p style="margin-bottom:0;">{{ prog.description }}</p>
+      </article>
+      {% empty %}
+      <p>Ta’lim dasturlari haqida ma’lumot tez orada joylanadi.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-header">
+      <h2>Kun tartibi, to‘garaklar va qo‘shimcha sharoitlar</h2>
+    </div>
+    <div class="grid grid-2">
+      {% for s in grouped_services.club %}
+      <article class="card">
+        <span class="badge badge-gold">{{ s.get_category_display }}</span>
+        {% if s.is_demo %}<span class="badge badge-demo">Demo</span>{% endif %}
+        <h3 style="margin-top:8px;">{{ s.title }}</h3>
+        <p>{{ s.summary }}</p>
+        {% if s.schedule_info %}<small style="color:var(--muted);"><strong>Vaqt:</strong> {{ s.schedule_info }}</small>{% endif %}
+      </article>
+      {% endfor %}
+      {% for s in grouped_services.schedule %}
+      <article class="card">
+        <span class="badge badge-navy">{{ s.get_category_display }}</span>
+        {% if s.is_demo %}<span class="badge badge-demo">Demo</span>{% endif %}
+        <h3 style="margin-top:8px;">{{ s.title }}</h3>
+        <p>{{ s.summary }}</p>
+        {% if s.schedule_info %}<small style="color:var(--muted);"><strong>Jadval:</strong> {{ s.schedule_info }}</small>{% endif %}
+      </article>
+      {% endfor %}
+      {% for s in grouped_services.nutrition %}
+      <article class="card">
+        <span class="badge badge-success">{{ s.get_category_display }}</span>
+        {% if s.is_demo %}<span class="badge badge-demo">Demo</span>{% endif %}
+        <h3 style="margin-top:8px;">{{ s.title }}</h3>
+        <p>{{ s.summary }}</p>
+        {% if s.schedule_info %}<small style="color:var(--muted);">{{ s.schedule_info }}</small>{% endif %}
+      </article>
+      {% endfor %}
+      {% for s in grouped_services.transport %}
+      <article class="card">
+        <span class="badge badge-navy">{{ s.get_category_display }}</span>
+        {% if s.is_demo %}<span class="badge badge-demo">Demo</span>{% endif %}
+        <h3 style="margin-top:8px;">{{ s.title }}</h3>
+        <p>{{ s.summary }}</p>
+        {% if s.schedule_info %}<small style="color:var(--muted);">{{ s.schedule_info }}</small>{% endif %}
+      </article>
+      {% endfor %}
+      {% for s in grouped_services.other %}
+      <article class="card">
+        <span class="badge badge-navy">{{ s.get_category_display }}</span>
+        <h3 style="margin-top:8px;">{{ s.title }}</h3>
+        <p>{{ s.summary }}</p>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,91 @@
+{% extends "reports/base_admin.html" %}
+{% block title %}Filiallar va Xarita havolalari — Turon Odob-Ilm{% endblock %}
+
+{% block content %}
+<h1 style="margin-top:0; color:var(--navy);">Filiallar va Google/Yandex Xarita Havolalari</h1>
+<p style="color:var(--muted);">
+  Barcha tashqi xarita URL’lari faqat shu yerdan boshqariladi va qat’iy HTTPS Google/Yandex domen tekshiruvidan o‘tadi (open-redirect himoyasi).
+</p>
+
+<div class="card" style="margin-bottom:22px;">
+  <h3>Mavjud filiallar va ularning xarita havolalari</h3>
+  {% for branch in branches %}
+  <div style="border:1px solid var(--border); border-radius:10px; padding:14px; margin-bottom:14px;">
+    <div style="display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px; align-items:center;">
+      <div>
+        <strong style="font-size:1.05rem;">{{ branch.name }}</strong>
+        {% if branch.is_primary %}<span class="badge badge-gold">Asosiy</span>{% endif %}
+        {% if branch.is_demo %}<span class="badge badge-demo">Demo</span>{% endif %}
+        <div style="font-size:0.9rem; color:var(--muted);">{{ branch.address }} • {{ branch.phone }}</div>
+        <div style="font-size:0.85rem; margin-top:4px;">
+          Google: <strong>{{ branch.get_google_verification_status_display }}</strong> •
+          Yandex: <strong>{{ branch.get_yandex_verification_status_display }}</strong>
+        </div>
+      </div>
+      <a href="?branch_id={{ branch.pk }}" class="btn btn-outline btn-sm">Tahrirlash</a>
+    </div>
+    {% if branch.verification_note %}
+    <div class="alert alert-warning" style="margin-top:10px; margin-bottom:10px; font-size:0.88rem;">{{ branch.verification_note }}</div>
+    {% endif %}
+
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>Platforma</th><th>Turi</th><th>Tugma matni</th><th>Manzil (HTTPS)</th><th>Tasdiqlangan</th><th>Holati</th></tr></thead>
+        <tbody>
+          {% for link in branch.map_links.all %}
+          <tr>
+            <td>{{ link.get_platform_display }}</td>
+            <td>{{ link.get_link_type_display }}</td>
+            <td>{{ link.label }}</td>
+            <td style="word-break:break-all; max-width:340px;"><code>{{ link.target_url }}</code></td>
+            <td>{% if link.is_verified_profile %}Ha{% else %}Tekshirilmoqda{% endif %}</td>
+            <td>{% if link.is_active %}Faol{% else %}O‘chiq{% endif %}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="6">Xarita havolalari qo‘shilmagan.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<div class="grid grid-2" style="align-items:start;">
+  <div class="card card-gold-top">
+    <h3>{% if branch_instance %}Filialni tahrirlash: {{ branch_instance.name }}{% else %}Yangi filial qo‘shish{% endif %}</h3>
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" name="form_kind" value="branch">
+      {% if branch_instance %}<input type="hidden" name="branch_pk" value="{{ branch_instance.pk }}">{% endif %}
+      {% for field in branch_form %}
+      <div class="form-group">
+        <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}<div class="form-error">{{ field.errors.0 }}</div>{% endif %}
+      </div>
+      {% endfor %}
+      <button type="submit" class="btn btn-primary">Filialni saqlash</button>
+    </form>
+  </div>
+
+  <div class="card card-gold-top">
+    <h3>Xarita havolasi qo‘shish</h3>
+    <p style="font-size:0.88rem; color:var(--muted);">
+      Eslatma: Bir filialda har bir (Platforma + Havola turi) juftligi yagona bo‘ladi. Mavjud havolani tahrirlash uchun <a href="/admin/branches/maplink/">Django Admin</a>dan ham foydalanishingiz mumkin.
+    </p>
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" name="form_kind" value="map_link">
+      {% for field in map_form %}
+      <div class="form-group">
+        <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}<div class="form-error">{{ field.errors.0 }}</div>{% endif %}
+      </div>
+      {% endfor %}
+      <button type="submit" class="btn btn-gold">Xarita havolasini saqlash</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

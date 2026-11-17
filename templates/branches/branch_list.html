@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Filiallar va manzillar — {{ site_settings.school_name }}{% endblock %}
+
+{% block content %}
+<section class="page-banner">
+  <div class="container">
+    <h1>Maktab filiallari va manzil</h1>
+    <p>Furqat filiali hamda kelajakda ochiladigan filiallarning rasmiy manzillari, ish vaqti va xarita havolalari.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container grid grid-2">
+    {% for branch in branches %}
+    <article class="card card-gold-top">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px;">
+        <div>
+          {% if branch.is_primary %}<span class="badge badge-gold">Asosiy filial</span>{% endif %}
+          {% if branch.is_demo %}<span class="badge badge-demo">Demo</span>{% endif %}
+        </div>
+        <span class="badge badge-navy">{{ branch.city_or_district }}</span>
+      </div>
+      <h2 style="margin:0 0 8px;"><a href="{{ branch.get_absolute_url }}">{{ branch.name }}</a></h2>
+      <p><strong>Manzil:</strong> {{ branch.address }}<br>
+         {% if branch.landmark %}<strong>Mo‘ljal:</strong> {{ branch.landmark }}<br>{% endif %}
+         <strong>Telefon:</strong> {{ branch.phone }}<br>
+         <strong>Ish vaqti:</strong> {{ branch.working_hours }}</p>
+      <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:12px;">
+        <a href="{{ branch.get_absolute_url }}" class="btn btn-primary btn-sm">Batafsil sahifa</a>
+        {% for link in branch.active_map_links %}
+          <a href="{{ link.get_tracked_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm">{{ link.label }}</a>
+        {% endfor %}
+      </div>
+    </article>
+    {% empty %}
+    <div class="card"><p>Hozircha faol filiallar kiritilmagan.</p></div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

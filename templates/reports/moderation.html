@@ -1,0 +1,65 @@
+{% extends "reports/base_admin.html" %}
+{% block title %}Fikrlar moderatsiyasi — Turon Odob-Ilm{% endblock %}
+
+{% block content %}
+<h1 style="margin-top:0; color:var(--navy);">Sayt ichidagi ota-onalar fikrlari moderatsiyasi</h1>
+<p style="color:var(--muted);">
+  Siyosatga mos keladigan xolis fikrlar (shu jumladan tanqidiy mulohazalar ham) adolatli ko‘rib chiqiladi. Telefon raqamlari hech qachon ommaviy saytga chiqarilmaydi.
+</p>
+
+<div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px;">
+  <a href="?holat=pending" class="btn btn-sm {% if status_filter == 'pending' %}btn-primary{% else %}btn-outline{% endif %}">Moderatsiyada ({{ counts.pending }})</a>
+  <a href="?holat=approved" class="btn btn-sm {% if status_filter == 'approved' %}btn-primary{% else %}btn-outline{% endif %}">Tasdiqlangan ({{ counts.approved }})</a>
+  <a href="?holat=rejected" class="btn btn-sm {% if status_filter == 'rejected' %}btn-primary{% else %}btn-outline{% endif %}">Rad etilgan ({{ counts.rejected }})</a>
+  <a href="?holat=all" class="btn btn-sm {% if status_filter == 'all' %}btn-primary{% else %}btn-outline{% endif %}">Barchasi ({{ counts.all }})</a>
+</div>
+
+{% for rev in page_obj %}
+<div class="card" style="margin-bottom:16px;">
+  <div style="display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px; margin-bottom:10px;">
+    <div>
+      <strong>{{ rev.author_name }}</strong>
+      {% if rev.display_name %}<span style="color:var(--muted);">(Ko‘rinadigan: {{ rev.display_name }})</span>{% endif %}
+      • <span class="badge badge-navy">{{ rev.branch.name }}</span>
+      • <span class="stars">{{ rev.rating }} / 5 &#9733;</span>
+      {% if rev.is_demo %}<span class="badge badge-demo">Demo</span>{% endif %}
+    </div>
+    <div>
+      <span class="badge {% if rev.status == 'approved' %}badge-success{% elif rev.status == 'rejected' %}badge-demo{% else %}badge-gold{% endif %}">
+        {{ rev.get_status_display }}
+      </span>
+      <small style="color:var(--muted);">{{ rev.created_at|date:"d.m.Y H:i" }}</small>
+    </div>
+  </div>
+
+  <p style="background:#f8fafc; padding:12px; border-radius:8px; border:1px solid var(--border);">{{ rev.comment }}</p>
+
+  <div style="font-size:0.86rem; color:var(--muted); margin-bottom:12px;">
+    {% if rev.phone %}<strong>Ichki aloqa telefoni:</strong> {{ rev.phone }} • {% endif %}
+    {% if rev.consent %}<strong>Maxfiylik roziligi:</strong> Ha (v{{ rev.consent.policy_version }}){% endif %}
+  </div>
+
+  <form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="review_id" value="{{ rev.pk }}">
+    <div class="grid grid-2" style="margin-bottom:10px;">
+      <div>
+        <label class="form-label">Maktab javobi (saytda ko‘rinadi, ixtiyoriy)</label>
+        <textarea class="form-textarea" name="admin_reply" rows="2">{{ rev.admin_reply }}</textarea>
+      </div>
+      <div>
+        <label class="form-label">Ichki moderatsiya izohi (ommaga chiqmaydi)</label>
+        <textarea class="form-textarea" name="moderation_note" rows="2">{{ rev.moderation_note }}</textarea>
+      </div>
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:8px;">
+      <button type="submit" name="decision" value="approved" class="btn btn-primary btn-sm">Tasdiqlash va e’lon qilish</button>
+      <button type="submit" name="decision" value="rejected" class="btn btn-outline btn-sm">Rad etish</button>
+      <button type="submit" name="decision" value="pending" class="btn btn-gold btn-sm">Moderatsiyada qoldirish</button>
+    </div>
+  </form>
+</div>
+{% empty %}
+<div class="card"><p>Tanlangan holat bo‘yicha fikrlar mavjud emas.</p></div>
+{% endfor %}
+{% endblock %}

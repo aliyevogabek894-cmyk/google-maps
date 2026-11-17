@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Server xatoligi (500) — Turon Odob-Ilm{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="container">
+    <div class="card card-gold-top" style="max-width: 640px; margin: 20px auto; text-align: center;">
+      <span class="badge badge-navy">500</span>
+      <h1 style="margin-top: 10px;">Texnik nosozlik yuz berdi</h1>
+      <p>Iltimos, bir ozdan so‘ng sahifani qayta yuklang yoki maktab ma’muriyati bilan bog‘laning.</p>
+      <a href="{% url 'core:home' %}" class="btn btn-primary">Bosh sahifaga qaytish</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

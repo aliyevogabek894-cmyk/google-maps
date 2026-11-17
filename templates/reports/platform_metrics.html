@@ -1,0 +1,115 @@
+{% extends "reports/base_admin.html" %}
+{% block title %}Rasmiy Google va Yandex ko‘rsatkichlari — Turon Odob-Ilm{% endblock %}
+
+{% block content %}
+<h1 style="margin-top:0; color:var(--navy);">Rasmiy Google Business va Yandex Business ko‘rsatkichlari</h1>
+<p style="color:var(--muted);">
+  Bu bo‘limda faqat Google Business Profile yoki Yandex Business kabinetlaridan rasmiy API yoxud administrator importi orqali olingan ko‘rsatkichlar saqlanadi. Sayt tugma bosishlari bu raqamlarga aralashtirilmaydi.
+</p>
+
+<div class="grid grid-2" style="margin-bottom:24px;">
+  <div class="card card-gold-top">
+    <div style="display:flex; justify-content:space-between; gap:8px;">
+      <h3>{{ google_status.platform_label }}</h3>
+      <span class="badge {% if google_status.is_configured %}badge-success{% else %}badge-demo{% endif %}">
+        {% if google_status.is_configured %}Tayyor{% else %}API ulanmagan{% endif %}
+      </span>
+    </div>
+    <p>{{ google_status.message }}</p>
+  </div>
+  <div class="card card-gold-top">
+    <div style="display:flex; justify-content:space-between; gap:8px;">
+      <h3>{{ yandex_status.platform_label }}</h3>
+      <span class="badge {% if yandex_status.is_configured %}badge-success{% else %}badge-demo{% endif %}">
+        {% if yandex_status.is_configured %}Tayyor{% else %}API ulanmagan{% endif %}
+      </span>
+    </div>
+    <p>{{ yandex_status.message }}</p>
+  </div>
+</div>
+
+{% if portal_caps.can_import_platform_stats %}
+<div class="grid grid-2" style="margin-bottom:24px; align-items:start;">
+  <div class="card">
+    <h3>Qo‘lda rasmiy ko‘rsatkich kiritish</h3>
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" name="import_mode" value="manual">
+      {% for field in manual_form %}
+      <div class="form-group">
+        <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}<div class="form-error">{{ field.errors.0 }}</div>{% endif %}
+      </div>
+      {% endfor %}
+      <button type="submit" class="btn btn-primary">Saqlash</button>
+    </form>
+  </div>
+
+  <div class="card">
+    <h3>CSV orqali import qilish</h3>
+    <p style="font-size:0.88rem; color:var(--muted);">
+      CSV ustunlari: <code>period_start,period_end,impressions,profile_views,direction_clicks,call_clicks,website_clicks,average_rating,review_count,notes</code>
+    </p>
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <input type="hidden" name="import_mode" value="csv">
+      {% for field in csv_form %}
+      <div class="form-group">
+        <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}<div class="form-error">{{ field.errors.0 }}</div>{% endif %}
+      </div>
+      {% endfor %}
+      <button type="submit" class="btn btn-gold">CSV import qilish</button>
+    </form>
+  </div>
+</div>
+{% endif %}
+
+<div class="card">
+  <h3>Saqlangan rasmiy platforma hisobotlari</h3>
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Filial</th>
+          <th>Platforma</th>
+          <th>Davr</th>
+          <th>Ko‘rinishlar</th>
+          <th>Profil ko‘rish</th>
+          <th>Yo‘nalish</th>
+          <th>Qo‘ng‘iroq</th>
+          <th>Baho / Sharh</th>
+          <th>Manba va yangilanish</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in snapshots %}
+        <tr>
+          <td>{{ s.branch.name }}</td>
+          <td><span class="badge badge-navy">{{ s.get_platform_display }}</span></td>
+          <td>{{ s.period_start|date:"d.m.Y" }} — {{ s.period_end|date:"d.m.Y" }}</td>
+          <td>{{ s.impressions }}</td>
+          <td>{{ s.profile_views }}</td>
+          <td>{{ s.direction_clicks }}</td>
+          <td>{{ s.call_clicks }}</td>
+          <td>{{ s.average_rating|default:"-" }} / {{ s.review_count }} ta</td>
+          <td>
+            <strong>{{ s.source_label }}</strong><br>
+            <small style="color:var(--muted);">{{ s.get_source_type_display }} • {{ s.synced_at|date:"d.m.Y H:i" }}</small>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="9">
+            Hozircha rasmiy Google Business yoki Yandex Business ko‘rsatkichlari kiritilmagan.
+            Haqiqiy statistikani uydirish taqiqlanadi — ma’lumot mavjud bo‘lgach yuqoridagi forma orqali kiriting.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

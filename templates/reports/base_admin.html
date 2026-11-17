@@ -1,0 +1,74 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Monitoring Paneli — Turon Odob-Ilm{% endblock %}</title>
+  <link rel="icon" type="image/svg+xml" href="{% static 'img/logo-turon.svg' %}">
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+  <link rel="stylesheet" href="{% static 'css/admin_portal.css' %}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="portal-shell">
+  <header class="portal-header no-print">
+    <div class="container">
+      <div class="portal-header-inner">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <img src="{% static 'img/logo-turon.svg' %}" alt="Logo" width="38" height="38" style="border-radius:8px;">
+          <div>
+            <strong style="font-size:1.05rem;">Turon Odob-Ilm — Boshqaruv va Monitoring</strong>
+            <div style="font-size:0.82rem; color:#c8d5e8;">
+              Xodim: <strong>{{ request.user.get_username }}</strong>
+              {% if portal_caps %}• Rol: {{ portal_caps.roles|join:", "|default:"Xodim" }}{% endif %}
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+          <a href="{% url 'core:home' %}" class="btn btn-light-outline btn-sm">Saytga o‘tish</a>
+          <a href="/admin/" class="btn btn-light-outline btn-sm">Django Admin</a>
+          <form method="post" action="{% url 'accounts:logout' %}" style="margin:0;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-gold btn-sm">Chiqish</button>
+          </form>
+        </div>
+      </div>
+
+      <nav class="portal-nav" aria-label="Boshqaruv paneli bo‘limlari">
+        <a href="{% url 'reports:dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">Dashboard</a>
+        <a href="{% url 'reports:analytics' %}" class="{% if request.resolver_match.url_name == 'analytics' %}active{% endif %}">Statistika</a>
+        <a href="{% url 'reports:platform_metrics' %}" class="{% if request.resolver_match.url_name == 'platform_metrics' %}active{% endif %}">Rasmiy Google/Yandex</a>
+        {% if portal_caps.can_moderate_reviews %}
+        <a href="{% url 'reports:moderation' %}" class="{% if request.resolver_match.url_name == 'moderation' %}active{% endif %}">Fikrlar moderatsiyasi</a>
+        {% endif %}
+        {% if portal_caps.can_manage_branches %}
+        <a href="{% url 'reports:branches' %}" class="{% if request.resolver_match.url_name == 'branches' %}active{% endif %}">Filiallar va Xaritalar</a>
+        {% endif %}
+        {% if portal_caps.can_manage_content %}
+        <a href="{% url 'reports:content' %}" class="{% if request.resolver_match.url_name == 'content' %}active{% endif %}">Qabul va Kontent</a>
+        {% endif %}
+        {% if portal_caps.can_view_audit %}
+        <a href="{% url 'reports:audit' %}" class="{% if request.resolver_match.url_name == 'audit' %}active{% endif %}">Audit jurnali</a>
+        {% endif %}
+      </nav>
+    </div>
+  </header>
+
+  <main style="flex:1; padding: 24px 0 40px;">
+    <div class="container">
+      {% if messages %}
+        {% for message in messages %}
+        <div class="alert {% if message.tags == 'success' %}alert-success{% elif message.tags == 'warning' %}alert-warning{% elif message.tags == 'error' %}alert-error{% else %}alert-info{% endif %}" role="alert">
+          {{ message }}
+        </div>
+        {% endfor %}
+      {% endif %}
+
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

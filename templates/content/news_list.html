@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Yangiliklar va tadbirlar — {{ site_settings.school_name }}{% endblock %}
+
+{% block content %}
+<section class="page-banner">
+  <div class="container">
+    <h1>Yangiliklar va tadbirlar</h1>
+    <p>Olimpiadalar, musobaqalar, maktab tadbirlari, yutuqlar va muhim e’lonlar.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px;">
+      <a href="{% url 'content:news_list' %}" class="btn btn-sm {% if not active_category %}btn-primary{% else %}btn-outline{% endif %}">Barchasi</a>
+      {% for code, label in categories %}
+      <a href="?turkum={{ code }}" class="btn btn-sm {% if active_category == code %}btn-primary{% else %}btn-outline{% endif %}">{{ label }}</a>
+      {% endfor %}
+    </div>
+
+    <div class="grid grid-3">
+      {% for post in page_obj %}
+      <article class="card">
+        {% if post.image %}
+          <img class="card-img" src="{{ post.image.url }}" alt="{{ post.title }}" loading="lazy">
+        {% endif %}
+        <div style="display:flex; justify-content:space-between; gap:8px; margin-bottom:8px;">
+          <span class="badge badge-gold">{{ post.get_category_display }}</span>
+          {% if post.is_demo %}<span class="badge badge-demo">Demo</span>{% endif %}
+        </div>
+        <h3><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h3>
+        <p>{{ post.excerpt }}</p>
+        <div style="font-size:0.84rem; color:var(--muted);">
+          {{ post.published_at|date:"d.m.Y" }}{% if post.branch %} • {{ post.branch.name }}{% endif %}
+        </div>
+      </article>
+      {% empty %}
+      <div class="card"><p>Tanlangan turkum bo‘yicha yangiliklar topilmadi.</p></div>
+      {% endfor %}
+    </div>
+
+    {% if page_obj.has_other_pages %}
+    <nav aria-label="Sahifalash" style="margin-top:24px; display:flex; gap:8px; flex-wrap:wrap;">
+      {% if page_obj.has_previous %}
+        <a class="btn btn-outline btn-sm" href="?sahifa={{ page_obj.previous_page_number }}{% if active_category %}&turkum={{ active_category }}{% endif %}">&larr; Oldingi</a>
+      {% endif %}
+      <span class="btn btn-sm" style="cursor:default;">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+      {% if page_obj.has_next %}
+        <a class="btn btn-outline btn-sm" href="?sahifa={{ page_obj.next_page_number }}{% if active_category %}&turkum={{ active_category }}{% endif %}">Keyingi &rarr;</a>
+      {% endif %}
+    </nav>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends "reports/base_admin.html" %}
+{% block title %}Chop etish hisoboti — Turon Odob-Ilm{% endblock %}
+
+{% block content %}
+<div class="no-print" style="margin-bottom:16px; display:flex; justify-content:space-between; align-items:center;">
+  <a href="{% url 'reports:dashboard' %}" class="btn btn-outline btn-sm">&larr; Dashboardga qaytish</a>
+  <button onclick="window.print()" class="btn btn-primary">Chop etish / PDF sifatida saqlash</button>
+</div>
+
+<div class="card">
+  <h1 style="margin-top:0; color:var(--navy);">Turon Odob-Ilm — Raqamli Platforma Hisoboti</h1>
+  <p>
+    <strong>Davr:</strong> {{ filters.date_from|date:"d.m.Y" }} — {{ filters.date_to|date:"d.m.Y" }} •
+    <strong>Filial:</strong> {{ filters.selected_branch.name|default:"Barcha filiallar" }} •
+    <strong>Chop etilgan sana:</strong> {{ generated_at|date:"d.m.Y H:i" }}
+  </p>
+
+  <div class="kpi-grid">
+    <div class="kpi-card"><div class="kpi-label">Tashriflar</div><div class="kpi-value">{{ summary.total_visits }}</div></div>
+    <div class="kpi-card"><div class="kpi-label">Sahifa ko‘rishlari</div><div class="kpi-value">{{ summary.total_page_views }}</div></div>
+    <div class="kpi-card gold"><div class="kpi-label">Google tugmasi (saytdan)</div><div class="kpi-value">{{ summary.google_clicks }}</div></div>
+    <div class="kpi-card gold"><div class="kpi-label">Yandex tugmasi (saytdan)</div><div class="kpi-value">{{ summary.yandex_clicks }}</div></div>
+  </div>
+
+  <h3>Xarita tugmalari kesimi</h3>
+  <table class="data-table" style="margin-bottom:20px;">
+    <thead><tr><th>Filial</th><th>Platforma</th><th>Tugma</th><th>Bosishlar</th></tr></thead>
+    <tbody>
+      {% for row in summary.map_link_stats %}
+      <tr>
+        <td>{{ row.branch__name|default:"Umumiy" }}</td>
+        <td>{{ row.platform|upper }}</td>
+        <td>{{ row.map_link__label|default:"-" }}</td>
+        <td>{{ row.clicks }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="4">Tugma bosishlari qayd etilmagan.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h3>Sayt ichidagi ota-onalar fikrlari holati</h3>
+  <p>
+    Jami: <strong>{{ summary.review_counts.total }}</strong> •
+    Tasdiqlangan: <strong>{{ summary.review_counts.approved }}</strong> •
+    Moderatsiyada: <strong>{{ summary.review_counts.pending }}</strong> •
+    Rad etilgan: <strong>{{ summary.review_counts.rejected }}</strong>
+  </p>
+
+  <p style="font-size:0.86rem; color:var(--muted); margin-top:20px;">
+    Eslatma: Saytdagi tugma bosishlari rasmiy Google/Yandex qidiruv ko‘rsatkichlari emas. Rasmiy ko‘rsatkichlar alohida bo‘limda yuritiladi.
+  </p>
+</div>
+{% endblock %}

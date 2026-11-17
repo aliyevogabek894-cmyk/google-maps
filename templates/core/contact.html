@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Aloqa — {{ site_settings.school_name }}{% endblock %}
+
+{% block content %}
+<section class="page-banner">
+  <div class="container">
+    <h1>Biz bilan bog‘laning</h1>
+    <p>Maktab ma’muriyati bilan telefon, Telegram, elektron pochta yoki quyidagi forma orqali bog‘lanishingiz mumkin.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container grid grid-2" style="align-items: start;">
+    <div>
+      <div class="card card-gold-top" style="margin-bottom: 20px;">
+        <h2>Rasmiy aloqa kanallari</h2>
+        <p><strong>Asosiy telefon:</strong> {{ site_settings.primary_phone }}</p>
+        {% if site_settings.secondary_phone %}<p><strong>Qo‘shimcha telefon:</strong> {{ site_settings.secondary_phone }}</p>{% endif %}
+        <p><strong>Elektron pochta:</strong> {{ site_settings.email }}</p>
+        <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:12px;">
+          {% if site_settings.telegram_url %}<a href="{{ site_settings.telegram_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">Telegram</a>{% endif %}
+          {% if site_settings.instagram_url %}<a href="{{ site_settings.instagram_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm">Instagram</a>{% endif %}
+          {% if site_settings.youtube_url %}<a href="{{ site_settings.youtube_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm">YouTube</a>{% endif %}
+        </div>
+      </div>
+
+      {% for branch in branches %}
+      <div class="card" style="margin-bottom: 16px;">
+        <div style="display:flex; justify-content:space-between; gap:8px;">
+          <h3>{{ branch.name }}</h3>
+          {% if branch.is_demo %}<span class="badge badge-demo">Demo</span>{% endif %}
+        </div>
+        <p><strong>Manzil:</strong> {{ branch.address }}<br>
+           <strong>Ish vaqti:</strong> {{ branch.working_hours }}<br>
+           <strong>Telefon:</strong> {{ branch.phone }}</p>
+        <div style="display:flex; flex-wrap:wrap; gap:8px;">
+          {% for link in branch.active_map_links %}
+            <a href="{{ link.get_tracked_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm">{{ link.label }}</a>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="card card-gold-top">
+      <h2>Murojaat yuborish</h2>
+      <form method="post" novalidate>
+        {% csrf_token %}
+        {{ form.website_url }}
+        {{ form.form_ts }}
+        {% if form.non_field_errors %}
+          <div class="alert alert-error">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        {% for field in form %}
+          {% if field.name != 'website_url' and field.name != 'form_ts' %}
+            <div class="form-group">
+              {% if field.name == 'accepted_privacy_policy' %}
+                <label class="checkbox-row">
+                  {{ field }}
+                  <span>{{ field.label }} (<a href="{% url 'core:privacy' %}" target="_blank">Maxfiylik siyosati</a>)</span>
+                </label>
+              {% else %}
+                <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+              {% endif %}
+              {% if field.errors %}<div class="form-error">{{ field.errors.0 }}</div>{% endif %}
+            </div>
+          {% endif %}
+        {% endfor %}
+        <button type="submit" class="btn btn-primary">Murojaatni yuborish</button>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}

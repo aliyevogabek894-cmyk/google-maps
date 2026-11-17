@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+{% block title %}{{ site_settings.school_name }} — Rasmiy ta’lim platformasi{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div class="container hero-grid">
+    <div>
+      <span class="hero-kicker">Turon Odob-Ilm • Furqat filiali</span>
+      <h1>{{ site_settings.hero_title }}</h1>
+      <p class="lead">{{ site_settings.hero_subtitle }}</p>
+      <div class="hero-cta-group">
+        <a href="{% url 'content:admission' %}" class="btn btn-gold" data-track-cta="Hero: Qabulga ariza" {% if primary_branch %}data-branch-id="{{ primary_branch.pk }}"{% endif %}>Qabulga ariza</a>
+        {% if primary_branch %}
+        <a href="{% url 'branches:detail' primary_branch.slug %}" class="btn btn-light-outline" data-track-cta="Hero: Xaritada ko'rish" data-branch-id="{{ primary_branch.pk }}">Xaritada ko‘rish</a>
+        {% else %}
+        <a href="{% url 'branches:list' %}" class="btn btn-light-outline">Xaritada ko‘rish</a>
+        {% endif %}
+        <a href="{% url 'core:contact' %}" class="btn btn-light-outline" data-track-cta="Hero: Biz bilan bog'lanish">Biz bilan bog‘lanish</a>
+      </div>
+    </div>
+
+    {% if primary_branch %}
+    <aside class="hero-card" aria-label="Furqat filiali tezkor xarita va aloqa kartasi">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px;">
+        <h2 style="margin:0;">{{ primary_branch.name }}</h2>
+        {% if primary_branch.is_demo %}<span class="badge badge-demo">Demo</span>{% endif %}
+      </div>
+      <ul class="meta-list">
+        <li><strong>Manzil:</strong> {{ primary_branch.address }}</li>
+        <li><strong>Ish vaqti:</strong> {{ primary_branch.working_hours }}</li>
+        <li><strong>Telefon:</strong> {{ primary_branch.phone }}</li>
+      </ul>
+      <div class="map-btn-grid">
+        {% for link in map_links %}
+          {% if link.link_type != 'review' %}
+          <a href="{{ link.get_tracked_url }}" target="_blank" rel="noopener noreferrer"
+             class="btn {% if link.platform == 'google' %}btn-primary{% else %}btn-outline{% endif %} btn-sm">
+            {{ link.label }}
+          </a>
+          {% endif %}
+        {% endfor %}
+        <a href="{% url 'reviews:list' %}" class="btn btn-gold btn-sm">Ota-onalar fikrlari va sharhlar</a>
+      </div>
+    </aside>
+    {% endif %}
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <h2>Nega aynan Turon Odob-Ilm?</h2>
+        <p>{{ site_settings.about_short }}</p>
+      </div>
+      <a href="{% url 'core:about' %}" class="btn btn-outline btn-sm">Maktab haqida batafsil</a>
+    </div>
+
+    <div class="grid grid-3">
+      <article class="card card-gold-top">
+        <h3>Odob va tarbiya ustuvorligi</h3>
+        <p>Har bir o‘quvchida hurmat, halollik, mas’uliyat va milliy qadriyatlarga sadoqat tarbiyalanadi.</p>
+      </article>
+      <article class="card card-gold-top">
+        <h3>Chuqur fanlar va chet tillari</h3>
+        <p>Matematika, tabiiy fanlar, ingliz tili va zamonaviy axborot texnologiyalari amaliyot bilan o‘rgatiladi.</p>
+      </article>
+      <article class="card card-gold-top">
+        <h3>Ochiq muloqot va shaffoflik</h3>
+        <p>Ota-onalar bilan doimiy aloqa, xolis fikr-mulohaza yig‘ish va rasmiy xarita profillari orqali qulay ma’lumot.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+{% if programs %}
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <h2>Ta’lim yo‘nalishlari</h2>
+        <p>Boshlang‘ich sinflardan bitiruvchilargacha bosqichma-bosqich rivojlanish tizimi.</p>
+      </div>
+      <a href="{% url 'content:education' %}" class="btn btn-outline btn-sm">Barcha dasturlar va xizmatlar</a>
+    </div>
+    <div class="grid grid-3">
+      {% for prog in programs %}
+      <article class="card">
+        <div style="display:flex; justify-content:space-between; gap:8px; margin-bottom:8px;">
+          <span class="badge badge-navy">{{ prog.grade_range }}</span>
+          {% if prog.is_demo %}<span class="badge badge-demo">Demo</span>{% endif %}
+        </div>
+        <h3>{{ prog.title }}</h3>
+        <p style="font-size:0.9rem; color:var(--muted);"><strong>Fanlar:</strong> {{ prog.subjects_summary }}</p>
+        <p style="margin-bottom:0;">{{ prog.description }}</p>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <h2>Ota-onalar fikrlari</h2>
+        <p>{{ site_settings.review_invitation_text }}</p>
+      </div>
+      <a href="{% url 'reviews:list' %}" class="btn btn-gold btn-sm">Fikr qoldirish va sharhlar</a>
+    </div>
+
+    {% if review_stats.total %}
+    <div class="alert alert-info">
+      <strong>Sayt ichidagi tasdiqlangan fikrlar:</strong> {{ review_stats.total }} ta •
+      O‘rtacha sayt bahosi: <strong>{{ review_stats.avg|floatformat:1 }} / 5</strong>
+      <span style="font-size:0.86rem; color:var(--muted);">(Google va Yandex sharhlari tegishli rasmiy platformalarda alohida yuritiladi)</span>
+    </div>
+    {% endif %}
+
+    <div class="grid grid-3">
+      {% for rev in approved_reviews %}
+      <article class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px;">
+          <span class="stars" aria-label="{{ rev.rating }} dan 5 baho">
+            {% for i in "12345" %}{% if forloop.counter <= rev.rating %}&#9733;{% else %}&#9734;{% endif %}{% endfor %}
+          </span>
+          {% if rev.is_demo %}<span class="badge badge-demo">Demo</span>{% endif %}
+        </div>
+        <p style="margin-top:0;">“{{ rev.comment|truncatechars:190 }}”</p>
+        <div style="font-size:0.88rem; color:var(--muted);">
+          <strong>{{ rev.public_author_label }}</strong> • {{ rev.branch.name }}
+        </div>
+      </article>
+      {% empty %}
+      <div class="card">
+        <p>Hozircha tasdiqlangan sayt fikrlari yo‘q. Birinchi bo‘lib o‘z xolis fikringizni yuborishingiz mumkin.</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% if latest_news %}
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <h2>So‘nggi yangiliklar va tadbirlar</h2>
+        <p>Maktab hayotidagi muhim voqealar, olimpiadalar va e’lonlar.</p>
+      </div>
+      <a href="{% url 'content:news_list' %}" class="btn btn-outline btn-sm">Barcha yangiliklar</a>
+    </div>
+    <div class="grid grid-3">
+      {% for post in latest_news %}
+      <article class="card">
+        {% if post.image %}
+          <img class="card-img" src="{{ post.image.url }}" alt="{{ post.title }}" loading="lazy">
+        {% endif %}
+        <div style="display:flex; justify-content:space-between; gap:8px; margin-bottom:8px;">
+          <span class="badge badge-gold">{{ post.get_category_display }}</span>
+          {% if post.is_demo %}<span class="badge badge-demo">Demo</span>{% endif %}
+        </div>
+        <h3><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h3>
+        <p>{{ post.excerpt }}</p>
+        <span style="font-size:0.84rem; color:var(--muted);">{{ post.published_at|date:"d.m.Y" }}</span>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

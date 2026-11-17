@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Ruxsat etilmagan (403) — {{ site_settings.short_name }}{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="container">
+    <div class="card card-gold-top" style="max-width: 640px; margin: 20px auto; text-align: center;">
+      <span class="badge badge-demo">403</span>
+      <h1 style="margin-top: 10px;">Ushbu bo‘limga kirish huquqingiz yo‘q</h1>
+      <p>Sizning foydalanuvchi rolingiz ushbu sahifa yoki amalni bajarishga ruxsat bermaydi.</p>
+      <div style="display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin-top:16px;">
+        <a href="{% url 'core:home' %}" class="btn btn-primary">Bosh sahifa</a>
+        <a href="{% url 'reports:dashboard' %}" class="btn btn-outline">Monitoring dashboard</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

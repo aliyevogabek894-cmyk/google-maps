@@ -1,0 +1,106 @@
+{% extends "reports/base_admin.html" %}
+{% block title %}Qabul arizalari, Murojaatlar va Kontent — Turon Odob-Ilm{% endblock %}
+
+{% block content %}
+<div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:12px; margin-bottom:16px;">
+  <div>
+    <h1 style="margin:0; color:var(--navy);">Qabul arizalari, Murojaatlar va Kontent</h1>
+    <p style="margin:2px 0 0; color:var(--muted);">Yangiliklar, rasmlar, o‘qituvchilar va dasturlarni tahrirlash uchun Django Admin bo‘limlaridan foydalaning.</p>
+  </div>
+  <div style="display:flex; flex-wrap:wrap; gap:8px;">
+    <a href="/admin/content/newspost/" class="btn btn-outline btn-sm">Yangiliklar</a>
+    <a href="/admin/content/galleryitem/" class="btn btn-outline btn-sm">Galereya</a>
+    <a href="/admin/content/teacher/" class="btn btn-outline btn-sm">O‘qituvchilar</a>
+    <a href="/admin/content/educationprogram/" class="btn btn-outline btn-sm">Ta’lim dasturlari</a>
+  </div>
+</div>
+
+{% if portal_caps.is_superadmin %}
+<div class="card card-gold-top" style="margin-bottom:22px;">
+  <h3>Tezkor sayt sozlamalari (va Demo rejimini boshqarish)</h3>
+  <form method="post" class="grid grid-3" style="align-items:end;">
+    {% csrf_token %}
+    <input type="hidden" name="kind" value="site_settings">
+    {% for field in settings_form %}
+    <div class="form-group" style="margin-bottom:0;">
+      <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+      {{ field }}
+      {% if field.errors %}<div class="form-error">{{ field.errors.0 }}</div>{% endif %}
+    </div>
+    {% endfor %}
+    <div>
+      <button type="submit" class="btn btn-primary">Sozlamalarni saqlash</button>
+    </div>
+  </form>
+</div>
+{% endif %}
+
+<div class="card" style="margin-bottom:22px;">
+  <h3>Qabulga kelgan arizalar</h3>
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead><tr><th>Sana</th><th>O‘quvchi / Sinf</th><th>Ota-ona va Telefon</th><th>Filial</th><th>Holatni yangilash</th></tr></thead>
+      <tbody>
+        {% for app in admissions %}
+        <tr>
+          <td>{{ app.created_at|date:"d.m.Y H:i" }}</td>
+          <td><strong>{{ app.student_name }}</strong><br><small>{{ app.grade_level }}</small></td>
+          <td>{{ app.parent_name }}<br><code>{{ app.phone }}</code></td>
+          <td>{{ app.branch.name|default:"-" }}</td>
+          <td>
+            <form method="post" style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+              {% csrf_token %}
+              <input type="hidden" name="kind" value="admission_status">
+              <input type="hidden" name="app_id" value="{{ app.pk }}">
+              <select name="status" class="form-select" style="min-height:36px; width:auto;">
+                {% for code, label in admission_statuses %}
+                  <option value="{{ code }}" {% if app.status == code %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+              </select>
+              <input type="text" name="admin_note" value="{{ app.admin_note }}" placeholder="Izoh" class="form-input" style="min-height:36px; width:150px;">
+              <button type="submit" class="btn btn-primary btn-sm">Saqlash</button>
+            </form>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5">Hozircha qabul arizalari yo‘q.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <h3>Aloqa sahifasi murojaatlari</h3>
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead><tr><th>Sana</th><th>Murojaatchi</th><th>Mavzu va matn</th><th>Holatni yangilash</th></tr></thead>
+      <tbody>
+        {% for msg in contacts %}
+        <tr>
+          <td>{{ msg.created_at|date:"d.m.Y H:i" }}</td>
+          <td><strong>{{ msg.full_name }}</strong><br><code>{{ msg.phone }}</code></td>
+          <td><strong>{{ msg.subject }}</strong><br><small>{{ msg.message|truncatechars:140 }}</small></td>
+          <td>
+            <form method="post" style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+              {% csrf_token %}
+              <input type="hidden" name="kind" value="contact_status">
+              <input type="hidden" name="msg_id" value="{{ msg.pk }}">
+              <select name="status" class="form-select" style="min-height:36px; width:auto;">
+                {% for code, label in contact_statuses %}
+                  <option value="{{ code }}" {% if msg.status == code %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+              </select>
+              <input type="text" name="admin_note" value="{{ msg.admin_note }}" placeholder="Izoh" class="form-input" style="min-height:36px; width:150px;">
+              <button type="submit" class="btn btn-outline btn-sm">Saqlash</button>
+            </form>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4">Hozircha murojaatlar yo‘q.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

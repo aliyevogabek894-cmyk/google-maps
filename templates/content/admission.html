@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Qabul — {{ site_settings.school_name }}{% endblock %}
+
+{% block content %}
+<section class="page-banner">
+  <div class="container">
+    <h1>Qabul shartlari va onlayn ariza</h1>
+    <p>Farzandingizni Turon Odob-Ilm xususiy maktabiga yozdirish uchun ariza qoldiring.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container grid grid-2" style="align-items: start;">
+    <div>
+      <div class="card card-gold-top" style="margin-bottom:20px;">
+        <h2>Qabul shartlari</h2>
+        {% for item in conditions %}
+          <p><strong>{{ item.title }}:</strong> {{ item.description }}</p>
+        {% empty %}
+          <p>Qabul shartlari haqida batafsil ma’lumot telefon orqali beriladi.</p>
+        {% endfor %}
+      </div>
+
+      <div class="card" style="margin-bottom:20px;">
+        <h2>Kerakli hujjatlar</h2>
+        <ul style="padding-left:18px; margin:0;">
+          {% for doc in documents %}
+          <li style="margin-bottom:8px;"><strong>{{ doc.title }}</strong> — {{ doc.description }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>Qabul bosqichlari</h2>
+        {% for step in process_steps %}
+          <p><strong>{{ step.title }}</strong><br><span style="color:var(--muted);">{{ step.description }}</span></p>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="card card-gold-top">
+      <h2>Qabulga ariza yuborish</h2>
+      <form method="post" novalidate>
+        {% csrf_token %}
+        {{ form.website_url }}
+        {{ form.form_ts }}
+        {% if form.non_field_errors %}
+          <div class="alert alert-error">{{ form.non_field_errors }}</div>
+        {% endif %}
+        {% for field in form %}
+          {% if field.name != 'website_url' and field.name != 'form_ts' %}
+            <div class="form-group">
+              {% if field.name == 'accepted_privacy_policy' %}
+                <label class="checkbox-row">
+                  {{ field }}
+                  <span>{{ field.label }} (<a href="{% url 'core:privacy' %}" target="_blank">Maxfiylik siyosati</a>)</span>
+                </label>
+              {% else %}
+                <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+              {% endif %}
+              {% if field.errors %}<div class="form-error">{{ field.errors.0 }}</div>{% endif %}
+            </div>
+          {% endif %}
+        {% endfor %}
+        <button type="submit" class="btn btn-gold" style="width:100%;">Arizani yuborish</button>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}
