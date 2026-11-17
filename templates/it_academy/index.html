@@ -1,17 +1,51 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}IT Akademiya va Dasturlash — {{ site_settings.school_name }}{% endblock %}
+{% block title %}IT Akademiya va IT WORLD o‘yinlari — {{ site_settings.school_name }}{% endblock %}
 
 {% block content %}
 <section class="page-banner">
   <div class="container">
-    <span class="badge badge-gold">IT va Dasturlash yo‘nalishi</span>
-    <h1 style="margin-top:8px;">Turon Odob-Ilm IT Akademiyasi</h1>
-    <p>1–11-sinflar uchun zamonaviy kompyuter savodxonligi, algoritmik fikrlash va dasturlash asoslari.</p>
+    <span class="badge badge-gold">IT, Dasturlash va Gamifikatsiya</span>
+    <h1 style="margin-top:8px;">Turon Odob-Ilm IT Akademiyasi &amp; IT WORLD</h1>
+    <p>Bolalarga kompyuter, tarmoq, kiberxavfsizlik va dasturlashni zerikarli qoidalarsiz — interaktiv 3D o‘yinlar va amaliy loyihalar yordamida o‘rgatish.</p>
   </div>
 </section>
 
+<!-- IT DOMLASI SPOTLIGHT -->
+{% if it_teacher %}
 <section class="section">
+  <div class="container">
+    <div class="teacher-spotlight-card">
+      {% if it_teacher.resolved_photo_url %}
+        <img class="teacher-spotlight-avatar" src="{{ it_teacher.resolved_photo_url }}" alt="{{ it_teacher.full_name }}">
+      {% endif %}
+      <div>
+        <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+          <span class="badge badge-gold">IT va Dasturlash Ustozi</span>
+          <span class="badge badge-tech" style="color:#fff; background:rgba(61,123,250,0.28);">IT WORLD Platformasi Muallifi</span>
+        </div>
+        <h2 style="margin:0 0 6px; font-size:clamp(1.5rem, 2.8vw, 2.1rem); color:#fff;">{{ it_teacher.full_name }}</h2>
+        <p style="margin:0 0 12px; color:var(--gold-bright); font-weight:700;">{{ it_teacher.subject_or_role }}</p>
+        <p style="margin:0 0 14px; color:#DCE6F7;">{{ it_teacher.bio }}</p>
+        {% if it_teacher.quote %}
+          <blockquote style="margin:0 0 18px; padding-left:14px; border-left:3px solid var(--gold); color:#F3E6C3; font-style:italic;">
+            “{{ it_teacher.quote }}”
+          </blockquote>
+        {% endif %}
+        <div style="display:flex; flex-wrap:wrap; gap:10px;">
+          <a href="https://aliyev-turon.netlify.app/" target="_blank" rel="noopener noreferrer" class="btn btn-gold" data-track-cta="IT Academy: IT WORLD ochish">
+            IT WORLD O‘yin Saytini Ochish &nearr;
+          </a>
+          <a href="{% url 'content:admission' %}" class="btn btn-light-outline" data-track-cta="IT Academy: Qabulga ariza">Qabulga yozilish</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ZAMONAVIY IT XONASI VA O'QITISH METODIKASI -->
+<section class="section section-alt">
   <div class="container grid grid-2" style="align-items:center; gap:30px;">
     <div class="media-frame">
       {% if it_photos.first and it_photos.first.resolved_image_url %}
@@ -21,31 +55,81 @@
       {% endif %}
     </div>
     <div>
-      <span class="section-kicker">Amaliy ta’lim</span>
-      <h2 style="margin-top:0; color:var(--navy);">Zamonaviy kompyuter xonasi va real mashg‘ulotlar</h2>
+      <span class="section-kicker">O‘yin orqali o‘qitish metodikasi</span>
+      <h2 style="margin-top:0; color:var(--navy);">Nima uchun bolalar IT’ni o‘yin bilan tezroq o‘rganadi?</h2>
       <p>
-        Maktabimizda IT va dasturlash alohida ajralib turadigan asosiy ustunlardan biridir. Har bir o‘quvchi
-        o‘z yoshiga mos ravishda kompyuter savodxonligidan tortib algoritmlar va web dasturlashgacha amaliy tarzda o‘rganadi.
+        IT ustozimiz Aliyev Og‘abek darslarda <strong>IT WORLD</strong> platformasi yordamida har bir mavzuni amaliy missiyaga aylantiradi:
       </p>
-      <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:16px;">
-        <a href="{% url 'content:admission' %}" class="btn btn-gold" data-track-cta="IT Academy: Qabulga ariza">Qabulga ariza topshirish</a>
-        <a href="{% url 'content:gallery' %}?bolim=it_lab" class="btn btn-outline">IT galereya</a>
-      </div>
+      <ul style="padding-left:18px; margin:0 0 18px; display:grid; gap:8px;">
+        <li><strong>1–4-sinflar:</strong> <em>Mouse Master 3D</em> va <em>Keyboard Master</em> orqali sichqoncha va 10 barmoqda yozish ko‘nikmasi, <em>Turon 3D Maktab</em> bo‘ylab sayohat.</li>
+        <li><strong>4–7-sinflar:</strong> <em>PC Builder 3D</em> va <em>3D Printing Lab</em> yordamida kompyuter qismlarini qo‘lda yig‘ish, <em>Scratch</em> blokli dasturlash va tarmoq asoslari.</li>
+        <li><strong>7–11-sinflar:</strong> <em>Web Studio (100 bosqich)</em> orqali HTML/CSS/Python dasturlash, <em>Kiber Qalqon 3D (300 ta sinov)</em> va <em>AI Challenge</em>.</li>
+        <li><strong>Sinf ichidagi motivatsiya:</strong> <em>HOTKEY MASTER</em> 20 kompyuterli sinf reytingi, XP ballari va yulduzchalar orqali sog‘lom raqobat.</li>
+      </ul>
+      <a href="{% url 'content:gallery' %}?bolim=it_lab" class="btn btn-outline btn-sm">IT xona rasmlari</a>
     </div>
   </div>
 </section>
 
+<!-- IT WORLD O'YINLARI KATALOGI -->
+<section class="it-world-band">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <span class="section-kicker" style="color:var(--gold-bright);">aliyev-turon.netlify.app • Interaktiv Modullar</span>
+        <h2 style="color:#fff;">IT WORLD — Bolalar uchun kompyuter o‘yinlari va 3D laboratoriyalar</h2>
+        <p style="color:#D2DFF4;">Har bir kartani bosib, tegishli o‘quv o‘yini yoki 3D simulyatorni to‘g‘ridan-to‘g‘ri ishga tushiring.</p>
+      </div>
+      <a href="https://aliyev-turon.netlify.app/" target="_blank" rel="noopener noreferrer" class="btn btn-gold">Barcha o‘yinlarni ochish &nearr;</a>
+    </div>
+
+    <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:24px;">
+      <a href="{% url 'it_academy:index' %}" class="btn btn-sm {% if not active_category %}btn-gold{% else %}btn-light-outline{% endif %}">Barchasi</a>
+      {% for code, label in game_categories %}
+        <a href="?turkum={{ code }}" class="btn btn-sm {% if active_category == code %}btn-gold{% else %}btn-light-outline{% endif %}">{{ label }}</a>
+      {% endfor %}
+    </div>
+
+    <div class="grid grid-3">
+      {% for g in games %}
+      <article class="game-card">
+        <div class="game-card-visual">
+          {% if g.resolved_image_url %}
+            <img src="{{ g.resolved_image_url }}" alt="{{ g.title }}" loading="lazy">
+          {% else %}
+            <span class="game-emoji-stage" aria-hidden="true">{{ g.icon_emoji }}</span>
+          {% endif %}
+        </div>
+        <div class="game-card-body">
+          <div style="display:flex; justify-content:space-between; gap:8px; align-items:center;">
+            <span class="badge badge-gold">{{ g.grade_range }}</span>
+            <span style="font-size:0.78rem; color:#9FB4D6;">{{ g.get_category_display }}</span>
+          </div>
+          <h3>{{ g.icon_emoji }} {{ g.title }}</h3>
+          {% if g.subtitle %}<div style="font-size:0.84rem; color:var(--gold-bright); font-weight:600; margin-bottom:6px;">{{ g.subtitle }}</div>{% endif %}
+          <p>{{ g.methodology }}</p>
+          <a href="{{ g.live_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-tech btn-sm">
+            O‘yinni boshlash &nearr;
+          </a>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- O'QITILADIGAN IT KURSLARI -->
 <section class="section section-alt">
   <div class="container">
     <div class="section-header">
       <div>
-        <span class="section-kicker">O‘quv dasturi</span>
-        <h2>O‘qitiladigan IT yo‘nalishlari</h2>
+        <span class="section-kicker">Maktab o‘quv dasturi</span>
+        <h2>IT va dasturlash kurslari</h2>
       </div>
     </div>
     <div class="grid grid-3">
       {% for course in courses %}
-      <article class="card card-gold-top">
+      <article class="card card-gold-top card-hover-lift">
         <span class="badge badge-tech">{{ course.grade_level }}</span>
         <h3 style="margin-top:10px;">{{ course.title }}</h3>
         <p style="font-size:0.9rem; color:var(--muted);"><strong>Mavzular:</strong> {{ course.tools_stack }}</p>
@@ -62,8 +146,7 @@
     <div class="section-header">
       <div>
         <span class="section-kicker">Laboratoriya va loyihalar</span>
-        <h2>IT laboratoriyasi faoliyati</h2>
-        <p>O‘quvchilarning shaxsiy loyihalari faqat muallif va ota-ona roziligi bilan e’lon qilinadi.</p>
+        <h2>Amaliy loyihalar</h2>
       </div>
     </div>
     <div class="grid grid-2">
@@ -76,7 +159,7 @@
         <h3 style="margin-top:8px;">{{ proj.title }}</h3>
         <p>{{ proj.summary }}</p>
         {% if proj.source_url %}
-          <a href="{{ proj.source_url }}" target="_blank" rel="noopener noreferrer" style="font-size:0.86rem;">Manba &nearr;</a>
+          <a href="{{ proj.source_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm">Loyihani ko‘rish &nearr;</a>
         {% endif %}
       </article>
       {% endfor %}

@@ -16,7 +16,7 @@ from apps.content.models import (
     Teacher,
 )
 from apps.core.models import SiteSettings
-from apps.it_academy.models import ITCourse, ITProject
+from apps.it_academy.models import GameModule, ITCourse, ITProject
 from apps.reviews.models import ReviewConsent, WebsiteReview
 
 
@@ -274,28 +274,169 @@ class Command(BaseCommand):
                 first_course = course_obj
 
         ITProject.objects.update_or_create(
-            title="Turon IT laboratoriyasi amaliy mashg‘ulotlari",
+            title="IT WORLD — Bolalar uchun o‘yin orqali IT va dasturlash ekotizimi",
             defaults={
                 "course": first_course,
                 "branch": furqat,
-                "author_display": "",
-                "has_parent_consent": False,
+                "author_display": "Aliyev Og‘abek (IT ustozi)",
+                "has_parent_consent": True,
                 "summary": (
-                    "O‘quvchilar zamonaviy kompyuter xonasida ustoz nazoratida algoritmik mashqlar va "
-                    "amaliy topshiriqlarni bajarishmoqda. Individual o‘quvchi loyihalari ota-ona roziligi "
-                    "tasdiqlangach muallifi bilan qo‘shiladi."
+                    "Turon Odob-Ilm IT ustozi Aliyev Og‘abek tomonidan yaratilgan maxsus ta’lim-o‘yin platformasi: "
+                    "3D Maktab dunyosi, PC Builder 3D, 3D Tarmoq Akademiyasi, 3D Printing Lab, Web Studio (100 bosqich), "
+                    "Kiber Qalqon 3D va 20 kompyuterli sinf reytingi."
                 ),
                 "static_image_path": "official_media/it-lab-active.jpg",
-                "alt_text": "Turon Odob-Ilm maktabining faol IT va kompyuter laboratoriyasi",
-                "source_url": "https://www.turonodob-ilm.uz/images/it-lab-active.jpg",
+                "alt_text": "Turon Odob-Ilm IT laboratoriyasida o‘yin orqali kompyuter va dasturlash mashg‘ulotlari",
+                "source_url": "https://aliyev-turon.netlify.app/",
+                "project_url": "https://aliyev-turon.netlify.app/",
                 "permission_status": "verified_official",
                 "is_published": True,
                 "is_demo": False,
-                "sort_order": 10,
+                "sort_order": 5,
             },
         )
 
-        # Rahbariyat (A'zamjonov Hayotbek - turonodob-ilm.uz/about dan)
+        # IT WORLD o'yin metodikasi modullari (aliyev-turon.netlify.app asosida)
+        game_modules_data = [
+            (
+                "TURON ODOB-ILM IT WORLD 3D",
+                "360° Ochiq Dunyo Maktab O‘yini",
+                "sim3d",
+                "1–11-sinflar",
+                "🏫",
+                "Haqiqiy Turon Odob-Ilm maktabi binosi, hovlisi, avtobusi va 2 qavatli 8 ta IT laboratoriya bo‘ylab 360° sayohat, ustozlar va interaktiv topshiriqlar.",
+                "https://aliyev-turon.netlify.app/#campus3d",
+                "official_media/facade.jpg",
+                True,
+                10,
+            ),
+            (
+                "PC Builder 3D & Ona Platani Yig‘ish",
+                "Kompyuter arxitekturasi va ta’mirlash (7 va 25 bosqich)",
+                "sim3d",
+                "4–11-sinflar",
+                "🛠️",
+                "O‘quvchilar protsessor (CPU), RAM, SSD, quvvat bloki va kabellarni 3D korpusga qo‘lda joylab, kompyuterni yoqish va nosozliklarni topishni amalda o‘rganishadi.",
+                "https://aliyev-turon.netlify.app/#pcbuilder",
+                "official_media/it-lab-active.jpg",
+                True,
+                20,
+            ),
+            (
+                "3D Tarmoq Akademiyasi (LAN/WAN/MAN/PAN)",
+                "Switch, Router, Modem va Kabel ulash",
+                "sim3d",
+                "5–11-sinflar",
+                "🌐",
+                "Kompyuter xonasida 360° harakatlanib, kabel tortish, tarmoq qurilmalarini ulash (10 bosqich) hamda buzilgan tarmoqlarni tuzatish (10 bosqich).",
+                "https://aliyev-turon.netlify.app/#netlab3d",
+                "",
+                True,
+                30,
+            ),
+            (
+                "TURON 3D Printing Lab (2035)",
+                "CAD Studio va qo‘lda 3D printer yig‘ish",
+                "sim3d",
+                "3–11-sinflar",
+                "🧊",
+                "Futuristik 3D bosib chiqarish laboratoriyasi: 3D CAD Studio, printer qismlarini qo‘lda yig‘ish va PLA/PETG/ABS qatlamma-qatlam chop etish.",
+                "https://aliyev-turon.netlify.app/#printergame",
+                "",
+                False,
+                40,
+            ),
+            (
+                "Web Studio (100 bosqich) & Code Master",
+                "Scratch, HTML, CSS va Python",
+                "coding",
+                "3–11-sinflar",
+                "💻",
+                "Blokli dasturlashdan tortib soyali kod ustidan HTML/CSS yozib shaxsiy sayt yaratish va Python topshiriqlarini yechish metodikasi.",
+                "https://aliyev-turon.netlify.app/#games",
+                "",
+                True,
+                50,
+            ),
+            (
+                "Kiber Qalqon 3D & Kiberqahramon",
+                "20 bosqich • 300 ta kiberxavfsizlik sinovi",
+                "cyber_ai",
+                "4–11-sinflar",
+                "🛡️",
+                "Kuchli parol yaratish, firibgar (phishing) havolalarni ajratish, Firewall, SQLi va XSS himoyasini o‘yin shaklida o‘zlashtirish.",
+                "https://aliyev-turon.netlify.app/#games",
+                "",
+                True,
+                60,
+            ),
+            (
+                "AI Challenge — Sun’iy intellekt",
+                "Prompt muhandisligi va AI asoslari",
+                "cyber_ai",
+                "5–11-sinflar",
+                "✨",
+                "Sun’iy intellekt qanday ishlashini amalda sinab ko‘rish, ma’lumotlarni tasniflash va AI’ga to‘g‘ri savol (prompt) berish mashqlari.",
+                "https://aliyev-turon.netlify.app/#games",
+                "",
+                True,
+                70,
+            ),
+            (
+                "HOTKEY MASTER & Mouse/Keyboard Master",
+                "20 kompyuterli sinf reytingi • 10 barmoqda yozish",
+                "skills",
+                "1–11-sinflar",
+                "⌨️",
+                "Interaktiv klaviatura, Ctrl+C/Win+D/F5 kabi tezkor tugmalar, sichqoncha chaqqonligi (Mouse Master 3D) va sinf ichidagi jonli musobaqa.",
+                "https://aliyev-turon.netlify.app/#hotkey",
+                "",
+                False,
+                80,
+            ),
+            (
+                "Windows 11 Akademiyasi & Office Champion",
+                "ISO, Rufus, BIOS, Word, Excel, PowerPoint",
+                "skills",
+                "3–11-sinflar",
+                "📊",
+                "Operatsion tizimni 0 dan o‘rnatish (BIOS, disk bo‘lish, drayverlar) va ofis dasturlarida hujjat, jadval hamda taqdimot yaratish.",
+                "https://aliyev-turon.netlify.app/#games",
+                "",
+                False,
+                90,
+            ),
+            (
+                "Sarguzasht Xaritasi (5 ta orol, 15 ta modul)",
+                "XP, Yulduzlar va Daraja tizimi (+300 XP)",
+                "coding",
+                "1–11-sinflar",
+                "🏝️",
+                "Bolalarni rag‘batlantiruvchi XP ballari, tangalar va 5 ta sarguzasht oroli orqali kompyuter tarixidan tortib algoritmlargacha qadam-baqadam o‘rgatish.",
+                "https://aliyev-turon.netlify.app/#islands",
+                "",
+                False,
+                100,
+            ),
+        ]
+        for title, sub, cat, grades, emoji, meth, url, img_path, featured, order in game_modules_data:
+            GameModule.objects.update_or_create(
+                title=title,
+                defaults={
+                    "subtitle": sub,
+                    "category": cat,
+                    "grade_range": grades,
+                    "icon_emoji": emoji,
+                    "methodology": meth,
+                    "live_url": url,
+                    "static_image_path": img_path,
+                    "is_featured": featured,
+                    "is_active": True,
+                    "sort_order": order,
+                },
+            )
+
+        # Rahbariyat va Ustozlar (Director Hayotbek + IT Ustozi Aliyev Og'abek)
         Teacher.objects.filter(is_demo=True).delete()
         Teacher.objects.update_or_create(
             full_name="A’zamjonov Hayotbek",
@@ -308,6 +449,29 @@ class Command(BaseCommand):
                 "is_leadership": True,
                 "branch": furqat,
                 "sort_order": 1,
+                "is_active": True,
+                "is_demo": False,
+            },
+        )
+        Teacher.objects.update_or_create(
+            full_name="Aliyev Og‘abek",
+            defaults={
+                "subject_or_role": "IT va dasturlash fani o‘qituvchisi • IT WORLD muallifi",
+                "experience_years": 4,
+                "bio": (
+                    "Turon Odob-Ilm maktabining yetakchi IT ustozi va o‘quvchilar uchun maxsus yaratilgan "
+                    "IT WORLD (aliyev-turon.netlify.app) interaktiv 3D o‘yin-ta’lim platformasi muallifi. "
+                    "Bolalarga kompyuter savodxonligi, 3D qurilmalar yig‘ish, tarmoqlar, kiberxavfsizlik, "
+                    "HTML/CSS/Python dasturlash va sun’iy intellektni zamonaviy o‘yin metodikasi orqali o‘rgatadi."
+                ),
+                "quote": (
+                    "Bola kompyuter va dasturlashni quruq yodlash bilan emas, balki qiziqarli 3D o‘yin, "
+                    "amaliy tajriba va kashfiyot orqali sevib o‘rgansagina haqiqiy natijaga erishadi."
+                ),
+                "static_photo_path": "official_media/teacher-aliyev.jpg",
+                "is_leadership": False,
+                "branch": furqat,
+                "sort_order": 2,
                 "is_active": True,
                 "is_demo": False,
             },

@@ -20,6 +20,7 @@
       <p class="lead">{{ site_settings.hero_subtitle }}</p>
       <div class="hero-cta-group">
         <a href="{% url 'content:admission' %}" class="btn btn-gold" data-track-cta="Hero: Qabulga ariza" {% if primary_branch %}data-branch-id="{{ primary_branch.pk }}"{% endif %}>Qabul haqida ma’lumot</a>
+        <a href="{% url 'it_academy:index' %}" class="btn btn-tech" data-track-cta="Hero: IT Akademiya">IT Akademiya va O‘yinlar</a>
         <a href="{% url 'core:about' %}" class="btn btn-light-outline" data-track-cta="Hero: Maktab bilan tanishish">Maktab bilan tanishish</a>
         {% if primary_branch %}
         <a href="{% url 'branches:detail' primary_branch.slug %}" class="btn btn-light-outline" data-track-cta="Hero: Xaritada ko'rish" data-branch-id="{{ primary_branch.pk }}">Xaritada ko‘rish</a>
@@ -54,7 +55,7 @@
   </div>
 </section>
 
-<!-- 02 — ISHONCH KO'RSATKICHLARI (Faqat tasdiqlangan faktlar) -->
+<!-- 02 — ISHONCH KO'RSATKICHLARI -->
 <div class="container trust-strip">
   <div class="trust-grid">
     <div class="trust-item">
@@ -68,9 +69,9 @@
       <div class="trust-sub">O‘zbek va rus ta’lim oqimlari</div>
     </div>
     <div class="trust-item">
-      <div class="trust-label">Ixtisoslashuv</div>
-      <div class="trust-val">Ingliz tili &amp; IT</div>
-      <div class="trust-sub">Barcha sinflar uchun zamonaviy dastur</div>
+      <div class="trust-label">IT &amp; O‘yin metodikasi</div>
+      <div class="trust-val">IT WORLD 3D</div>
+      <div class="trust-sub">O‘yin orqali kompyuter va dasturlash</div>
     </div>
     <div class="trust-item">
       <div class="trust-label">Qatnov xizmati</div>
@@ -86,7 +87,7 @@
     <div class="section-header">
       <div>
         <span class="section-kicker">Bizning yo‘nalishlarimiz</span>
-        <h2>Uch ustunga asoslangan ta’lim</h2>
+        <h2>Uch ustunga asoslangan zamonaviy maktab</h2>
         <p>{{ site_settings.about_short }}</p>
       </div>
       <a href="{% url 'core:about' %}" class="btn btn-outline btn-sm">Maktab haqida batafsil</a>
@@ -95,32 +96,32 @@
     <div class="grid grid-3">
       <article class="card card-gold-top card-hover-lift">
         <span class="badge badge-gold">I • Tillar</span>
-        <h3 style="margin-top:10px;">Ingliz tili</h3>
-        <p style="margin-bottom:0;">Birinchi sinfdan boshlab kuchaytirilgan ingliz tili dasturi. O‘zbek va rus ta’lim oqimlari hamda malakali ustozlar bilan muloqot ko‘nikmalari.</p>
+        <h3 style="margin-top:10px;">Kuchaytirilgan ingliz tili</h3>
+        <p style="margin-bottom:0;">1-sinfdan boshlab xalqaro standartlar asosida ingliz tili, shuningdek o‘zbek va rus ta’lim oqimlarida sifatli darslar.</p>
       </article>
       <article class="card card-gold-top card-hover-lift">
-        <span class="badge badge-tech">II • Texnologiya</span>
-        <h3 style="margin-top:10px;">IT va dasturlash</h3>
-        <p style="margin-bottom:0;">Zamonaviy kompyuter laboratoriyasi, algoritmik fikrlash, dasturlash asoslari va kompyuter savodxonligi barcha sinflar uchun o‘qitiladi.</p>
+        <span class="badge badge-tech">II • Texnologiya va 3D O‘yinlar</span>
+        <h3 style="margin-top:10px;">IT, Dasturlash va IT WORLD</h3>
+        <p style="margin-bottom:0;">Barcha sinflarda majburiy IT darslari hamda o‘zimizning mualliflik IT WORLD 3D o‘yin platformasi orqali amaliy ta’lim.</p>
       </article>
       <article class="card card-gold-top card-hover-lift">
-        <span class="badge badge-navy">III • Tarbiya va fan</span>
+        <span class="badge badge-navy">III • Tarbiya va Akademiya</span>
         <h3 style="margin-top:10px;">Akademik fanlar va odob</h3>
-        <p style="margin-bottom:0;">Matematika, ona tili, tabiiy fanlar bilan birga halollik, mas’uliyat va milliy odob-axloq qadriyatlari singdiriladi.</p>
+        <p style="margin-bottom:0;">Matematika, tabiiy fanlar va olimpiada tayyorgarligi milliy odob-axloq hamda mas’uliyat tarbiyasi bilan uyg‘unlashgan.</p>
       </article>
     </div>
   </div>
 </section>
 
-<!-- 04 — IT VA DASTURLASH VITRINASI -->
+<!-- 04 — IT VA DASTURLASH + IT USTOZI SPOTLIGHT -->
 <section class="section-dark-tech reveal">
   <div class="container">
-    <div class="grid grid-2" style="align-items:center; gap:34px;">
+    <div class="grid grid-2" style="align-items:center; gap:34px; margin-bottom: 36px;">
       <div>
         <span class="section-kicker">IT Akademiya • Zamonaviy laboratoriya</span>
-        <h2 style="font-size:clamp(1.6rem, 3vw, 2.3rem); margin:0 0 14px;">IT va dasturlash — kelajak ko‘nikmalari maktabdan boshlanadi</h2>
+        <h2 style="font-size:clamp(1.6rem, 3vw, 2.3rem); margin:0 0 14px;">IT va dasturlash — amaliyot, 3D laboratoriya va ijod</h2>
         <p style="color:#D6E2F5; margin-bottom:20px;">
-          Turon Odob-Ilm maktabida o‘quvchilar zamonaviy kompyuter xonasida kompyuter savodxonligi, algoritmlar, blokli dasturlash va web/Python asoslarini amaliy mashg‘ulotlarda o‘rganishadi.
+          Turon Odob-Ilm maktabida o‘quvchilar zamonaviy kompyuter xonasida kompyuter savodxonligidan tortib 3D tarmoqlar, kiberxavfsizlik, HTML/CSS, Python va sun’iy intellekt asoslarigacha amalda o‘rganishadi.
         </p>
         <div class="grid" style="gap:12px; margin-bottom:22px;">
           {% for course in it_courses %}
@@ -134,8 +135,8 @@
           {% endfor %}
         </div>
         <div style="display:flex; flex-wrap:wrap; gap:10px;">
-          <a href="{% url 'it_academy:index' %}" class="btn btn-tech" data-track-cta="IT Section: IT Akademiyaga o'tish">IT Akademiya bo‘limini ochish</a>
-          <a href="{% url 'content:admission' %}" class="btn btn-light-outline">Qabulga yozilish</a>
+          <a href="{% url 'it_academy:index' %}" class="btn btn-tech" data-track-cta="IT Section: IT Akademiyaga o'tish">IT Akademiyani ochish</a>
+          <a href="https://aliyev-turon.netlify.app/" target="_blank" rel="noopener noreferrer" class="btn btn-gold" data-track-cta="IT Section: IT WORLD ochish">IT WORLD O‘yin Saytini Ochish &nearr;</a>
         </div>
       </div>
 
@@ -147,8 +148,80 @@
         {% endif %}
       </div>
     </div>
+
+    {% if it_teacher %}
+    <div class="teacher-spotlight-card">
+      {% if it_teacher.resolved_photo_url %}
+        <img class="teacher-spotlight-avatar" src="{{ it_teacher.resolved_photo_url }}" alt="{{ it_teacher.full_name }}">
+      {% endif %}
+      <div>
+        <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+          <span class="badge badge-gold">IT Domlasi • {{ it_teacher.experience_years }} yil tajriba</span>
+          <span class="badge badge-tech" style="color:#fff; background:rgba(61,123,250,0.28);">IT WORLD Muallifi</span>
+        </div>
+        <h3 style="margin:0 0 6px; font-size:clamp(1.35rem, 2.5vw, 1.85rem); color:#fff;">{{ it_teacher.full_name }}</h3>
+        <p style="margin:0 0 10px; color:var(--gold-bright); font-weight:700;">{{ it_teacher.subject_or_role }}</p>
+        <p style="margin:0 0 12px; color:#DCE6F7;">{{ it_teacher.bio }}</p>
+        {% if it_teacher.quote %}
+          <blockquote style="margin:0 0 16px; padding-left:14px; border-left:3px solid var(--gold); color:#F3E6C3; font-style:italic;">
+            “{{ it_teacher.quote }}”
+          </blockquote>
+        {% endif %}
+        <div style="display:flex; flex-wrap:wrap; gap:10px;">
+          <a href="{% url 'it_academy:index' %}" class="btn btn-light-outline btn-sm">IT metodikasi bilan tanishish</a>
+          <a href="https://aliyev-turon.netlify.app/" target="_blank" rel="noopener noreferrer" class="btn btn-gold btn-sm">IT WORLD’da o‘yinlarni ko‘rish &nearr;</a>
+        </div>
+      </div>
+    </div>
+    {% endif %}
   </div>
 </section>
+
+<!-- 04B — IT WORLD: BOLALAR UCHUN O'YIN ORQALI KOMPYUTER VA DASTURLASH -->
+{% if featured_games %}
+<section class="it-world-band reveal">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <span class="section-kicker" style="color:var(--gold-bright);">Mualliflik metodikasi • aliyev-turon.netlify.app</span>
+        <h2 style="color:#fff;">IT WORLD — Bolalar bilan o‘yin yordamida kompyuter va dasturlashni o‘rganish</h2>
+        <p style="color:#D2DFF4;">
+          IT domlamiz Aliyev Og‘abek tomonidan yaratilgan o‘zbekcha interaktiv platforma: 10 ta o‘quv o‘yini, Turon 3D ochiq dunyo maktabi, 3D kompyuter yig‘ish, Tarmoq Akademiyasi va 20 kompyuterli sinf musobaqalari!
+        </p>
+      </div>
+      <a href="https://aliyev-turon.netlify.app/" target="_blank" rel="noopener noreferrer" class="btn btn-gold" data-track-cta="IT WORLD Band: Saytga o'tish">
+        IT WORLD Platformasiga Kirish &nearr;
+      </a>
+    </div>
+
+    <div class="grid grid-3">
+      {% for g in featured_games %}
+      <article class="game-card">
+        <div class="game-card-visual">
+          {% if g.resolved_image_url %}
+            <img src="{{ g.resolved_image_url }}" alt="{{ g.title }}" loading="lazy">
+          {% else %}
+            <span class="game-emoji-stage" aria-hidden="true">{{ g.icon_emoji }}</span>
+          {% endif %}
+        </div>
+        <div class="game-card-body">
+          <div style="display:flex; justify-content:space-between; gap:8px; align-items:center;">
+            <span class="badge badge-gold">{{ g.grade_range }}</span>
+            <span style="font-size:0.78rem; color:#9FB4D6;">{{ g.get_category_display }}</span>
+          </div>
+          <h3>{{ g.icon_emoji }} {{ g.title }}</h3>
+          {% if g.subtitle %}<div style="font-size:0.84rem; color:var(--gold-bright); font-weight:600; margin-bottom:6px;">{{ g.subtitle }}</div>{% endif %}
+          <p>{{ g.methodology }}</p>
+          <a href="{{ g.live_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-tech btn-sm">
+            O‘yinni ochish &nearr;
+          </a>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
 
 <!-- 05 — TA'LIM BOSQICHLARI (1-4, 5-9, 10-11) -->
 {% if programs %}
@@ -176,9 +249,54 @@
 </section>
 {% endif %}
 
+<!-- 05B — RAHBARIYAT VA USTOZLAR -->
+{% if leadership or it_teacher %}
+<section class="section reveal">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <span class="section-kicker">Maktab jamoasi</span>
+        <h2>Rahbariyat va ustozlar</h2>
+        <p>Tajribali rahbariyat va zamonaviy metodikaga ega fidoyi pedagoglar.</p>
+      </div>
+      <a href="{% url 'core:about' %}" class="btn btn-outline btn-sm">Barcha ustozlar</a>
+    </div>
+    <div class="grid grid-2">
+      {% if leadership %}
+      <article class="card card-gold-top card-hover-lift" style="display:grid; grid-template-columns: 140px 1fr; gap:18px; align-items:center;">
+        {% if leadership.resolved_photo_url %}
+          <img src="{{ leadership.resolved_photo_url }}" alt="{{ leadership.full_name }}" style="width:140px; height:160px; object-fit:cover; object-position:center 15%; border-radius:12px;">
+        {% endif %}
+        <div>
+          <span class="badge badge-gold">Maktab rahbariyati</span>
+          <h3 style="margin:8px 0 4px;">{{ leadership.full_name }}</h3>
+          <div style="font-weight:700; color:var(--gold-dark); margin-bottom:6px;">{{ leadership.subject_or_role }}</div>
+          {% if leadership.quote %}<p style="margin:0; font-size:0.9rem; font-style:italic; color:var(--muted);">“{{ leadership.quote }}”</p>{% endif %}
+        </div>
+      </article>
+      {% endif %}
+
+      {% if it_teacher %}
+      <article class="card card-gold-top card-hover-lift" style="display:grid; grid-template-columns: 140px 1fr; gap:18px; align-items:center;">
+        {% if it_teacher.resolved_photo_url %}
+          <img src="{{ it_teacher.resolved_photo_url }}" alt="{{ it_teacher.full_name }}" style="width:140px; height:160px; object-fit:cover; object-position:center 12%; border-radius:12px;">
+        {% endif %}
+        <div>
+          <span class="badge badge-tech">IT va Dasturlash</span>
+          <h3 style="margin:8px 0 4px;">{{ it_teacher.full_name }}</h3>
+          <div style="font-weight:700; color:var(--tech-blue); margin-bottom:6px;">{{ it_teacher.subject_or_role }}</div>
+          {% if it_teacher.quote %}<p style="margin:0; font-size:0.9rem; font-style:italic; color:var(--muted);">“{{ it_teacher.quote|truncatechars:135 }}”</p>{% endif %}
+        </div>
+      </article>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
 <!-- 06 — MAKTAB HAYOTI (HAQIQIY FOTO GALEREYA) -->
 {% if gallery_photos %}
-<section class="section reveal">
+<section class="section section-alt reveal">
   <div class="container">
     <div class="section-header">
       <div>
@@ -212,7 +330,7 @@
 
 <!-- 07 — VIDEO TUR (RASMIY YOUTUBE KANALDAN EMBED) -->
 {% if gallery_videos %}
-<section class="section section-alt reveal">
+<section class="section reveal">
   <div class="container">
     <div class="section-header">
       <div>
@@ -248,7 +366,7 @@
 
 <!-- 08 — YUTUQLAR VA YANGILIKLAR -->
 {% if latest_news %}
-<section class="section reveal">
+<section class="section section-alt reveal">
   <div class="container">
     <div class="section-header">
       <div>
@@ -281,7 +399,7 @@
 {% endif %}
 
 <!-- 09 — OTA-ONALAR FIKRI -->
-<section class="section section-alt reveal">
+<section class="section reveal">
   <div class="container">
     <div class="section-header">
       <div>
@@ -323,7 +441,7 @@
   </div>
 </section>
 
-<!-- 10 & 11 — QABUL CTA VA FURQAT FILIALI XARITASI -->
+<!-- 10 & 11 — QABUL CTA -->
 <section class="section reveal">
   <div class="container">
     <div class="cta-banner">

@@ -102,3 +102,49 @@ class ITProject(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class GameModule(models.Model):
+    """IT WORLD o'yin yordamida o'qitish metodikasi va interaktiv o'yin modullari."""
+
+    CATEGORY_CHOICES = [
+        ("sim3d", "3D Simulyator va Laboratoriya"),
+        ("coding", "Dasturlash va Web Studio"),
+        ("cyber_ai", "Kiberxavfsizlik va Sun’iy intellekt"),
+        ("skills", "Klaviatura, Sichqoncha va Ofis"),
+    ]
+
+    title = models.CharField("O‘yin / modul nomi", max_length=150)
+    subtitle = models.CharField("Qisqa sarlavha", max_length=160, blank=True)
+    category = models.CharField("Turkum", max_length=20, choices=CATEGORY_CHOICES, default="sim3d", db_index=True)
+    grade_range = models.CharField("Sinflar", max_length=50, default="1–11-sinflar")
+    icon_emoji = models.CharField("Belgi", max_length=16, default="🎮")
+    methodology = models.TextField("O‘qitish metodikasi va o‘rganiladigan ko‘nikmalar")
+    image = models.ImageField(
+        "O‘yin rasmi / skrinshot",
+        upload_to="it_games/",
+        blank=True,
+        null=True,
+        validators=[validate_image_file],
+    )
+    static_image_path = models.CharField("Standart rasm yo‘li", max_length=255, blank=True)
+    live_url = models.URLField("O‘yin havolasi", default="https://aliyev-turon.netlify.app/")
+    sort_order = models.PositiveSmallIntegerField("Tartib", default=10)
+    is_featured = models.BooleanField("Bosh sahifada ko‘rsatilsin", default=True)
+    is_active = models.BooleanField("Faol", default=True)
+
+    class Meta:
+        verbose_name = "IT o‘yin moduli"
+        verbose_name_plural = "IT WORLD o‘yin modullari"
+        ordering = ["sort_order", "id"]
+
+    @property
+    def resolved_image_url(self) -> str:
+        if self.image:
+            return self.image.url
+        if self.static_image_path:
+            return static(self.static_image_path)
+        return ""
+
+    def __str__(self):
+        return f"{self.title} ({self.grade_range})"
