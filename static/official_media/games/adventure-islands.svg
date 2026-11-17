@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360">
+  <rect width="640" height="360" fill="#071532"/>
+  <path d="M100 220 Q220 90 330 200 T540 130" fill="none" stroke="#D5AD55" stroke-width="5" stroke-dasharray="10 8"/>
+  <circle cx="110" cy="215" r="24" fill="#3D7BFA"/><circle cx="235" cy="145" r="24" fill="#22C55E"/>
+  <circle cx="350" cy="205" r="24" fill="#D5AD55"/><circle cx="465" cy="155" r="24" fill="#A855F7"/>
+  <circle cx="540" cy="130" r="28" fill="#EF4444" stroke="#FFFFFF" stroke-width="3"/>
+  <text x="320" y="315" text-anchor="middle" fill="#FFFFFF" font-family="sans-serif" font-weight="800" font-size="18">5 TA SARGUZASHT OROLI • +300 XP &amp; YULDUZLAR</text>
+</svg>

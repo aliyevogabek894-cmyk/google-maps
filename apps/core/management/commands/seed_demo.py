@@ -330,7 +330,7 @@ class Command(BaseCommand):
                 "🌐",
                 "Kompyuter xonasida 360° harakatlanib, kabel tortish, tarmoq qurilmalarini ulash (10 bosqich) hamda buzilgan tarmoqlarni tuzatish (10 bosqich).",
                 "https://aliyev-turon.netlify.app/#netlab3d",
-                "",
+                "official_media/games/netlab-3d.svg",
                 True,
                 30,
             ),
@@ -342,7 +342,7 @@ class Command(BaseCommand):
                 "🧊",
                 "Futuristik 3D bosib chiqarish laboratoriyasi: 3D CAD Studio, printer qismlarini qo‘lda yig‘ish va PLA/PETG/ABS qatlamma-qatlam chop etish.",
                 "https://aliyev-turon.netlify.app/#printergame",
-                "",
+                "official_media/games/printing-3d.svg",
                 False,
                 40,
             ),
@@ -354,7 +354,7 @@ class Command(BaseCommand):
                 "💻",
                 "Blokli dasturlashdan tortib soyali kod ustidan HTML/CSS yozib shaxsiy sayt yaratish va Python topshiriqlarini yechish metodikasi.",
                 "https://aliyev-turon.netlify.app/#games",
-                "",
+                "official_media/games/web-studio.svg",
                 True,
                 50,
             ),
@@ -366,7 +366,7 @@ class Command(BaseCommand):
                 "🛡️",
                 "Kuchli parol yaratish, firibgar (phishing) havolalarni ajratish, Firewall, SQLi va XSS himoyasini o‘yin shaklida o‘zlashtirish.",
                 "https://aliyev-turon.netlify.app/#games",
-                "",
+                "official_media/games/cyber-shield.svg",
                 True,
                 60,
             ),
@@ -378,7 +378,7 @@ class Command(BaseCommand):
                 "✨",
                 "Sun’iy intellekt qanday ishlashini amalda sinab ko‘rish, ma’lumotlarni tasniflash va AI’ga to‘g‘ri savol (prompt) berish mashqlari.",
                 "https://aliyev-turon.netlify.app/#games",
-                "",
+                "official_media/games/ai-challenge.svg",
                 True,
                 70,
             ),
@@ -390,7 +390,7 @@ class Command(BaseCommand):
                 "⌨️",
                 "Interaktiv klaviatura, Ctrl+C/Win+D/F5 kabi tezkor tugmalar, sichqoncha chaqqonligi (Mouse Master 3D) va sinf ichidagi jonli musobaqa.",
                 "https://aliyev-turon.netlify.app/#hotkey",
-                "",
+                "official_media/games/hotkey-master.svg",
                 False,
                 80,
             ),
@@ -402,7 +402,7 @@ class Command(BaseCommand):
                 "📊",
                 "Operatsion tizimni 0 dan o‘rnatish (BIOS, disk bo‘lish, drayverlar) va ofis dasturlarida hujjat, jadval hamda taqdimot yaratish.",
                 "https://aliyev-turon.netlify.app/#games",
-                "",
+                "official_media/games/win-office.svg",
                 False,
                 90,
             ),
@@ -414,7 +414,7 @@ class Command(BaseCommand):
                 "🏝️",
                 "Bolalarni rag‘batlantiruvchi XP ballari, tangalar va 5 ta sarguzasht oroli orqali kompyuter tarixidan tortib algoritmlargacha qadam-baqadam o‘rgatish.",
                 "https://aliyev-turon.netlify.app/#islands",
-                "",
+                "official_media/games/adventure-islands.svg",
                 False,
                 100,
             ),
@@ -662,6 +662,36 @@ class Command(BaseCommand):
                 "official_media/facade.jpg",
                 "https://t.me/turonodobilm/647",
                 datetime(2026, 11, 10, 5, 45, tzinfo=dt_timezone.utc),
+            ),
+            (
+                "Furqat filialida SAT xalqaro imtihon imkoniyati yo‘lga qo‘yildi",
+                "furqat-sat-xalqaro-imtihon",
+                "achievement",
+                "Turon Odob-Ilm xususiy maktabi Furqat filialida o‘quvchilar uchun SAT xalqaro imtihonini topshirish imkoniyati yaratildi.",
+                (
+                    "Turon Odob-Ilm xususiy maktabi Furqat filialida endi SAT xalqaro imtihonini topshirish "
+                    "imkoniyati mavjud! SAT imtihoni orqali o‘quvchilar matematika va ingliz tili bo‘yicha "
+                    "bilimlarini sinovdan o‘tkazib, xorijdagi nufuzli universitetlarga hujjat topshirishda "
+                    "katta ustunlikka ega bo‘ladilar."
+                ),
+                "official_media/classroom-branded.jpg",
+                "https://t.me/turonodobilm/497",
+                datetime(2026, 11, 4, 6, 46, tzinfo=dt_timezone.utc),
+            ),
+            (
+                "Furqat filialida 100 ga yaqin sertifikat va tashakkurnomalar topshirildi",
+                "furqat-100-sertifikat-yutuqlar-etirofi",
+                "achievement",
+                "O‘quvchilarimiz Milliy sertifikat, maktablararo va xalqaro olimpiadalardagi yuqori natijalari uchun taqdirlandilar.",
+                (
+                    "Turon Odob-Ilm maktabi Furqat filiali o‘quvchilari Milliy sertifikat imtihonlarida, "
+                    "maktablararo olimpiadalarda hamda xalqaro olimpiadalarda yuqori natijalarga erishib, "
+                    "faxrli o‘rinlarni egalladilar. G‘olib va faol o‘quvchilarga 100 ga yaqin tashakkurnoma "
+                    "hamda sertifikatlar tantanali ravishda topshirildi."
+                ),
+                "official_media/students-studying.jpg",
+                "https://t.me/turonodobilm/596",
+                datetime(2026, 11, 7, 5, 55, tzinfo=dt_timezone.utc),
             ),
             (
                 "Maktabimizda fanlararo metodik hamkorlik seminari tashkil etildi",

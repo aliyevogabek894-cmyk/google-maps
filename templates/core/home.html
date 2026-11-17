@@ -29,28 +29,44 @@
     </div>
 
     {% if primary_branch %}
-    <aside class="hero-card" aria-label="Furqat filiali tezkor xarita va aloqa kartasi">
-      <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:10px;">
-        <h2 style="margin:0;">{{ primary_branch.name }}</h2>
-        <span class="badge badge-gold">Asosiy filial</span>
+    <div>
+      <div class="hero-campus-showcase">
+        <button type="button" style="border:none; padding:0; background:none; width:100%; cursor:pointer; display:block;"
+                data-lightbox-src="{% static 'official_media/facade.jpg' %}"
+                data-lightbox-title="Turon Odob-Ilm xususiy maktabi (Est. 2022) — Furqat filiali"
+                data-lightbox-alt="Turon Odob-Ilm maktabi binosi"
+                data-lightbox-source="https://www.turonodob-ilm.uz/images/facade.jpg">
+          <img src="{% static 'official_media/facade.jpg' %}" alt="Turon Odob-Ilm xususiy maktabi binosi">
+        </button>
+        <div class="hero-campus-caption">
+          <span><strong>Est. 2022</strong> • Furqat filiali binosi</span>
+          <span class="badge badge-gold">HD ko‘rish</span>
+        </div>
       </div>
-      <ul class="meta-list">
-        <li><strong>Manzil:</strong> {{ primary_branch.address }}</li>
-        <li><strong>Ish vaqti:</strong> {{ primary_branch.working_hours }}</li>
-        <li><strong>Telefon:</strong> <a href="tel:{{ primary_branch.phone|cut:' ' }}">{{ primary_branch.phone }}</a></li>
-      </ul>
-      <div class="map-btn-grid">
-        {% for link in map_links %}
-          {% if link.link_type != 'review' %}
-          <a href="{{ link.get_tracked_url }}" target="_blank" rel="noopener noreferrer"
-             class="btn {% if link.platform == 'google' %}btn-primary{% else %}btn-outline{% endif %} btn-sm">
-            {{ link.label }}
-          </a>
-          {% endif %}
-        {% endfor %}
-        <a href="{% url 'core:contact' %}" class="btn btn-gold btn-sm" data-track-cta="Hero card: Biz bilan bog'lanish">Biz bilan bog‘lanish</a>
-      </div>
-    </aside>
+
+      <aside class="hero-card" aria-label="Furqat filiali tezkor xarita va aloqa kartasi">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:10px;">
+          <h2 style="margin:0;">{{ primary_branch.name }}</h2>
+          <span class="badge badge-gold">Asosiy filial</span>
+        </div>
+        <ul class="meta-list">
+          <li><strong>Manzil:</strong> {{ primary_branch.address }}</li>
+          <li><strong>Ish vaqti:</strong> {{ primary_branch.working_hours }}</li>
+          <li><strong>Telefon:</strong> <a href="tel:{{ primary_branch.phone|cut:' ' }}">{{ primary_branch.phone }}</a></li>
+        </ul>
+        <div class="map-btn-grid">
+          {% for link in map_links %}
+            {% if link.link_type != 'review' %}
+            <a href="{{ link.get_tracked_url }}" target="_blank" rel="noopener noreferrer"
+               class="btn {% if link.platform == 'google' %}btn-primary{% else %}btn-outline{% endif %} btn-sm">
+              {{ link.label }}
+            </a>
+            {% endif %}
+          {% endfor %}
+          <a href="{% url 'core:contact' %}" class="btn btn-gold btn-sm" data-track-cta="Hero card: Biz bilan bog'lanish">Biz bilan bog‘lanish</a>
+        </div>
+      </aside>
+    </div>
     {% endif %}
   </div>
 </section>
@@ -81,34 +97,82 @@
   </div>
 </div>
 
-<!-- 03 — NEGA TURON ODOB-ILM? -->
+<!-- 03 — MAKTABIMIZ HAQIDA, FANLAR (RASMLAR BILAN) VA YUTUQLAR -->
 <section class="section reveal">
   <div class="container">
     <div class="section-header">
       <div>
-        <span class="section-kicker">Bizning yo‘nalishlarimiz</span>
-        <h2>Uch ustunga asoslangan zamonaviy maktab</h2>
-        <p>{{ site_settings.about_short }}</p>
+        <span class="section-kicker">2022-yildan beri • Davlat litsenziyasi № 038782</span>
+        <h2>Qaysi fanlar o‘qitiladi va o‘quvchimiz nimalarga erishadi?</h2>
+        <p>Maktabimiz 2022-yilda Furqat tumanida ochilgan bo‘lib, bugun O‘zbek va Rus oqimlarida haftasiga 37 soatlik kuchli o‘quv reja, zamonaviy ixtisoslashuvlar va xalqaro imtihonlarga tayyorgarlikni birlashtirgan.</p>
       </div>
-      <a href="{% url 'core:about' %}" class="btn btn-outline btn-sm">Maktab haqida batafsil</a>
+      <a href="{% url 'content:education' %}" class="btn btn-outline btn-sm">To‘liq o‘quv reja</a>
     </div>
 
-    <div class="grid grid-3">
-      <article class="card card-gold-top card-hover-lift">
-        <span class="badge badge-gold">I • Tillar</span>
-        <h3 style="margin-top:10px;">Kuchaytirilgan ingliz tili</h3>
-        <p style="margin-bottom:0;">1-sinfdan boshlab xalqaro standartlar asosida ingliz tili, shuningdek o‘zbek va rus ta’lim oqimlarida sifatli darslar.</p>
+    <!-- Fanlar HD rasmlar bilan -->
+    <div class="grid grid-4" style="margin-bottom: 36px;">
+      <article class="card card-gold-top card-hover-lift" style="padding:16px;">
+        <img class="card-img" src="{% static 'official_media/students-studying.jpg' %}" alt="Matematika va aniq fanlar darsi" loading="lazy" style="height:175px;">
+        <span class="badge badge-navy">Haftasiga 6 soat • Yillik 270 soat</span>
+        <h3 style="margin-top:10px; font-size:1.05rem;">Matematika va Aniq fanlar</h3>
+        <p style="font-size:0.88rem; color:var(--muted); margin:0;">Aniq, aniq iqtisod, aniq texnika yo‘nalishlari va olimpiadalarga chuqurlashtirilgan tayyorlov.</p>
       </article>
-      <article class="card card-gold-top card-hover-lift">
-        <span class="badge badge-tech">II • Texnologiya va 3D O‘yinlar</span>
-        <h3 style="margin-top:10px;">IT, Dasturlash va IT WORLD</h3>
-        <p style="margin-bottom:0;">Barcha sinflarda majburiy IT darslari hamda o‘zimizning mualliflik IT WORLD 3D o‘yin platformasi orqali amaliy ta’lim.</p>
+      <article class="card card-gold-top card-hover-lift" style="padding:16px;">
+        <img class="card-img" src="{% static 'official_media/classroom-branded.jpg' %}" alt="Ingliz tili va SAT tayyorgarligi sinfxonasi" loading="lazy" style="height:175px;">
+        <span class="badge badge-gold">Haftasiga 6 soat • SAT imtihoni</span>
+        <h3 style="margin-top:10px; font-size:1.05rem;">Ingliz tili va Xalqaro SAT</h3>
+        <p style="font-size:0.88rem; color:var(--muted); margin:0;">1-sinfdan boshlab kuchaytirilgan ingliz tili, Furqat filialida SAT xalqaro imtihoniga tayyorgarlik.</p>
       </article>
-      <article class="card card-gold-top card-hover-lift">
-        <span class="badge badge-navy">III • Tarbiya va Akademiya</span>
-        <h3 style="margin-top:10px;">Akademik fanlar va odob</h3>
-        <p style="margin-bottom:0;">Matematika, tabiiy fanlar va olimpiada tayyorgarligi milliy odob-axloq hamda mas’uliyat tarbiyasi bilan uyg‘unlashgan.</p>
+      <article class="card card-gold-top card-hover-lift" style="padding:16px;">
+        <img class="card-img" src="{% static 'official_media/it-lab-active.jpg' %}" alt="IT, Dasturlash va Robototexnika laboratoriyasi" loading="lazy" style="height:175px;">
+        <span class="badge badge-tech">Informatika + Robototexnika</span>
+        <h3 style="margin-top:10px; font-size:1.05rem;">IT, Dasturlash va IT WORLD</h3>
+        <p style="font-size:0.88rem; color:var(--muted); margin:0;">Barcha sinflarda kompyuter savodxonligi, HTML/CSS/Python, 3D tarmoqlar va kiberxavfsizlik.</p>
       </article>
+      <article class="card card-gold-top card-hover-lift" style="padding:16px;">
+        <img class="card-img" src="{% static 'official_media/students-attentive.jpg' %}" alt="Ona tili, rus tili va tabiiy fanlar darsi" loading="lazy" style="height:175px;">
+        <span class="badge badge-navy">O‘zbek va Rus oqimlari</span>
+        <h3 style="margin-top:10px; font-size:1.05rem;">Ona tili, Rus tili va Tabiiy fanlar</h3>
+        <p style="font-size:0.88rem; color:var(--muted); margin:0;">Ona tili, badiiy adabiyot, rus tili, fizika, kimyo, biologiya, tarix va tarbiya darslari.</p>
+      </article>
+    </div>
+
+    <!-- Erishgan katta yutuqlarimiz & Nimalarga erishadi -->
+    <div class="grid grid-2" style="align-items: stretch;">
+      <div class="card card-gold-top">
+        <span class="badge badge-gold">Tasdiqlangan katta yutuqlarimiz</span>
+        <h3 style="margin-top:10px;">Faxrli natijalar va xalqaro e’tirof</h3>
+        <ul style="padding-left:18px; margin:10px 0 14px; display:grid; gap:9px; font-size:0.94rem;">
+          <li><strong>100 ga yaqin sertifikat va tashakkurnomalar:</strong> Furqat filiali o‘quvchilari Milliy sertifikat, maktablararo va xalqaro olimpiadalarda yuqori natijalarga erishib taqdirlanishdi (<a href="https://t.me/turonodobilm/596" target="_blank" rel="noopener noreferrer">manba &nearr;</a>).</li>
+          <li><strong>Furqat tumani fan olimpiadasi:</strong> 10 nafar o‘quvchimiz g‘oliblikni qo‘lga kiritdi (<a href="https://t.me/turonodobilm/648" target="_blank" rel="noopener noreferrer">manba &nearr;</a>).</li>
+          <li><strong>IRN Xalqaro Olimpiadasi (Toshkent):</strong> O‘quvchilarimiz faxrli g‘oliblik bilan qaytdilar (<a href="https://t.me/turonodobilm/647" target="_blank" rel="noopener noreferrer">manba &nearr;</a>).</li>
+          <li><strong>Furqat filialida SAT imtihoni:</strong> Xalqaro universitetlarga kirish uchun SAT topshirish imkoniyati yo‘lga qo‘yildi (<a href="https://t.me/turonodobilm/497" target="_blank" rel="noopener noreferrer">manba &nearr;</a>).</li>
+          <li><strong>Kengayayotgan tarmoq va xalqaro hamkorlik:</strong> 2022-yildan buyon Furqat, Oltiariq, Yaypan va Qo‘qonda (jumladan O‘zbekiston–Yaponiya markazi hamkorligida) ta’lim berib kelmoqda (<a href="https://t.me/turonodobilm/392" target="_blank" rel="noopener noreferrer">manba &nearr;</a>).</li>
+        </ul>
+      </div>
+
+      <div class="card card-gold-top" style="background: linear-gradient(145deg, #0B1530 0%, #152C60 100%); color:#fff;">
+        <span class="badge badge-tech" style="color:#fff; background:rgba(61,123,250,0.3);">Bitiruvchimiz natijasi</span>
+        <h3 style="margin-top:10px; color:#fff;">Turon Odob-Ilm o‘quvchisi nimalarga erisha oladi?</h3>
+        <div class="grid" style="gap:12px; margin-top:12px;">
+          <div style="background:rgba(255,255,255,0.07); padding:12px 14px; border-radius:10px; border-left:3px solid var(--gold);">
+            <strong style="color:var(--gold-bright);">1. Xalqaro va milliy oliygohlarga tayyor bilim</strong>
+            <div style="font-size:0.88rem; color:#D5E2F7;">SAT, Milliy sertifikat va 60 ta variantli majburiy fan testlari orqali grant asosida OTMga kirish poydevori.</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.07); padding:12px 14px; border-radius:10px; border-left:3px solid var(--tech-blue);">
+            <strong style="color:#93C5FD;">2. Real IT va dasturlash portfeliosi</strong>
+            <div style="font-size:0.88rem; color:#D5E2F7;">Kompyuter yig‘ish, tarmoq sozlash, kiberxavfsizlik, shaxsiy HTML/CSS sayt, Python va AI ko‘nikmalari.</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.07); padding:12px 14px; border-radius:10px; border-left:3px solid var(--gold);">
+            <strong style="color:var(--gold-bright);">3. 3 tilda erkin muloqot</strong>
+            <div style="font-size:0.88rem; color:#D5E2F7;">O‘zbek, rus va kuchaytirilgan ingliz tili dasturi orqali xalqaro maydonda o‘zini erkin ifoda etish.</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.07); padding:12px 14px; border-radius:10px; border-left:3px solid var(--tech-blue);">
+            <strong style="color:#93C5FD;">4. Odob, mas’uliyat va liderlik</strong>
+            <div style="font-size:0.88rem; color:#D5E2F7;">Kichik sinflarda individual e’tibor, tarbiyaviy muhit va fan olimpiadalarida g‘oliblik ruhi.</div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>

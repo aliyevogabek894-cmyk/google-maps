@@ -1,16 +1,38 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}Maktab haqida — {{ site_settings.school_name }}{% endblock %}
 
 {% block content %}
 <section class="page-banner">
   <div class="container">
     <span class="badge badge-gold">Est. {{ site_settings.founded_year|default:2022 }} • {{ site_settings.license_number }}</span>
-    <h1 style="margin-top:8px;">Maktab haqida</h1>
+    <h1 style="margin-top:8px;">Maktab haqida — 2022-yildan beri sifatli ta’lim</h1>
     <p>{{ site_settings.tagline }}</p>
   </div>
 </section>
 
 <section class="section">
+  <div class="container grid grid-2" style="align-items:center; gap:30px; margin-bottom:28px;">
+    <div class="media-frame">
+      <img src="{% static 'official_media/facade.jpg' %}" alt="Turon Odob-Ilm xususiy maktabi binosi" style="aspect-ratio:16/10;">
+    </div>
+    <div>
+      <span class="section-kicker">Qachon ochilgan va bugungi imkoniyatlar</span>
+      <h2 style="margin-top:0; color:var(--navy);">2022-yilda asos solingan litsenziyalangan ta’lim maskani</h2>
+      <p>
+        Turon Odob-Ilm xususiy maktabi <strong>2022-yilda</strong> Furqat tumanida tashkil etilgan va
+        <strong>14.09.2022 yilda № 038782</strong> davlat litsenziyasini olgan. Bugungi kunda maktabimiz
+        Furqat, Oltiariq, Yaypan va Qo‘qonda (jumladan O‘zbekiston–Yaponiya markazi bilan hamkorlikda)
+        zamonaviy ta’lim bermoqda.
+      </p>
+      <ul style="padding-left:18px; margin:0; display:grid; gap:6px;">
+        <li><strong>Ta’lim bosqichlari:</strong> 0-sinf (tayyorlov) va 1–11-sinflar (O‘zbek va Rus oqimlari).</li>
+        <li><strong>Ixtisoslashtirilgan yo‘nalishlar:</strong> Aniq fanlar, Aniq iqtisod, Aniq texnika, Ijtimoiy, Tabiiy.</li>
+        <li><strong>O‘qitiladigan fanlar (haftasiga 37 soat):</strong> Matematika, Ingliz tili (SAT), Informatika / IT WORLD 3D, Texnologiya / Robototexnika, Ona tili va Adabiyot, Rus tili, Tabiiy fanlar, Tarix, Jismoniy tarbiya.</li>
+      </ul>
+    </div>
+  </div>
+
   <div class="container grid grid-3">
     <article class="card card-gold-top">
       <h3>Tarix va maqsad</h3>

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360">
+  <rect width="640" height="360" fill="#091533"/>
+  <rect x="85" y="88" width="470" height="170" rx="18" fill="#112454" stroke="#3D7BFA" stroke-width="2.5"/>
+  <g fill="#0A1533" stroke="#D5AD55" stroke-width="2">
+    <rect x="112" y="114" width="76" height="48" rx="8"/><rect x="200" y="114" width="64" height="48" rx="8"/>
+    <rect x="276" y="114" width="64" height="48" rx="8"/><rect x="352" y="114" width="64" height="48" rx="8"/>
+    <rect x="428" y="114" width="98" height="48" rx="8"/>
+    <rect x="145" y="182" width="350" height="48" rx="8"/>
+  </g>
+  <g fill="#FFFFFF" font-family="monospace" font-weight="800" font-size="16" text-anchor="middle">
+    <text x="150" y="144">CTRL</text><text x="232" y="144">C</text><text x="308" y="144">V</text><text x="384" y="144">WIN</text><text x="477" y="144">SHIFT</text>
+    <text x="320" y="212" fill="#D5AD55">HOTKEY MASTER • 20 PC REYTING</text>
+  </g>
+</svg>
