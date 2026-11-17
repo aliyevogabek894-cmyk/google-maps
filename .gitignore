@@ -13,3 +13,4 @@ logs/*
 !logs/.gitkeep
 .DS_Store
 Thumbs.db
+.gh_pages_dist/

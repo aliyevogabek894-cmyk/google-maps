@@ -53,11 +53,14 @@
     });
   }
 
+  const isStaticMode = !!document.querySelector('meta[name="turon-static-mode"]');
+
   // CTA bosilishlarini qayd etish
   const csrfMeta = document.querySelector('meta[name="csrf-token"]');
   const csrfToken = csrfMeta ? csrfMeta.getAttribute("content") : "";
   document.querySelectorAll("[data-track-cta]").forEach(function (el) {
     el.addEventListener("click", function () {
+      if (isStaticMode) return;
       const label = el.getAttribute("data-track-cta");
       const branchId = el.getAttribute("data-branch-id") || "";
       if (!label || !csrfToken) return;
@@ -151,5 +154,26 @@
     revealItems.forEach(function (el) { observer.observe(el); });
   } else {
     revealItems.forEach(function (el) { el.classList.add("is-visible"); });
+  }
+  // GitHub Pages statik rejimda formalarni xatosiz yo'naltirish
+  if (isStaticMode) {
+    document.querySelectorAll('form[method="post"]').forEach(function (form) {
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        let notice = form.querySelector(".static-form-notice");
+        if (!notice) {
+          notice = document.createElement("div");
+          notice.className = "alert alert-info static-form-notice";
+          notice.style.marginTop = "14px";
+          form.appendChild(notice);
+        }
+        notice.innerHTML =
+          "<strong>Tezkor bog‘lanish:</strong> GitHub Pages ko‘rgazma rejimida ma’lumotlar to‘g‘ridan-to‘g‘ri telefon yoki Telegram orqali qabul qilinadi." +
+          '<div class="btn-group-wrap" style="margin-top:10px;">' +
+          '<a href="tel:+998558085575" class="btn btn-gold btn-sm">Qo‘ng‘iroq: +998 55 808 55 75</a>' +
+          '<a href="https://t.me/turonodobilm" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">Telegram (@turonodobilm)</a>' +
+          "</div>";
+      });
+    });
   }
 })();
