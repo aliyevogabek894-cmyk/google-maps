@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360">
+  <defs><linearGradient id="bg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#071026"/><stop offset="100%" stop-color="#192F62"/></linearGradient></defs>
+  <rect width="640" height="360" fill="url(#bg3)"/>
+  <circle cx="320" cy="180" r="135" fill="none" stroke="#3D7BFA" stroke-opacity="0.3" stroke-width="2" stroke-dasharray="10 6"/>
+  <path d="M320 68 L420 108 V182 C420 242 374 282 320 302 C266 282 220 242 220 182 V108 Z" fill="#0F214C" stroke="#D5AD55" stroke-width="4"/>
+  <path d="M292 184 L314 206 L354 156" fill="none" stroke="#4ADE80" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="320" y="336" text-anchor="middle" fill="#DCE8FF" font-family="sans-serif" font-weight="800" font-size="16">FIREWALL • PHISHING HIMOYA • 300 TA SINOV</text>
+</svg>
