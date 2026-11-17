@@ -53,15 +53,25 @@
   const lightbox = document.getElementById("galleryLightbox");
   const lightboxImg = document.getElementById("lightboxImg");
   const lightboxCaption = document.getElementById("lightboxCaption");
+  const lightboxSource = document.getElementById("lightboxSource");
   const lightboxClose = document.getElementById("lightboxClose");
 
   document.querySelectorAll("[data-lightbox-src]").forEach(function (btn) {
     btn.addEventListener("click", function () {
       if (!lightbox || !lightboxImg) return;
       lightboxImg.src = btn.getAttribute("data-lightbox-src");
-      lightboxImg.alt = btn.getAttribute("data-lightbox-title") || "Maktab surati";
+      lightboxImg.alt = btn.getAttribute("data-lightbox-alt") || btn.getAttribute("data-lightbox-title") || "Maktab surati";
       if (lightboxCaption) {
-        lightboxCaption.textContent = btn.getAttribute("data-lightbox-title") || "";
+        lightboxCaption.textContent = btn.getAttribute("data-lightbox-title") || "Maktab surati";
+      }
+      if (lightboxSource) {
+        const srcUrl = btn.getAttribute("data-lightbox-source") || "";
+        if (srcUrl) {
+          lightboxSource.href = srcUrl;
+          lightboxSource.style.display = "inline";
+        } else {
+          lightboxSource.style.display = "none";
+        }
       }
       lightbox.classList.add("is-open");
     });
@@ -71,5 +81,42 @@
     lightbox.addEventListener("click", function (e) {
       if (e.target === lightbox) lightbox.classList.remove("is-open");
     });
+  }
+
+  // YouTube video facade (tezlik uchun bosilganda iframe yuklanadi)
+  document.querySelectorAll("[data-youtube-embed]").forEach(function (box) {
+    box.addEventListener("click", function () {
+      const embedUrl = box.getAttribute("data-youtube-embed");
+      const title = box.getAttribute("data-youtube-title") || "Turon Odob-Ilm video";
+      if (!embedUrl || box.dataset.loaded === "1") return;
+      box.dataset.loaded = "1";
+      const iframe = document.createElement("iframe");
+      iframe.className = "video-iframe";
+      iframe.src = embedUrl + (embedUrl.includes("?") ? "&autoplay=1" : "?autoplay=1");
+      iframe.title = title;
+      iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+      iframe.allowFullscreen = true;
+      box.innerHTML = "";
+      box.appendChild(iframe);
+    });
+  });
+
+  // Scroll reveal (prefers-reduced-motion hurmat qilinadi)
+  const revealItems = document.querySelectorAll(".reveal");
+  if ("IntersectionObserver" in window && revealItems.length) {
+    const observer = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12 }
+    );
+    revealItems.forEach(function (el) { observer.observe(el); });
+  } else {
+    revealItems.forEach(function (el) { el.classList.add("is-visible"); });
   }
 })();

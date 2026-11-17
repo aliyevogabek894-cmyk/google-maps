@@ -7,7 +7,8 @@ from django.urls import reverse
 
 from apps.analytics.services import record_analytics_event
 from apps.branches.models import Branch
-from apps.content.models import EducationProgram, NewsPost, OfficialDocument, SchoolService, Teacher
+from apps.content.models import EducationProgram, GalleryItem, NewsPost, OfficialDocument, SchoolService, Teacher
+from apps.it_academy.models import ITCourse, ITProject
 from apps.reviews.models import WebsiteReview
 from .forms import ContactMessageForm
 from .models import SiteSettings
@@ -23,8 +24,15 @@ def home_view(request):
         .order_by("-is_primary", "name")
         .first()
     )
-    programs = EducationProgram.objects.filter(is_active=True)[:4]
-    services = SchoolService.objects.filter(is_active=True)[:4]
+    programs = EducationProgram.objects.filter(is_active=True)[:6]
+    services = SchoolService.objects.filter(is_active=True)[:6]
+    it_courses = ITCourse.objects.filter(is_active=True)[:4]
+    it_projects = ITProject.objects.filter(is_published=True)[:3]
+    gallery_photos = GalleryItem.objects.filter(is_published=True, media_type="photo").select_related("branch")[:6]
+    gallery_videos = GalleryItem.objects.filter(is_published=True, media_type="video").select_related("branch")[:4]
+    hero_photo = GalleryItem.objects.filter(is_published=True, category="campus", media_type="photo").first()
+    it_lab_photo = GalleryItem.objects.filter(is_published=True, category="it_lab", media_type="photo").first()
+    leadership = Teacher.objects.filter(is_active=True, is_leadership=True).first()
     latest_news = NewsPost.objects.filter(is_published=True)[:3]
     approved_reviews = WebsiteReview.objects.filter(status="approved").select_related("branch")[:3]
     review_stats = WebsiteReview.objects.filter(status="approved").aggregate(
@@ -44,6 +52,13 @@ def home_view(request):
             "map_links": map_links,
             "programs": programs,
             "services": services,
+            "it_courses": it_courses,
+            "it_projects": it_projects,
+            "gallery_photos": gallery_photos,
+            "gallery_videos": gallery_videos,
+            "hero_photo": hero_photo,
+            "it_lab_photo": it_lab_photo,
+            "leadership": leadership,
             "latest_news": latest_news,
             "approved_reviews": approved_reviews,
             "review_stats": review_stats,

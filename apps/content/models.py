@@ -1,7 +1,10 @@
 """Ta'lim yo'nalishlari, xizmatlar, o'qituvchilar, yangiliklar, galereya va qabul modellari."""
+import re
+
 from django.core.exceptions import ValidationError
 from django.core.validators import FileExtensionValidator
 from django.db import models
+from django.templatetags.static import static
 from django.urls import reverse
 
 from apps.core.security import validate_image_file
@@ -76,6 +79,9 @@ class Teacher(models.Model):
         null=True,
         validators=[validate_image_file],
     )
+    static_photo_path = models.CharField("Standart surat yo‘li", max_length=255, blank=True)
+    is_leadership = models.BooleanField("Rahbariyat a’zosi", default=False)
+    quote = models.TextField("Rahbar / ustoz iqtibosi", blank=True)
     branch = models.ForeignKey(
         "branches.Branch",
         on_delete=models.SET_NULL,
@@ -96,6 +102,14 @@ class Teacher(models.Model):
     def __str__(self):
         return f"{self.full_name} — {self.subject_or_role}"
 
+    @property
+    def resolved_photo_url(self) -> str:
+        if self.photo:
+            return self.photo.url
+        if self.static_photo_path:
+            return static(self.static_photo_path)
+        return ""
+
 
 class OfficialDocument(models.Model):
     """Litsenziya, ustav va boshqa rasmiy hujjatlar."""
@@ -110,6 +124,8 @@ class OfficialDocument(models.Model):
         null=True,
         validators=[FileExtensionValidator(["pdf", "jpg", "jpeg", "png"]), validate_document_file],
     )
+    static_file_path = models.CharField("Standart hujjat yo‘li", max_length=255, blank=True)
+    source_url = models.URLField("Rasmiy manba URL", blank=True)
     sort_order = models.PositiveSmallIntegerField("Tartib", default=10)
     is_active = models.BooleanField("Faol", default=True)
     is_demo = models.BooleanField("Demo ma'lumot", default=False)
@@ -118,6 +134,14 @@ class OfficialDocument(models.Model):
         verbose_name = "Rasmiy hujjat"
         verbose_name_plural = "Rasmiy hujjatlar"
         ordering = ["sort_order", "id"]
+
+    @property
+    def resolved_file_url(self) -> str:
+        if self.file:
+            return self.file.url
+        if self.static_file_path:
+            return static(self.static_file_path)
+        return ""
 
     def __str__(self):
         return self.title
@@ -154,6 +178,8 @@ class NewsPost(models.Model):
         null=True,
         validators=[validate_image_file],
     )
+    static_image_path = models.CharField("Standart rasm yo‘li", max_length=255, blank=True)
+    source_url = models.URLField("Rasmiy manba havolasi (Telegram/sayt)", blank=True)
     published_at = models.DateTimeField("E’lon sanasi", db_index=True)
     is_published = models.BooleanField("Chop etilgan", default=True, db_index=True)
     is_demo = models.BooleanField("Demo ma'lumot", default=False)
@@ -165,6 +191,14 @@ class NewsPost(models.Model):
         verbose_name_plural = "Yangiliklar va tadbirlar"
         ordering = ["-published_at"]
 
+    @property
+    def resolved_image_url(self) -> str:
+        if self.image:
+            return self.image.url
+        if self.static_image_path:
+            return static(self.static_image_path)
+        return ""
+
     def __str__(self):
         return self.title
 
@@ -173,15 +207,32 @@ class NewsPost(models.Model):
 
 
 class GalleryItem(models.Model):
-    """Foto va video galereya elementi."""
+    """Foto va video galereya elementi (manba va ruxsat metama'lumotlari bilan)."""
 
     MEDIA_TYPE_CHOICES = [
         ("photo", "Fotosurat"),
-        ("video", "Video havola"),
+        ("video", "Video (YouTube / havola)"),
+    ]
+
+    CATEGORY_CHOICES = [
+        ("campus", "Maktab binosi va muhit"),
+        ("it_lab", "IT va dasturlash xonasi"),
+        ("classroom", "Sinfxonalar va darslar"),
+        ("event", "Tadbirlar va olimpiadalar"),
+        ("video", "Rasmiy video tur"),
+        ("other", "Boshqa"),
+    ]
+
+    PERMISSION_CHOICES = [
+        ("verified_official", "Tasdiqlangan rasmiy media"),
+        ("official_pending_confirm", "Maktab rasmiy saytidan — ma’muriyat tasdig‘i"),
+        ("youtube_embed", "Rasmiy YouTube kanal embedi"),
+        ("consent_required", "Ota-ona/vasiy roziligi kutilmoqda"),
     ]
 
     title = models.CharField("Sarlavha", max_length=160)
     media_type = models.CharField("Turi", max_length=10, choices=MEDIA_TYPE_CHOICES, default="photo")
+    category = models.CharField("Bo‘lim", max_length=20, choices=CATEGORY_CHOICES, default="campus", db_index=True)
     branch = models.ForeignKey(
         "branches.Branch",
         on_delete=models.SET_NULL,
@@ -197,7 +248,23 @@ class GalleryItem(models.Model):
         null=True,
         validators=[validate_image_file],
     )
+    static_asset_path = models.CharField("Standart statik rasm yo‘li", max_length=255, blank=True)
+    youtube_id = models.CharField(
+        "YouTube video ID (11 belgi)",
+        max_length=20,
+        blank=True,
+        help_text="Masalan: l5dlZAQIuA8",
+    )
     video_url = models.URLField("Video havola (ixtiyoriy, HTTPS)", blank=True)
+    source_url = models.URLField("Original manba URL", blank=True)
+    media_date = models.DateField("Media sanasi", null=True, blank=True)
+    alt_text = models.CharField("Alt matn (accessibility)", max_length=255, blank=True)
+    permission_status = models.CharField(
+        "Ruxsat holati",
+        max_length=32,
+        choices=PERMISSION_CHOICES,
+        default="official_pending_confirm",
+    )
     caption = models.CharField("Izoh", max_length=255, blank=True)
     is_published = models.BooleanField("Ko‘rsatilsin", default=True, db_index=True)
     is_demo = models.BooleanField("Demo ma'lumot", default=False)
@@ -208,6 +275,31 @@ class GalleryItem(models.Model):
         verbose_name = "Galereya elementi"
         verbose_name_plural = "Foto va video galereya"
         ordering = ["sort_order", "-created_at"]
+
+    @property
+    def resolved_image_url(self) -> str:
+        if self.image:
+            return self.image.url
+        if self.static_asset_path:
+            return static(self.static_asset_path)
+        return ""
+
+    @property
+    def safe_youtube_id(self) -> str:
+        val = (self.youtube_id or "").strip()
+        if re.fullmatch(r"[A-Za-z0-9_-]{11}", val):
+            return val
+        return ""
+
+    @property
+    def resolved_youtube_embed_url(self) -> str:
+        yid = self.safe_youtube_id
+        return f"https://www.youtube-nocookie.com/embed/{yid}?rel=0" if yid else ""
+
+    @property
+    def resolved_youtube_thumb_url(self) -> str:
+        yid = self.safe_youtube_id
+        return f"https://i.ytimg.com/vi/{yid}/hqdefault.jpg" if yid else ""
 
     def __str__(self):
         return self.title

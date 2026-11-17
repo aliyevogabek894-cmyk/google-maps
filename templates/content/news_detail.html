@@ -15,14 +15,17 @@
 <section class="section">
   <div class="container grid grid-2" style="grid-template-columns: 1.6fr 1fr; align-items: start;">
     <article class="card">
-      {% if post.image %}
-        <img src="{{ post.image.url }}" alt="{{ post.title }}" style="width:100%; border-radius:10px; margin-bottom:16px;">
+      {% if post.resolved_image_url %}
+        <img src="{{ post.resolved_image_url }}" alt="{{ post.title }}" style="width:100%; border-radius:12px; margin-bottom:16px;">
       {% endif %}
       <p style="font-weight:600; font-size:1.05rem;">{{ post.excerpt }}</p>
       <hr style="border:none; border-top:1px solid var(--border); margin:16px 0;">
       <div>{{ post.body|linebreaks }}</div>
-      <div style="margin-top:20px;">
+      <div style="margin-top:20px; display:flex; flex-wrap:wrap; gap:10px;">
         <a href="{% url 'content:news_list' %}" class="btn btn-outline btn-sm">&larr; Barcha yangiliklarga qaytish</a>
+        {% if post.source_url %}
+          <a href="{{ post.source_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">Telegram manbasini ochish &nearr;</a>
+        {% endif %}
       </div>
     </article>
 

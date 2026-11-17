@@ -1,5 +1,5 @@
-"""Boshlang'ich demo ma'lumotlar va standart rollarni yaratish buyrug'i."""
-from datetime import timedelta
+"""Turon Odob-Ilm (Furqat filiali) uchun tasdiqlangan rasmiy ma'lumotlar, media katalog va rollarni yuklash."""
+from datetime import date, datetime, timezone as dt_timezone
 
 from django.core.management.base import BaseCommand
 from django.utils import timezone
@@ -16,290 +16,570 @@ from apps.content.models import (
     Teacher,
 )
 from apps.core.models import SiteSettings
+from apps.it_academy.models import ITCourse, ITProject
 from apps.reviews.models import ReviewConsent, WebsiteReview
 
 
 class Command(BaseCommand):
-    help = "Turon Odob-Ilm (Furqat filiali) uchun rollar va aniq [DEMO] belgili boshlang'ich ma'lumotlarni yaratadi."
+    help = "Turon Odob-Ilm rasmiy sayti, Telegram va YouTube manbalari asosida ma'lumotlarni yuklaydi."
 
     def handle(self, *args, **options):
         created_roles = ensure_default_roles()
-        self.stdout.write(self.style.SUCCESS(f"Rollar tekshirildi. Yangi yaratilganlari: {created_roles or 'barchasi mavjud'}"))
+        self.stdout.write(
+            self.style.SUCCESS(f"Rollar tekshirildi: {created_roles or 'barchasi mavjud'}")
+        )
 
         site_settings = SiteSettings.get_solo()
+        site_settings.school_name = "Turon Odob-Ilm xususiy maktabi"
+        site_settings.short_name = "Turon Odob-Ilm"
+        site_settings.tagline = "Bilim, odob va kelajak — bir maktabda."
+        site_settings.hero_title = "Bilim, odob va kelajak — bir maktabda."
+        site_settings.hero_subtitle = (
+            "Turon Odob-Ilm — Furqat tumanidagi litsenziyalangan xususiy o‘rta ta’lim muassasasi. "
+            "Ingliz tili, IT va dasturlashga ixtisoslashgan, o‘zbek va rus ta’lim oqimlarini taklif etamiz."
+        )
+        site_settings.about_short = (
+            "An’ana va zamonaviy ta’limning uyg‘unligi. Bolalarga akademik bilim bilan birga "
+            "odob, mas’uliyat va mustaqil fikrlashni o‘rgatamiz."
+        )
+        site_settings.about_history = (
+            "Maktabimiz 2022-yilda Furqat tumanida ochildi (Davlat litsenziyasi № 038782, 14.09.2022). "
+            "Maqsadimiz — har bir o‘quvchiga sifatli ta’lim, axloqiy tarbiya va kelajak uchun zarur "
+            "ko‘nikmalarni berish."
+        )
+        site_settings.about_values = (
+            "Odob va mas’uliyat • Kichik sinflarda individual e’tibor • Kuchaytirilgan ingliz tili • "
+            "Majburiy IT va dasturlash • Ota-onalar bilan ochiq muloqot."
+        )
+        site_settings.about_infrastructure = (
+            "Zamonaviy bino, brendlangan sinfxonalar, faol IT va dasturlash laboratoriyasi, "
+            "o‘zbek va rus ta’lim oqimlari, shuningdek 10 ta yo‘nalishda maktab avtobusi xizmati."
+        )
+        site_settings.primary_phone = "+998 55 808 55 75"
+        site_settings.email = "info@turonodobilm.uz"
+        site_settings.telegram_url = "https://t.me/turonodobilm"
+        site_settings.instagram_url = "https://www.instagram.com/turonodobilm"
+        site_settings.youtube_url = "https://www.youtube.com/@turonodobilm"
+        site_settings.static_logo_path = "official_media/logo.png"
+        site_settings.founded_year = 2022
+        site_settings.license_number = "Litsenziya № 038782 · 14.09.2022"
+        site_settings.is_demo_mode = False
+        site_settings.save()
 
-        furqat, _ = Branch.objects.get_or_create(
+        furqat, _ = Branch.objects.update_or_create(
             slug="furqat",
             defaults={
                 "name": "Turon Odob-Ilm — Furqat filiali",
-                "city_or_district": "Furqat tumani",
-                "address": "[DEMO] Furqat tumani, tasdiqlanayotgan rasmiy manzil (tekshirish: FPGX+82H, A-376, Chirkay)",
-                "landmark": "[DEMO] Asosiy yo‘l bo‘yi (ma’muriyat tomonidan aniqlashtiriladi)",
-                "phone": "+998 (XX) XXX-XX-XX",
-                "email": "furqat@turon-odob-ilm.uz",
-                "working_hours": "Dushanba–Shanba, 08:00–17:30",
+                "city_or_district": "Farg‘ona viloyati, Furqat tumani",
+                "address": "Farg‘ona viloyati, Furqat tumani, Yangi MFY, Surpa, dom 405",
+                "landmark": "Rasmiy saytdan olingan manzil (Google xaritadagi 'FPGX+82H, A-376, Chirkay' bilan solishtirib tasdiqlang)",
+                "phone": "+998 55 808 55 75",
+                "email": "info@turonodobilm.uz",
+                "working_hours": "Dushanba–Juma: 08:00–17:00 • Shanba: 08:00–13:00",
                 "google_verification_status": "pending",
-                "yandex_verification_status": "unverified",
+                "yandex_verification_status": "verified",
+                "verification_note": (
+                    "Eslatma: Rasmiy saytda 'Yangi MFY, Surpa, dom 405', avvalgi Google skrinshotida esa "
+                    "'FPGX+82H, A-376, Chirkay' ko'ringan. Google Business Profile egaligini tasdiqlab, "
+                    "barcha xarita manzillarini birlashtiring."
+                ),
                 "description": (
-                    "[DEMO] Turon Odob-Ilm xususiy maktabining birinchi va asosiy filiali. "
-                    "Boshlang‘ich va yuqori sinflar, zamonaviy fanlar hamda milliy odob-axloq tarbiyasi."
+                    "Turon Odob-Ilm xususiy maktabining asosiy filiali. 1–11-sinflar, o‘zbek va rus "
+                    "ta’lim oqimlari, ingliz tili hamda IT va dasturlash laboratoriyasi."
                 ),
                 "is_primary": True,
                 "is_active": True,
-                "is_demo": True,
+                "is_demo": False,
             },
         )
 
-        # Hujjatda ko'rsatilgan tekshiriladigan boshlang'ich havolalar (admin paneldan yangilanadi)
-        default_links = [
+        map_links_data = [
+            (
+                "yandex",
+                "profile",
+                "Yandex Maps’da ko‘rish",
+                "https://yandex.uz/maps/org/turon_odob_ilm_xususiy_maktabi/212801291827/",
+                True,
+                10,
+            ),
+            (
+                "yandex",
+                "directions",
+                "Yo‘nalish olish (Yandex)",
+                "https://yandex.uz/maps/org/turon_odob_ilm_xususiy_maktabi/212801291827/",
+                True,
+                20,
+            ),
+            (
+                "yandex",
+                "review",
+                "Yandex’da fikr qoldirish",
+                "https://yandex.uz/maps/org/turon_odob_ilm_xususiy_maktabi/212801291827/reviews/",
+                True,
+                30,
+            ),
             (
                 "google",
                 "profile",
                 "Google Maps’da ko‘rish",
                 "https://www.google.com/maps/search/?api=1&query=Turon+Odob+Ilm+Furqat",
-                10,
+                False,
+                40,
             ),
             (
                 "google",
                 "directions",
                 "Yo‘nalish olish (Google)",
                 "https://www.google.com/maps/dir/?api=1&destination=Turon+Odob+Ilm+Furqat",
-                20,
+                False,
+                50,
             ),
             (
                 "google",
                 "review",
                 "Google’da fikr qoldirish",
                 "https://www.google.com/maps/search/?api=1&query=Turon+Odob+Ilm+Furqat",
-                30,
-            ),
-            (
-                "yandex",
-                "profile",
-                "Yandex Maps’da ko‘rish",
-                "https://yandex.uz/maps/?text=Turon+Odob+Ilm+Furqat",
-                40,
-            ),
-            (
-                "yandex",
-                "directions",
-                "Yo‘nalish olish (Yandex)",
-                "https://yandex.uz/maps/?rtext=~&rtt=auto&text=Turon+Odob+Ilm+Furqat",
-                50,
-            ),
-            (
-                "yandex",
-                "review",
-                "Yandex’da fikr qoldirish",
-                "https://yandex.uz/maps/?text=Turon+Odob+Ilm+Furqat",
+                False,
                 60,
             ),
         ]
-        for platform, link_type, label, url, order in default_links:
-            MapLink.objects.get_or_create(
+        for platform, link_type, label, url, verified, order in map_links_data:
+            MapLink.objects.update_or_create(
                 branch=furqat,
                 platform=platform,
                 link_type=link_type,
                 defaults={
                     "label": label,
                     "target_url": url,
-                    "is_verified_profile": False,
+                    "is_verified_profile": verified,
                     "is_active": True,
                     "sort_order": order,
                 },
             )
 
-        if not EducationProgram.objects.exists():
-            EducationProgram.objects.bulk_create([
-                EducationProgram(
-                    title="Boshlang‘ich ta’lim va odob maktabi",
-                    grade_range="1–4-sinflar",
-                    subjects_summary="Ona tili, matematika, o‘qish, odobnoma, ingliz tili, mantiq",
-                    description="[DEMO] Bola shaxsiyatini mehr, tartib va mustaqil fikrlash asosida shakllantirish bosqichi.",
-                    sort_order=10,
-                    is_demo=True,
-                ),
-                EducationProgram(
-                    title="Asosiy umumta’lim yo‘nalishi",
-                    grade_range="5–9-sinflar",
-                    subjects_summary="Matematika, fizika, kimyo, biologiya, tarix, ingliz va rus tillari, IT",
-                    description="[DEMO] Chuqurlashtirilgan aniq va tabiiy fanlar hamda olimpiada tayyorgarligi.",
-                    sort_order=20,
-                    is_demo=True,
-                ),
-                EducationProgram(
-                    title="Akademik va OTMga tayyorlov bosqichi",
-                    grade_range="10–11-sinflar",
-                    subjects_summary="IELTS, SAT/DTM fanlari, dasturlash, loyiha ishlari, kasbga yo‘naltirish",
-                    description="[DEMO] Yuqori sinf o‘quvchilarini mahalliy va xalqaro universitetlarga maqsadli tayyorlash.",
-                    sort_order=30,
-                    is_demo=True,
-                ),
-            ])
-
-        if not SchoolService.objects.exists():
-            SchoolService.objects.bulk_create([
-                SchoolService(
-                    category="club",
-                    title="Robototexnika, dasturlash va shaxmat to‘garaklari",
-                    summary="[DEMO] Darsdan tashqari vaqtlarda mantiqiy fikrlash va amaliy ko‘nikmalarni rivojlantiruvchi mashg‘ulotlar.",
-                    schedule_info="Dushanba, Chorshanba, Juma • 14:30–16:30",
-                    sort_order=10,
-                    is_demo=True,
-                ),
-                SchoolService(
-                    category="schedule",
-                    title="To‘liq kunlik o‘quv tartibi",
-                    summary="[DEMO] Ertalabki saflanish, asosiy darslar, tushlik, uy vazifalarini ustoz nazoratida bajarish va to‘garaklar.",
-                    schedule_info="08:00 – 17:00",
-                    sort_order=20,
-                    is_demo=True,
-                ),
-                SchoolService(
-                    category="nutrition",
-                    title="Halol va muvozanatli 3 mahal ovqatlanish",
-                    summary="[DEMO] Bolalar yoshiga mos ravishda tayyorlangan issiq nonushta, tushlik va peshin tamaddisi.",
-                    schedule_info="Har kuni oshxona nazorati",
-                    sort_order=30,
-                    is_demo=True,
-                ),
-                SchoolService(
-                    category="transport",
-                    title="Xavfsiz maktab avtobusi (ixtiyoriy)",
-                    summary="[DEMO] Furqat tumani va yaqin hududlar bo‘yicha tasdiqlangan yo‘nalishlarda qatnov xizmati.",
-                    schedule_info="Yo‘nalishlar ma’muriyat orqali aniqlanadi",
-                    sort_order=40,
-                    is_demo=True,
-                ),
-            ])
-
-        if not Teacher.objects.exists():
-            Teacher.objects.bulk_create([
-                Teacher(
-                    full_name="[DEMO] Ustoz namunasi — Matematika fani",
-                    subject_or_role="Matematika va olimpiada murabbiyi",
-                    experience_years=9,
-                    bio="[DEMO] Haqiqiy o‘qituvchi ma’lumotlari admin panel orqali kiritiladi.",
-                    branch=furqat,
-                    sort_order=10,
-                    is_demo=True,
-                ),
-                Teacher(
-                    full_name="[DEMO] Ustoz namunasi — Ingliz tili fani",
-                    subject_or_role="Ingliz tili o‘qituvchisi",
-                    experience_years=7,
-                    bio="[DEMO] Haqiqiy o‘qituvchi ma’lumotlari admin panel orqali kiritiladi.",
-                    branch=furqat,
-                    sort_order=20,
-                    is_demo=True,
-                ),
-                Teacher(
-                    full_name="[DEMO] Ustoz namunasi — Boshlang‘ich ta’lim",
-                    subject_or_role="Boshlang‘ich sinf va tarbiya ustozi",
-                    experience_years=11,
-                    bio="[DEMO] Haqiqiy o‘qituvchi ma’lumotlari admin panel orqali kiritiladi.",
-                    branch=furqat,
-                    sort_order=30,
-                    is_demo=True,
-                ),
-            ])
-
-        if not OfficialDocument.objects.exists():
-            OfficialDocument.objects.create(
-                title="[DEMO] Ta’lim faoliyati litsenziyasi va maktab ustavi",
-                document_number="Tasdiqlangan nusxa admin orqali yuklanadi",
-                description="[DEMO] Maktabning rasmiy hujjat nusxalari shu bo‘limda e’lon qilinadi.",
-                sort_order=10,
-                is_demo=True,
+        # Ta'lim dasturlari (turonodob-ilm.uz ma'lumotlari asosida)
+        EducationProgram.objects.filter(is_demo=True).delete()
+        programs_data = [
+            (
+                "Boshlang‘ich ta’lim",
+                "1–4-sinflar",
+                "O‘qish, yozish, matematika, ingliz tili, kompyuter savodxonligi, odobnoma",
+                "Bolaning shaxsiyatini shakllantirish, o‘qish-yozish va asosiy ko‘nikmalarni mehr hamda tartib bilan o‘rgatish.",
+                10,
+            ),
+            (
+                "Umumiy o‘rta ta’lim",
+                "5–9-sinflar",
+                "Matematika, fizika, ona tili, rus tili, ingliz tili, IT va dasturlash",
+                "Kuchli akademik baza, kuchaytirilgan ingliz tili va IT yo‘nalishi bo‘yicha chuqurlashgan o‘quv dasturi.",
+                20,
+            ),
+            (
+                "O‘rta maxsus va OTMga tayyorlov",
+                "10–11-sinflar",
+                "Majburiy fanlar, chuqurlashtirilgan yo‘nalish fanlari, IT loyihalar, ingliz tili",
+                "Oliy ta’limga maqsadli tayyorlov, 60 ta variantli mukammal test mashg‘ulotlari va kasb tanlash yo‘l-yo‘riqlari.",
+                30,
+            ),
+        ]
+        for title, gr, subj, desc, order in programs_data:
+            EducationProgram.objects.update_or_create(
+                title=title,
+                defaults={
+                    "grade_range": gr,
+                    "subjects_summary": subj,
+                    "description": desc,
+                    "sort_order": order,
+                    "is_active": True,
+                    "is_demo": False,
+                },
             )
 
-        if not NewsPost.objects.exists():
-            now = timezone.now()
-            NewsPost.objects.bulk_create([
-                NewsPost(
-                    title="[DEMO] Furqat filialida yangi o‘quv yili uchun qabul boshlandi",
-                    slug="demo-furqat-filiali-qabul-boshlandi",
-                    category="announcement",
-                    branch=furqat,
-                    excerpt="[DEMO] 1–11-sinflar hamda tayyorlov guruhlariga suhbat asosida qabul davom etmoqda.",
-                    body=(
-                        "[DEMO] Ushbu e’lon demo ma’lumot hisoblanadi. Haqiqiy qabul sanalari, "
-                        "imtihon/suhbat jadvali va shartlari maktab ma’muriyati tomonidan admin panelda yangilanadi."
-                    ),
-                    published_at=now - timedelta(days=1),
-                    is_published=True,
-                    is_demo=True,
-                ),
-                NewsPost(
-                    title="[DEMO] Maktabimiz o‘quvchilari fan olimpiadasiga tayyorlanmoqda",
-                    slug="demo-fan-olimpiadasi-tayyorgarlik",
-                    category="olympiad",
-                    branch=furqat,
-                    excerpt="[DEMO] Matematika, ona tili va ingliz tili yo‘nalishlarida qo‘shimcha mashg‘ulotlar yo‘lga qo‘yildi.",
-                    body=(
-                        "[DEMO] Olimpiada mashg‘ulotlari va maktab tadbirlari haqidagi haqiqiy yangiliklar "
-                        "muharrirlar tomonidan chop etiladi."
-                    ),
-                    published_at=now - timedelta(days=4),
-                    is_published=True,
-                    is_demo=True,
-                ),
-            ])
+        # Maktab xizmatlari
+        SchoolService.objects.filter(is_demo=True).delete()
+        services_data = [
+            (
+                "club",
+                "Kuchaytirilgan ingliz tili va IT to‘garaklari",
+                "Birinchi sinfdan boshlab xalqaro standartlarga mos ingliz tili va barcha sinflar uchun majburiy IT darslari.",
+                "O‘zbek va rus ta’lim oqimlari",
+                10,
+            ),
+            (
+                "schedule",
+                "To‘liq o‘quv haftasi tartibi",
+                "Dushanba–Juma to‘liq dars jadvali va Shanba kuni qo‘shimcha mashg‘ulotlar hamda test tayyorgarligi.",
+                "Du–Ju: 08:00–17:00 • Sha: 08:00–13:00",
+                20,
+            ),
+            (
+                "transport",
+                "10 ta yo‘nalishda maktab avtobusi",
+                "O‘quvchilarning xavfsiz qatnovi uchun maktabning 10 ta yo‘nalishdagi avtobus xizmati (rasmiy YouTube videolavha asosida).",
+                "Yo‘nalishlar ma’muriyat orqali aniqlanadi",
+                30,
+            ),
+        ]
+        for cat, title, summary, sched, order in services_data:
+            SchoolService.objects.update_or_create(
+                title=title,
+                defaults={
+                    "category": cat,
+                    "summary": summary,
+                    "schedule_info": sched,
+                    "sort_order": order,
+                    "is_active": True,
+                    "is_demo": False,
+                },
+            )
 
-        if not GalleryItem.objects.exists():
-            GalleryItem.objects.bulk_create([
-                GalleryItem(
-                    title="[DEMO] Maktab sinf xonalari va o‘quv muhiti",
-                    media_type="photo",
-                    branch=furqat,
-                    caption="[DEMO] Haqiqiy maktab fotosuratlari admin paneldan yuklangach ko‘rsatiladi.",
-                    sort_order=10,
-                    is_demo=True,
-                ),
-                GalleryItem(
-                    title="[DEMO] Kutubxona va amaliy mashg‘ulotlar",
-                    media_type="photo",
-                    branch=furqat,
-                    caption="[DEMO] Haqiqiy maktab fotosuratlari admin paneldan yuklangach ko‘rsatiladi.",
-                    sort_order=20,
-                    is_demo=True,
-                ),
-            ])
+        # IT Akademiya kurslari va laboratoriya loyihalari
+        it_courses_data = [
+            (
+                "Kompyuter savodxonligi va raqamli asoslar",
+                "1–4-sinflar",
+                "Klaviatura madaniyati, fayl tizimi, xavfsiz internet, mantiqiy o‘yinlar",
+                "Boshlang‘ich sinf o‘quvchilarida texnologiyalardan to‘g‘ri va ongli foydalanish ko‘nikmasini shakllantirish.",
+                10,
+            ),
+            (
+                "Algoritmik fikrlash va blokli dasturlash",
+                "3–6-sinflar",
+                "Algoritmlar, Scratch, interaktiv animatsiyalar, mantiqiy masalalar",
+                "Murakkab muammolarni qadamlarga bo‘lish, vizual dasturlash orqali ijodiy loyihalar yaratish.",
+                20,
+            ),
+            (
+                "Dasturlash asoslari va zamonaviy web",
+                "7–11-sinflar",
+                "HTML5, CSS3, Python asoslari, amaliy laboratoriya mashg‘ulotlari",
+                "Katta sinf o‘quvchilarini zamonaviy IT kasblariga tayyorlovchi majburiy va chuqurlashtirilgan amaliy darslar.",
+                30,
+            ),
+        ]
+        first_course = None
+        for idx, (title, grade, stack, desc, order) in enumerate(it_courses_data):
+            course_obj, _ = ITCourse.objects.update_or_create(
+                title=title,
+                defaults={
+                    "grade_level": grade,
+                    "tools_stack": stack,
+                    "description": desc,
+                    "sort_order": order,
+                    "is_active": True,
+                    "is_demo": False,
+                },
+            )
+            if idx == 0:
+                first_course = course_obj
 
+        ITProject.objects.update_or_create(
+            title="Turon IT laboratoriyasi amaliy mashg‘ulotlari",
+            defaults={
+                "course": first_course,
+                "branch": furqat,
+                "author_display": "",
+                "has_parent_consent": False,
+                "summary": (
+                    "O‘quvchilar zamonaviy kompyuter xonasida ustoz nazoratida algoritmik mashqlar va "
+                    "amaliy topshiriqlarni bajarishmoqda. Individual o‘quvchi loyihalari ota-ona roziligi "
+                    "tasdiqlangach muallifi bilan qo‘shiladi."
+                ),
+                "static_image_path": "official_media/it-lab-active.jpg",
+                "alt_text": "Turon Odob-Ilm maktabining faol IT va kompyuter laboratoriyasi",
+                "source_url": "https://www.turonodob-ilm.uz/images/it-lab-active.jpg",
+                "permission_status": "verified_official",
+                "is_published": True,
+                "is_demo": False,
+                "sort_order": 10,
+            },
+        )
+
+        # Rahbariyat (A'zamjonov Hayotbek - turonodob-ilm.uz/about dan)
+        Teacher.objects.filter(is_demo=True).delete()
+        Teacher.objects.update_or_create(
+            full_name="A’zamjonov Hayotbek",
+            defaults={
+                "subject_or_role": "Maktab direktori",
+                "experience_years": 5,
+                "bio": "Turon Odob-Ilm xususiy maktabi rahbari.",
+                "quote": "Bizning maqsadimiz — zamonaviy bilim, kuchli tarbiya va keng dunyoqarashga ega avlodni voyaga yetkazish.",
+                "static_photo_path": "official_media/director-hayotbek.jpg",
+                "is_leadership": True,
+                "branch": furqat,
+                "sort_order": 1,
+                "is_active": True,
+                "is_demo": False,
+            },
+        )
+        Teacher.objects.update_or_create(
+            full_name="Lola teacher (YouTube rasmiy lavha)",
+            defaults={
+                "subject_or_role": "Ingliz tili ustozi",
+                "experience_years": 5,
+                "bio": "Rasmiy @turonodobilm YouTube kanalida tanishtirilgan ingliz tili o‘qituvchisi.",
+                "is_leadership": False,
+                "branch": furqat,
+                "sort_order": 10,
+                "is_active": True,
+                "is_demo": False,
+            },
+        )
+
+        # Rasmiy hujjat (litsenziya PDF)
+        OfficialDocument.objects.filter(is_demo=True).delete()
+        OfficialDocument.objects.update_or_create(
+            title="Davlat ta’lim litsenziyasi (Turon Odob-Ilm MChJ)",
+            defaults={
+                "document_number": "Litsenziya № 038782 · 14.09.2022",
+                "description": "O‘zbekiston Respublikasi tomonidan berilgan rasmiy ta’lim faoliyati litsenziyasi.",
+                "static_file_path": "official_media/license.pdf",
+                "source_url": "https://www.turonodob-ilm.uz/documents/license.pdf",
+                "sort_order": 1,
+                "is_active": True,
+                "is_demo": False,
+            },
+        )
+
+        # Haqiqiy maktab rasmlari va rasmiy YouTube videolari (manba va ruxsat metadata bilan)
+        GalleryItem.objects.filter(is_demo=True).delete()
+        official_photos = [
+            (
+                "Turon Odob-Ilm xususiy maktabi binosi",
+                "campus",
+                "official_media/facade.jpg",
+                "https://www.turonodob-ilm.uz/images/facade.jpg",
+                "Turon Odob-Ilm xususiy maktabining Furqat tumanidagi asosiy binosi old ko‘rinishi",
+                "Maktabning asosiy kirish qismi va hovlisi",
+                10,
+            ),
+            (
+                "IT va dasturlash laboratoriyasi",
+                "it_lab",
+                "official_media/it-lab-active.jpg",
+                "https://www.turonodob-ilm.uz/images/it-lab-active.jpg",
+                "O‘quvchilar IT laboratoriyasida zamonaviy kompyuterlarda dasturlash darsida",
+                "Kompyuter savodxonligi va dasturlash amaliyoti",
+                20,
+            ),
+            (
+                "Brendlangan o‘quv sinfxonasi",
+                "classroom",
+                "official_media/classroom-branded.jpg",
+                "https://www.turonodob-ilm.uz/images/classroom-branded.jpg",
+                "Turon Odob-Ilm brendlangan zamonaviy yorug‘ sinfxona",
+                "Qulay partalar va zamonaviy sinfxona jihozlari",
+                30,
+            ),
+            (
+                "Dars jarayoni — diqqat va intizom",
+                "classroom",
+                "official_media/students-attentive.jpg",
+                "https://www.turonodob-ilm.uz/images/students-attentive.jpg",
+                "Turon Odob-Ilm o‘quvchilari dars jarayonida",
+                "Kichik sinflarda ustoz bilan faol mashg‘ulot",
+                40,
+            ),
+            (
+                "O‘quvchilar mustaqil mashg‘ulotda",
+                "classroom",
+                "official_media/students-studying.jpg",
+                "https://www.turonodob-ilm.uz/images/students-studying.jpg",
+                "Sinfxonada o‘quvchilarning dars tayyorlash jarayoni",
+                "Jamoaviy va individual ta’lim muhiti",
+                50,
+            ),
+        ]
+        for title, cat, static_path, src_url, alt, caption, order in official_photos:
+            GalleryItem.objects.update_or_create(
+                title=title,
+                media_type="photo",
+                defaults={
+                    "category": cat,
+                    "branch": furqat,
+                    "static_asset_path": static_path,
+                    "source_url": src_url,
+                    "media_date": date(2026, 1, 1),
+                    "alt_text": alt,
+                    "permission_status": "official_pending_confirm",
+                    "caption": caption,
+                    "is_published": True,
+                    "is_demo": False,
+                    "sort_order": order,
+                },
+            )
+
+        official_videos = [
+            (
+                "Turon odob-ilm — rasmiy maktab taqdimoti",
+                "l5dlZAQIuA8",
+                "Maktab muhiti, o‘quvchilar va dars jarayonlari haqida rasmiy video.",
+                60,
+            ),
+            (
+                "Turon odob-ilm maktabida qabul boshlandi!",
+                "UssGBrMwMXs",
+                "Yangi o‘quv yili qabul jarayoni va imkoniyatlar haqida videorolik.",
+                70,
+            ),
+            (
+                "O‘quvchilarimizning maktab haqidagi fikrlari",
+                "ySq8HMHUJYM",
+                "Turon Odob-Ilm o‘quvchilari maktab hayoti va ustozlar haqida.",
+                80,
+            ),
+            (
+                "10 ta yo‘nalishda avtobus xizmati",
+                "ULKS9NIUODU",
+                "O‘quvchilarni tashish uchun maktab avtobusi yo‘nalishlari haqida lavha.",
+                90,
+            ),
+            (
+                "Majburiy fanlarda 60 ta variantli mukammal testlar",
+                "MVVFBhK3cBw",
+                "Yuqori sinflar uchun test tayyorgarligi jarayonidan lavha.",
+                100,
+            ),
+            (
+                "Ingliz tili ustozimiz Lola teacher",
+                "yFuCjZwmEXo",
+                "Ingliz tili darslari va o‘qitish uslubi haqida video.",
+                110,
+            ),
+        ]
+        for title, yid, caption, order in official_videos:
+            GalleryItem.objects.update_or_create(
+                youtube_id=yid,
+                defaults={
+                    "title": title,
+                    "media_type": "video",
+                    "category": "video",
+                    "branch": furqat,
+                    "video_url": f"https://www.youtube.com/watch?v={yid}",
+                    "source_url": f"https://www.youtube.com/watch?v={yid}",
+                    "alt_text": f"{title} — Turon Odob-Ilm YouTube videosi",
+                    "permission_status": "youtube_embed",
+                    "caption": caption,
+                    "is_published": True,
+                    "is_demo": False,
+                    "sort_order": order,
+                },
+            )
+
+        # Haqiqiy yangiliklar va yutuqlar (rasmiy @turonodobilm Telegram kanali asosida)
+        NewsPost.objects.filter(is_demo=True).delete()
+        news_items = [
+            (
+                "Furqat tumani fan olimpiadasida 10 nafar o‘quvchimiz g‘olib bo‘ldi",
+                "furqat-fan-olimpiadasi-10-golib",
+                "olympiad",
+                "Turon Odob-Ilm xususiy maktabining 10 nafar o‘quvchisi Furqat tumani fan olimpiadasida g‘oliblikni qo‘lga kiritdi.",
+                (
+                    "Quvonchli xabar! Turon Odob-Ilm xususiy maktabining 10 nafar o‘quvchisi "
+                    "Furqat tumani fan olimpiadasida munosib ishtirok etib, g‘oliblikni qo‘lga kiritishdi. "
+                    "Barcha g‘olib o‘quvchilarimizni, ularning ustozlari va ota-onalarini tabriklaymiz.\n\n"
+                    "Aloqa: +998 55 808 55 75 (@turonodobilm_furqat)"
+                ),
+                "official_media/students-attentive.jpg",
+                "https://t.me/turonodobilm/648",
+                datetime(2026, 11, 10, 5, 48, tzinfo=dt_timezone.utc),
+            ),
+            (
+                "IRN Xalqaro Olimpiadasida o‘quvchilarimiz faxrli g‘oliblikni qo‘lga kiritdi",
+                "irn-xalqaro-olimpiada-galaba",
+                "achievement",
+                "Toshkent shahrida bo‘lib o‘tgan IRN Xalqaro Olimpiadasida maktabimiz o‘quvchilari muvaffaqiyatli qatnashdi.",
+                (
+                    "Turon Odob-Ilm xususiy maktabi o‘quvchilari Toshkent shahrida bo‘lib o‘tgan "
+                    "IRN Xalqaro Olimpiadasida munosib ishtirok etib, faxrli g‘oliblikni qo‘lga kiritishdi. "
+                    "Ushbu yutuq o‘quvchilarimizning tinimsiz mehnati va ustozlarimizning fidokorona "
+                    "mehnatining samarasidir."
+                ),
+                "official_media/facade.jpg",
+                "https://t.me/turonodobilm/647",
+                datetime(2026, 11, 10, 5, 45, tzinfo=dt_timezone.utc),
+            ),
+            (
+                "Maktabimizda fanlararo metodik hamkorlik seminari tashkil etildi",
+                "fanlararo-metodik-seminar",
+                "event",
+                "Filiallarimizning rus tili hamda adabiyot fani o‘qituvchilari ishtirokida zamonaviy metodik seminar o‘tkazildi.",
+                (
+                    "Turon Odob-Ilm maktabi filiallarining rus tili hamda adabiyot fani o‘qituvchilari "
+                    "ishtirokida navbatdagi metodik seminar yuqori saviyada tashkil etildi. "
+                    "Seminar davomida zamonaviy metodlar, innovatsion yondashuvlar va dars jarayonida "
+                    "interfaol usullardan foydalanish masalalari muhokama qilindi."
+                ),
+                "official_media/classroom-branded.jpg",
+                "https://t.me/turonodobilm/641",
+                datetime(2026, 11, 7, 14, 13, tzinfo=dt_timezone.utc),
+            ),
+        ]
+        for title, slug, cat, excerpt, body, img_path, src_url, pub_dt in news_items:
+            NewsPost.objects.update_or_create(
+                slug=slug,
+                defaults={
+                    "title": title,
+                    "category": cat,
+                    "branch": furqat,
+                    "excerpt": excerpt,
+                    "body": body,
+                    "static_image_path": img_path,
+                    "source_url": src_url,
+                    "published_at": pub_dt,
+                    "is_published": True,
+                    "is_demo": False,
+                },
+            )
+
+        # Qabul shartlari va bosqichlari (turonodob-ilm.uz/admissions asosida)
         if not AdmissionStep.objects.exists():
             AdmissionStep.objects.bulk_create([
                 AdmissionStep(
                     step_type="condition",
-                    title="Suhbat va bilim darajasini aniqlash",
-                    description="O‘quvchining yoshiga mos tayyorgarligi va qiziqishlari ustozlar ishtirokida suhbat orqali baholanadi.",
+                    title="O‘zbek va rus ta’lim oqimlari",
+                    description="1–11-sinflar uchun suhbat va tayyorgarlik darajasini aniqlash asosida qabul qilinadi.",
                     sort_order=10,
                 ),
                 AdmissionStep(
                     step_type="document",
-                    title="Tug‘ilganlik haqida guvohnoma nusxasi",
-                    description="O‘quvchining shaxsini tasdiqlovchi hujjat nusxasi hamda ota-ona pasporti/ID kartasi nusxasi.",
+                    title="Tug‘ilganlik haqida guvohnoma va ota-ona pasporti nusxasi",
+                    description="O‘quvchi va ota-ona shaxsini tasdiqlovchi hujjatlar nusxasi.",
                     sort_order=10,
                 ),
                 AdmissionStep(
                     step_type="document",
                     title="Tibbiy ma’lumotnoma (086-shakl) va 3×4 rasm",
-                    description="Maktab shifokori ko‘rigi uchun zarur tibbiy varaqalar hamda 4 dona fotosurat.",
+                    description="Maktab shifokori ko‘rigi uchun ma’lumotnoma hamda 4 dona fotosurat.",
                     sort_order=20,
                 ),
                 AdmissionStep(
                     step_type="step",
-                    title="1-qadam: Onlayn ariza yuboring",
-                    description="Quyidagi qabul formasini to‘ldiring yoki telefon orqali bog‘laning.",
+                    title="1. Ariza topshirish",
+                    description="Onlayn shaklni to‘ldirasiz.",
                     sort_order=10,
                 ),
                 AdmissionStep(
                     step_type="step",
-                    title="2-qadam: Maktabga tashrif va suhbat",
-                    description="Furqat filialimizga kelib sinflar bilan tanishing va farzandingiz suhbatdan o‘tsin.",
+                    title="2. Bog‘lanish",
+                    description="Biz 1–2 ish kunida siz bilan bog‘lanamiz.",
                     sort_order=20,
+                ),
+                AdmissionStep(
+                    step_type="step",
+                    title="3. Suhbat",
+                    description="Maktabga tashrif va o‘quvchi bilan suhbat.",
+                    sort_order=30,
+                ),
+                AdmissionStep(
+                    step_type="step",
+                    title="4. Qabul",
+                    description="Hujjatlarni rasmiylashtirish va o‘qishni boshlash.",
+                    sort_order=40,
                 ),
             ])
 
+        # Namunaviy sayt fikri (aniq Demo belgisi bilan)
         if not WebsiteReview.objects.exists():
             r1 = WebsiteReview.objects.create(
                 branch=furqat,
@@ -307,7 +587,7 @@ class Command(BaseCommand):
                 display_name="N. Tursunova (Demo namuna)",
                 rating=5,
                 comment=(
-                    "[DEMO] Bu shablon uchun namunaviy fikr yozuvi. Haqiqiy ota-onalar fikrlari "
+                    "[DEMO] Bu sayt interfeysi uchun namunaviy fikr yozuvi. Haqiqiy ota-onalar fikrlari "
                     "saytdagi forma orqali yuborilib, moderatsiyadan keyin chiqariladi."
                 ),
                 status="approved",
@@ -323,6 +603,6 @@ class Command(BaseCommand):
 
         self.stdout.write(
             self.style.SUCCESS(
-                "Demo ma'lumotlar muvaffaqiyatli yaratildi. Eslatma: Haqiqiy rasmiy Google/Yandex statistikasi uydirilmadi!"
+                "Rasmiy ma'lumotlar, media katalog, IT akademiya va rollar muvaffaqiyatli yuklandi!"
             )
         )

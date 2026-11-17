@@ -14,6 +14,7 @@ class StaticPagesSitemap(Sitemap):
         return [
             "core:home",
             "core:about",
+            "it_academy:index",
             "content:education",
             "content:news_list",
             "content:gallery",

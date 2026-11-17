@@ -4,42 +4,64 @@
 {% block content %}
 <section class="page-banner">
   <div class="container">
-    <h1>Maktab galereyasi</h1>
-    <p>Sinf xonalari, tadbirlar, to‘garaklar va o‘quv hayotidan haqiqiy lavhalar.</p>
+    <h1>Maktab hayoti: foto va video galereya</h1>
+    <p>Turon Odob-Ilm maktabining haqiqiy binosi, IT laboratoriyasi, sinfxonalari va rasmiy YouTube videolari.</p>
   </div>
 </section>
 
 <section class="section">
   <div class="container">
-    <div style="display:flex; gap:8px; margin-bottom:22px; flex-wrap:wrap;">
-      <a href="{% url 'content:gallery' %}" class="btn btn-sm {% if not active_type %}btn-primary{% else %}btn-outline{% endif %}">Barchasi</a>
+    <div style="display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap;">
+      <a href="{% url 'content:gallery' %}" class="btn btn-sm {% if not active_type and not active_category %}btn-primary{% else %}btn-outline{% endif %}">Barchasi</a>
       <a href="?turi=photo" class="btn btn-sm {% if active_type == 'photo' %}btn-primary{% else %}btn-outline{% endif %}">Fotosuratlar</a>
-      <a href="?turi=video" class="btn btn-sm {% if active_type == 'video' %}btn-primary{% else %}btn-outline{% endif %}">Videolar</a>
+      <a href="?turi=video" class="btn btn-sm {% if active_type == 'video' %}btn-primary{% else %}btn-outline{% endif %}">YouTube videolar</a>
+      {% for code, label in categories %}
+        {% if code != 'other' %}
+        <a href="?bolim={{ code }}" class="btn btn-sm {% if active_category == code %}btn-gold{% else %}btn-outline{% endif %}">{{ label }}</a>
+        {% endif %}
+      {% endfor %}
     </div>
 
     <div class="grid grid-3">
       {% for item in items %}
-      <article class="card">
-        {% if item.image %}
-          <button type="button" style="border:none; padding:0; background:none; width:100%; cursor:pointer;"
-                  data-lightbox-src="{{ item.image.url }}" data-lightbox-title="{{ item.title }}">
-            <img class="card-img" src="{{ item.image.url }}" alt="{{ item.title }}" loading="lazy">
-          </button>
+      <article class="card card-hover-lift {% if item.media_type == 'video' %}video-card{% endif %}">
+        {% if item.media_type == 'video' and item.resolved_youtube_embed_url %}
+          <div class="video-poster" role="button" tabindex="0" aria-label="Videoni ijro etish: {{ item.title }}"
+               data-youtube-embed="{{ item.resolved_youtube_embed_url }}" data-youtube-title="{{ item.title }}">
+            <img src="{{ item.resolved_youtube_thumb_url }}" alt="{{ item.alt_text|default:item.title }}" loading="lazy">
+            <span class="video-play-btn" aria-hidden="true">&#9654;</span>
+          </div>
+          <div class="video-body">
+            <span class="badge badge-tech">{{ item.get_media_type_display }}</span>
+            <h3 style="margin-top:8px;">{{ item.title }}</h3>
+            {% if item.caption %}<p style="margin-bottom:8px; font-size:0.9rem;">{{ item.caption }}</p>{% endif %}
+            {% if item.source_url %}<a href="{{ item.source_url }}" target="_blank" rel="noopener noreferrer" style="font-size:0.84rem;">YouTube manbasi &nearr;</a>{% endif %}
+          </div>
         {% else %}
-          <div class="img-placeholder">Haqiqiy surat admin paneldan yuklangach shu yerda ko‘rinadi</div>
-        {% endif %}
-        <div style="display:flex; justify-content:space-between; gap:8px; margin-bottom:6px;">
-          <span class="badge badge-navy">{{ item.get_media_type_display }}</span>
-          {% if item.is_demo %}<span class="badge badge-demo">Demo</span>{% endif %}
-        </div>
-        <h3>{{ item.title }}</h3>
-        {% if item.caption %}<p style="margin-bottom:8px;">{{ item.caption }}</p>{% endif %}
-        {% if item.video_url %}
-          <a href="{{ item.video_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm">Videoni tomosha qilish</a>
+          {% if item.resolved_image_url %}
+            <button type="button" style="border:none; padding:0; background:none; width:100%; cursor:pointer;"
+                    data-lightbox-src="{{ item.resolved_image_url }}"
+                    data-lightbox-title="{{ item.title }}"
+                    data-lightbox-alt="{{ item.alt_text|default:item.title }}"
+                    data-lightbox-source="{{ item.source_url }}">
+              <img class="card-img" src="{{ item.resolved_image_url }}" alt="{{ item.alt_text|default:item.title }}" loading="lazy">
+            </button>
+          {% else %}
+            <div class="img-placeholder">Haqiqiy surat admin paneldan yuklangach shu yerda ko‘rinadi</div>
+          {% endif %}
+          <div style="display:flex; justify-content:space-between; gap:8px; margin-bottom:6px;">
+            <span class="badge badge-navy">{{ item.get_category_display }}</span>
+            {% if item.is_demo %}<span class="badge badge-demo">Demo</span>{% endif %}
+          </div>
+          <h3>{{ item.title }}</h3>
+          {% if item.caption %}<p style="margin-bottom:8px; font-size:0.9rem;">{{ item.caption }}</p>{% endif %}
+          {% if item.source_url %}
+            <a href="{{ item.source_url }}" target="_blank" rel="noopener noreferrer" style="font-size:0.83rem;">Manba &nearr;</a>
+          {% endif %}
         {% endif %}
       </article>
       {% empty %}
-      <div class="card"><p>Galereyaga hali materiallar qo‘shilmagan.</p></div>
+      <div class="card"><p>Tanlangan bo‘lim bo‘yicha materiallar topilmadi.</p></div>
       {% endfor %}
     </div>
   </div>

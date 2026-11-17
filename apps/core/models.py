@@ -1,5 +1,6 @@
 """Asosiy sayt sozlamalari, murojaatlar va rate-limit modellari."""
 from django.db import models
+from django.templatetags.static import static
 
 from .security import validate_image_file
 
@@ -101,6 +102,9 @@ class SiteSettings(models.Model):
         null=True,
         validators=[validate_image_file],
     )
+    static_logo_path = models.CharField("Standart logotip yo‘li", max_length=255, blank=True, default="official_media/logo.png")
+    founded_year = models.PositiveSmallIntegerField("Tashkil topgan yil", default=2022)
+    license_number = models.CharField("Davlat litsenziyasi", max_length=120, default="Litsenziya № 038782 · 14.09.2022")
     privacy_policy_version = models.CharField("Maxfiylik siyosati versiyasi", max_length=20, default="1.0")
     privacy_policy_text = models.TextField("Maxfiylik siyosati matni", default=DEFAULT_PRIVACY_POLICY)
     review_consent_text = models.TextField("Fikr rozilik matni", default=DEFAULT_CONSENT_TEXT)
@@ -125,6 +129,14 @@ class SiteSettings(models.Model):
 
     def __str__(self):
         return self.school_name
+
+    @property
+    def resolved_logo_url(self) -> str:
+        if self.logo:
+            return self.logo.url
+        if self.static_logo_path:
+            return static(self.static_logo_path)
+        return static("img/logo-turon.svg")
 
     @classmethod
     def get_solo(cls):

@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}IT Akademiya va Dasturlash — {{ site_settings.school_name }}{% endblock %}
+
+{% block content %}
+<section class="page-banner">
+  <div class="container">
+    <span class="badge badge-gold">IT va Dasturlash yo‘nalishi</span>
+    <h1 style="margin-top:8px;">Turon Odob-Ilm IT Akademiyasi</h1>
+    <p>1–11-sinflar uchun zamonaviy kompyuter savodxonligi, algoritmik fikrlash va dasturlash asoslari.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container grid grid-2" style="align-items:center; gap:30px;">
+    <div class="media-frame">
+      {% if it_photos.first and it_photos.first.resolved_image_url %}
+        <img src="{{ it_photos.first.resolved_image_url }}" alt="{{ it_photos.first.alt_text|default:'IT laboratoriya' }}">
+      {% else %}
+        <img src="{% static 'official_media/it-lab-active.jpg' %}" alt="Turon Odob-Ilm IT xonasi">
+      {% endif %}
+    </div>
+    <div>
+      <span class="section-kicker">Amaliy ta’lim</span>
+      <h2 style="margin-top:0; color:var(--navy);">Zamonaviy kompyuter xonasi va real mashg‘ulotlar</h2>
+      <p>
+        Maktabimizda IT va dasturlash alohida ajralib turadigan asosiy ustunlardan biridir. Har bir o‘quvchi
+        o‘z yoshiga mos ravishda kompyuter savodxonligidan tortib algoritmlar va web dasturlashgacha amaliy tarzda o‘rganadi.
+      </p>
+      <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:16px;">
+        <a href="{% url 'content:admission' %}" class="btn btn-gold" data-track-cta="IT Academy: Qabulga ariza">Qabulga ariza topshirish</a>
+        <a href="{% url 'content:gallery' %}?bolim=it_lab" class="btn btn-outline">IT galereya</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <span class="section-kicker">O‘quv dasturi</span>
+        <h2>O‘qitiladigan IT yo‘nalishlari</h2>
+      </div>
+    </div>
+    <div class="grid grid-3">
+      {% for course in courses %}
+      <article class="card card-gold-top">
+        <span class="badge badge-tech">{{ course.grade_level }}</span>
+        <h3 style="margin-top:10px;">{{ course.title }}</h3>
+        <p style="font-size:0.9rem; color:var(--muted);"><strong>Mavzular:</strong> {{ course.tools_stack }}</p>
+        <p style="margin-bottom:0;">{{ course.description }}</p>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% if projects %}
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <span class="section-kicker">Laboratoriya va loyihalar</span>
+        <h2>IT laboratoriyasi faoliyati</h2>
+        <p>O‘quvchilarning shaxsiy loyihalari faqat muallif va ota-ona roziligi bilan e’lon qilinadi.</p>
+      </div>
+    </div>
+    <div class="grid grid-2">
+      {% for proj in projects %}
+      <article class="card">
+        {% if proj.resolved_image_url %}
+          <img class="card-img" src="{{ proj.resolved_image_url }}" alt="{{ proj.alt_text|default:proj.title }}" loading="lazy">
+        {% endif %}
+        <span class="badge badge-navy">{{ proj.public_author_label }}</span>
+        <h3 style="margin-top:8px;">{{ proj.title }}</h3>
+        <p>{{ proj.summary }}</p>
+        {% if proj.source_url %}
+          <a href="{{ proj.source_url }}" target="_blank" rel="noopener noreferrer" style="font-size:0.86rem;">Manba &nearr;</a>
+        {% endif %}
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

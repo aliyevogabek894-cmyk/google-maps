@@ -4,7 +4,8 @@
 {% block content %}
 <section class="page-banner">
   <div class="container">
-    <h1>Maktab haqida</h1>
+    <span class="badge badge-gold">Est. {{ site_settings.founded_year|default:2022 }} • {{ site_settings.license_number }}</span>
+    <h1 style="margin-top:8px;">Maktab haqida</h1>
     <p>{{ site_settings.tagline }}</p>
   </div>
 </section>
@@ -30,25 +31,28 @@
   <div class="container">
     <div class="section-header">
       <div>
-        <h2>O‘qituvchilar jamoasi</h2>
-        <p>Tajribali va fidoyi pedagoglar.</p>
+        <span class="section-kicker">Rahbariyat va ustozlar</span>
+        <h2>Rahbariyat va o‘qituvchilar jamoasi</h2>
       </div>
     </div>
     <div class="grid grid-3">
       {% for t in teachers %}
-      <article class="card">
-        {% if t.photo %}
-          <img class="card-img" src="{{ t.photo.url }}" alt="{{ t.full_name }}" loading="lazy">
+      <article class="card card-hover-lift">
+        {% if t.resolved_photo_url %}
+          <img class="card-img" src="{{ t.resolved_photo_url }}" alt="{{ t.full_name }}" loading="lazy" style="object-position: top center;">
         {% else %}
-          <div class="img-placeholder">O‘qituvchi surati admin paneldan yuklanadi</div>
+          <div class="img-placeholder">Ustoz surati admin paneldan yuklanadi</div>
         {% endif %}
         <div style="display:flex; justify-content:space-between; gap:8px; margin-bottom:6px;">
-          <span class="badge badge-navy">{{ t.experience_years }} yil tajriba</span>
+          {% if t.is_leadership %}<span class="badge badge-gold">Rahbariyat</span>{% else %}<span class="badge badge-navy">{{ t.experience_years }} yil tajriba</span>{% endif %}
           {% if t.is_demo %}<span class="badge badge-demo">Demo</span>{% endif %}
         </div>
         <h3>{{ t.full_name }}</h3>
-        <p style="font-weight:600; color:var(--gold-dark); margin:0 0 8px;">{{ t.subject_or_role }}</p>
-        <p style="margin:0;">{{ t.bio }}</p>
+        <p style="font-weight:700; color:var(--gold-dark); margin:0 0 8px;">{{ t.subject_or_role }}</p>
+        {% if t.quote %}
+          <blockquote style="margin:0 0 8px; padding-left:12px; border-left:3px solid var(--gold); font-style:italic; color:var(--ink);">“{{ t.quote }}”</blockquote>
+        {% endif %}
+        <p style="margin:0; font-size:0.92rem; color:var(--muted);">{{ t.bio }}</p>
       </article>
       {% empty %}
       <p>O‘qituvchilar haqida ma’lumot tez orada joylanadi.</p>
@@ -61,22 +65,28 @@
   <div class="container">
     <div class="section-header">
       <div>
+        <span class="section-kicker">Shaffoflik</span>
         <h2>Rasmiy hujjatlar</h2>
-        <p>Ta’lim litsenziyasi, maktab ustavi va tasdiqlangan hujjatlar.</p>
+        <p>Davlat tomonidan berilgan litsenziya va tasdiqlangan hujjatlar.</p>
       </div>
     </div>
     <div class="grid grid-2">
       {% for doc in documents %}
-      <article class="card">
+      <article class="card card-gold-top">
         <div style="display:flex; justify-content:space-between; gap:8px; margin-bottom:6px;">
-          <strong>{{ doc.document_number|default:"Rasmiy hujjat" }}</strong>
+          <span class="badge badge-navy">{{ doc.document_number|default:"Rasmiy hujjat" }}</span>
           {% if doc.is_demo %}<span class="badge badge-demo">Demo</span>{% endif %}
         </div>
         <h3>{{ doc.title }}</h3>
         <p>{{ doc.description }}</p>
-        {% if doc.file %}
-        <a href="{{ doc.file.url }}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm">Hujjatni ko‘rish / yuklab olish</a>
-        {% endif %}
+        <div style="display:flex; flex-wrap:wrap; gap:8px;">
+          {% if doc.resolved_file_url %}
+          <a href="{{ doc.resolved_file_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">Hujjatni ochish (PDF)</a>
+          {% endif %}
+          {% if doc.source_url %}
+          <a href="{{ doc.source_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm">Rasmiy manba &nearr;</a>
+          {% endif %}
+        </div>
       </article>
       {% empty %}
       <p>Rasmiy hujjatlar tez orada joylanadi.</p>

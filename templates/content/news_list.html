@@ -20,9 +20,9 @@
 
     <div class="grid grid-3">
       {% for post in page_obj %}
-      <article class="card">
-        {% if post.image %}
-          <img class="card-img" src="{{ post.image.url }}" alt="{{ post.title }}" loading="lazy">
+      <article class="card card-hover-lift">
+        {% if post.resolved_image_url %}
+          <img class="card-img" src="{{ post.resolved_image_url }}" alt="{{ post.title }}" loading="lazy">
         {% endif %}
         <div style="display:flex; justify-content:space-between; gap:8px; margin-bottom:8px;">
           <span class="badge badge-gold">{{ post.get_category_display }}</span>
@@ -30,8 +30,9 @@
         </div>
         <h3><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h3>
         <p>{{ post.excerpt }}</p>
-        <div style="font-size:0.84rem; color:var(--muted);">
-          {{ post.published_at|date:"d.m.Y" }}{% if post.branch %} • {{ post.branch.name }}{% endif %}
+        <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.84rem; color:var(--muted);">
+          <span>{{ post.published_at|date:"d.m.Y" }}</span>
+          {% if post.source_url %}<a href="{{ post.source_url }}" target="_blank" rel="noopener noreferrer">Manba &nearr;</a>{% endif %}
         </div>
       </article>
       {% empty %}

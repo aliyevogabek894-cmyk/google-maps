@@ -1,34 +1,42 @@
 {% extends "base.html" %}
-{% block title %}{{ site_settings.school_name }} — Rasmiy ta’lim platformasi{% endblock %}
+{% load static %}
+{% block title %}{{ site_settings.school_name }} — Bilim, odob va kelajak{% endblock %}
 
 {% block content %}
-<section class="hero">
+<!-- 01 — HERO -->
+<section class="hero-showcase">
+  {% if hero_photo and hero_photo.resolved_image_url %}
+    <img class="hero-bg-img" src="{{ hero_photo.resolved_image_url }}" alt="{{ hero_photo.alt_text|default:site_settings.school_name }}">
+  {% else %}
+    <img class="hero-bg-img" src="{% static 'official_media/facade.jpg' %}" alt="Turon Odob-Ilm xususiy maktabi binosi">
+  {% endif %}
+  <div class="hero-overlay"></div>
+  <div class="hero-glow"></div>
+
   <div class="container hero-grid">
     <div>
-      <span class="hero-kicker">Turon Odob-Ilm • Furqat filiali</span>
+      <span class="hero-kicker">1–11-sinflar • Litsenziyalangan xususiy maktab • Est. {{ site_settings.founded_year|default:2022 }}</span>
       <h1>{{ site_settings.hero_title }}</h1>
       <p class="lead">{{ site_settings.hero_subtitle }}</p>
       <div class="hero-cta-group">
-        <a href="{% url 'content:admission' %}" class="btn btn-gold" data-track-cta="Hero: Qabulga ariza" {% if primary_branch %}data-branch-id="{{ primary_branch.pk }}"{% endif %}>Qabulga ariza</a>
+        <a href="{% url 'content:admission' %}" class="btn btn-gold" data-track-cta="Hero: Qabulga ariza" {% if primary_branch %}data-branch-id="{{ primary_branch.pk }}"{% endif %}>Qabul haqida ma’lumot</a>
+        <a href="{% url 'core:about' %}" class="btn btn-light-outline" data-track-cta="Hero: Maktab bilan tanishish">Maktab bilan tanishish</a>
         {% if primary_branch %}
         <a href="{% url 'branches:detail' primary_branch.slug %}" class="btn btn-light-outline" data-track-cta="Hero: Xaritada ko'rish" data-branch-id="{{ primary_branch.pk }}">Xaritada ko‘rish</a>
-        {% else %}
-        <a href="{% url 'branches:list' %}" class="btn btn-light-outline">Xaritada ko‘rish</a>
         {% endif %}
-        <a href="{% url 'core:contact' %}" class="btn btn-light-outline" data-track-cta="Hero: Biz bilan bog'lanish">Biz bilan bog‘lanish</a>
       </div>
     </div>
 
     {% if primary_branch %}
     <aside class="hero-card" aria-label="Furqat filiali tezkor xarita va aloqa kartasi">
-      <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:10px;">
         <h2 style="margin:0;">{{ primary_branch.name }}</h2>
-        {% if primary_branch.is_demo %}<span class="badge badge-demo">Demo</span>{% endif %}
+        <span class="badge badge-gold">Asosiy filial</span>
       </div>
       <ul class="meta-list">
         <li><strong>Manzil:</strong> {{ primary_branch.address }}</li>
         <li><strong>Ish vaqti:</strong> {{ primary_branch.working_hours }}</li>
-        <li><strong>Telefon:</strong> {{ primary_branch.phone }}</li>
+        <li><strong>Telefon:</strong> <a href="tel:{{ primary_branch.phone|cut:' ' }}">{{ primary_branch.phone }}</a></li>
       </ul>
       <div class="map-btn-grid">
         {% for link in map_links %}
@@ -39,58 +47,126 @@
           </a>
           {% endif %}
         {% endfor %}
-        <a href="{% url 'reviews:list' %}" class="btn btn-gold btn-sm">Ota-onalar fikrlari va sharhlar</a>
+        <a href="{% url 'core:contact' %}" class="btn btn-gold btn-sm" data-track-cta="Hero card: Biz bilan bog'lanish">Biz bilan bog‘lanish</a>
       </div>
     </aside>
     {% endif %}
   </div>
 </section>
 
-<section class="section">
+<!-- 02 — ISHONCH KO'RSATKICHLARI (Faqat tasdiqlangan faktlar) -->
+<div class="container trust-strip">
+  <div class="trust-grid">
+    <div class="trust-item">
+      <div class="trust-label">Davlat litsenziyasi</div>
+      <div class="trust-val">№ 038782</div>
+      <div class="trust-sub">14.09.2022 yilda berilgan</div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-label">Ta’lim bosqichlari</div>
+      <div class="trust-val">1–11-sinflar</div>
+      <div class="trust-sub">O‘zbek va rus ta’lim oqimlari</div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-label">Ixtisoslashuv</div>
+      <div class="trust-val">Ingliz tili &amp; IT</div>
+      <div class="trust-sub">Barcha sinflar uchun zamonaviy dastur</div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-label">Qatnov xizmati</div>
+      <div class="trust-val">10 ta yo‘nalish</div>
+      <div class="trust-sub">Maktab avtobusi yo‘lga qo‘yilgan</div>
+    </div>
+  </div>
+</div>
+
+<!-- 03 — NEGA TURON ODOB-ILM? -->
+<section class="section reveal">
   <div class="container">
     <div class="section-header">
       <div>
-        <h2>Nega aynan Turon Odob-Ilm?</h2>
+        <span class="section-kicker">Bizning yo‘nalishlarimiz</span>
+        <h2>Uch ustunga asoslangan ta’lim</h2>
         <p>{{ site_settings.about_short }}</p>
       </div>
       <a href="{% url 'core:about' %}" class="btn btn-outline btn-sm">Maktab haqida batafsil</a>
     </div>
 
     <div class="grid grid-3">
-      <article class="card card-gold-top">
-        <h3>Odob va tarbiya ustuvorligi</h3>
-        <p>Har bir o‘quvchida hurmat, halollik, mas’uliyat va milliy qadriyatlarga sadoqat tarbiyalanadi.</p>
+      <article class="card card-gold-top card-hover-lift">
+        <span class="badge badge-gold">I • Tillar</span>
+        <h3 style="margin-top:10px;">Ingliz tili</h3>
+        <p style="margin-bottom:0;">Birinchi sinfdan boshlab kuchaytirilgan ingliz tili dasturi. O‘zbek va rus ta’lim oqimlari hamda malakali ustozlar bilan muloqot ko‘nikmalari.</p>
       </article>
-      <article class="card card-gold-top">
-        <h3>Chuqur fanlar va chet tillari</h3>
-        <p>Matematika, tabiiy fanlar, ingliz tili va zamonaviy axborot texnologiyalari amaliyot bilan o‘rgatiladi.</p>
+      <article class="card card-gold-top card-hover-lift">
+        <span class="badge badge-tech">II • Texnologiya</span>
+        <h3 style="margin-top:10px;">IT va dasturlash</h3>
+        <p style="margin-bottom:0;">Zamonaviy kompyuter laboratoriyasi, algoritmik fikrlash, dasturlash asoslari va kompyuter savodxonligi barcha sinflar uchun o‘qitiladi.</p>
       </article>
-      <article class="card card-gold-top">
-        <h3>Ochiq muloqot va shaffoflik</h3>
-        <p>Ota-onalar bilan doimiy aloqa, xolis fikr-mulohaza yig‘ish va rasmiy xarita profillari orqali qulay ma’lumot.</p>
+      <article class="card card-gold-top card-hover-lift">
+        <span class="badge badge-navy">III • Tarbiya va fan</span>
+        <h3 style="margin-top:10px;">Akademik fanlar va odob</h3>
+        <p style="margin-bottom:0;">Matematika, ona tili, tabiiy fanlar bilan birga halollik, mas’uliyat va milliy odob-axloq qadriyatlari singdiriladi.</p>
       </article>
     </div>
   </div>
 </section>
 
+<!-- 04 — IT VA DASTURLASH VITRINASI -->
+<section class="section-dark-tech reveal">
+  <div class="container">
+    <div class="grid grid-2" style="align-items:center; gap:34px;">
+      <div>
+        <span class="section-kicker">IT Akademiya • Zamonaviy laboratoriya</span>
+        <h2 style="font-size:clamp(1.6rem, 3vw, 2.3rem); margin:0 0 14px;">IT va dasturlash — kelajak ko‘nikmalari maktabdan boshlanadi</h2>
+        <p style="color:#D6E2F5; margin-bottom:20px;">
+          Turon Odob-Ilm maktabida o‘quvchilar zamonaviy kompyuter xonasida kompyuter savodxonligi, algoritmlar, blokli dasturlash va web/Python asoslarini amaliy mashg‘ulotlarda o‘rganishadi.
+        </p>
+        <div class="grid" style="gap:12px; margin-bottom:22px;">
+          {% for course in it_courses %}
+          <div class="card card-tech" style="padding:14px 18px;">
+            <div style="display:flex; justify-content:space-between; gap:8px; align-items:center;">
+              <strong style="color:#fff;">{{ course.title }}</strong>
+              <span class="badge badge-gold">{{ course.grade_level }}</span>
+            </div>
+            <div style="font-size:0.86rem; color:#BBD0F0; margin-top:4px;">{{ course.tools_stack }}</div>
+          </div>
+          {% endfor %}
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:10px;">
+          <a href="{% url 'it_academy:index' %}" class="btn btn-tech" data-track-cta="IT Section: IT Akademiyaga o'tish">IT Akademiya bo‘limini ochish</a>
+          <a href="{% url 'content:admission' %}" class="btn btn-light-outline">Qabulga yozilish</a>
+        </div>
+      </div>
+
+      <div class="media-frame">
+        {% if it_lab_photo and it_lab_photo.resolved_image_url %}
+          <img src="{{ it_lab_photo.resolved_image_url }}" alt="{{ it_lab_photo.alt_text|default:'Turon Odob-Ilm IT laboratoriyasi' }}" loading="lazy">
+        {% else %}
+          <img src="{% static 'official_media/it-lab-active.jpg' %}" alt="Turon Odob-Ilm IT laboratoriyasi" loading="lazy">
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 05 — TA'LIM BOSQICHLARI (1-4, 5-9, 10-11) -->
 {% if programs %}
-<section class="section section-alt">
+<section class="section section-alt reveal">
   <div class="container">
     <div class="section-header">
       <div>
-        <h2>Ta’lim yo‘nalishlari</h2>
-        <p>Boshlang‘ich sinflardan bitiruvchilargacha bosqichma-bosqich rivojlanish tizimi.</p>
+        <span class="section-kicker">O‘quv dasturlari</span>
+        <h2>Boshlang‘ichdan oliy sinflarga qadar</h2>
+        <p>Har bir yosh bosqichiga moslashtirilgan akademik va amaliy o‘quv reja.</p>
       </div>
       <a href="{% url 'content:education' %}" class="btn btn-outline btn-sm">Barcha dasturlar va xizmatlar</a>
     </div>
     <div class="grid grid-3">
       {% for prog in programs %}
-      <article class="card">
-        <div style="display:flex; justify-content:space-between; gap:8px; margin-bottom:8px;">
-          <span class="badge badge-navy">{{ prog.grade_range }}</span>
-          {% if prog.is_demo %}<span class="badge badge-demo">Demo</span>{% endif %}
-        </div>
-        <h3>{{ prog.title }}</h3>
+      <article class="card card-hover-lift">
+        <span class="badge badge-navy">{{ prog.grade_range }}</span>
+        <h3 style="margin-top:10px;">{{ prog.title }}</h3>
         <p style="font-size:0.9rem; color:var(--muted);"><strong>Fanlar:</strong> {{ prog.subjects_summary }}</p>
         <p style="margin-bottom:0;">{{ prog.description }}</p>
       </article>
@@ -100,14 +176,120 @@
 </section>
 {% endif %}
 
-<section class="section">
+<!-- 06 — MAKTAB HAYOTI (HAQIQIY FOTO GALEREYA) -->
+{% if gallery_photos %}
+<section class="section reveal">
   <div class="container">
     <div class="section-header">
       <div>
+        <span class="section-kicker">Maktab hayoti</span>
+        <h2>Haqiqiy sinfxonalar va dars jarayonlari</h2>
+        <p>Maktabimizning rasmiy sahifalaridan olingan haqiqiy binolar, IT xonasi va sinfxonalar suratlari.</p>
+      </div>
+      <a href="{% url 'content:gallery' %}" class="btn btn-outline btn-sm">To‘liq galereya</a>
+    </div>
+    <div class="grid grid-3">
+      {% for photo in gallery_photos %}
+      <article class="card card-hover-lift" style="padding:14px;">
+        {% if photo.resolved_image_url %}
+          <button type="button" style="border:none; padding:0; background:none; width:100%; cursor:pointer;"
+                  data-lightbox-src="{{ photo.resolved_image_url }}"
+                  data-lightbox-title="{{ photo.title }}"
+                  data-lightbox-alt="{{ photo.alt_text|default:photo.title }}"
+                  data-lightbox-source="{{ photo.source_url }}">
+            <img class="card-img" src="{{ photo.resolved_image_url }}" alt="{{ photo.alt_text|default:photo.title }}" loading="lazy" style="margin-bottom:10px;">
+          </button>
+        {% endif %}
+        <span class="badge badge-navy">{{ photo.get_category_display }}</span>
+        <h3 style="margin-top:8px; font-size:1.02rem;">{{ photo.title }}</h3>
+        {% if photo.caption %}<p style="font-size:0.88rem; color:var(--muted); margin:0;">{{ photo.caption }}</p>{% endif %}
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- 07 — VIDEO TUR (RASMIY YOUTUBE KANALDAN EMBED) -->
+{% if gallery_videos %}
+<section class="section section-alt reveal">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <span class="section-kicker">YouTube: @turonodobilm</span>
+        <h2>Maktab hayotidan video lavhalar</h2>
+        <p>Rasmiy YouTube kanalimizdagi videolarni to‘g‘ridan-to‘g‘ri shu sahifada tomosha qilishingiz mumkin.</p>
+      </div>
+      <a href="{{ site_settings.youtube_url|default:'https://www.youtube.com/@turonodobilm' }}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm">YouTube kanalga o‘tish &nearr;</a>
+    </div>
+    <div class="grid grid-2">
+      {% for vid in gallery_videos %}
+      <article class="card video-card card-hover-lift">
+        {% if vid.resolved_youtube_embed_url %}
+        <div class="video-poster" role="button" tabindex="0" aria-label="Videoni ijro etish: {{ vid.title }}"
+             data-youtube-embed="{{ vid.resolved_youtube_embed_url }}" data-youtube-title="{{ vid.title }}">
+          <img src="{{ vid.resolved_youtube_thumb_url }}" alt="{{ vid.alt_text|default:vid.title }}" loading="lazy">
+          <span class="video-play-btn" aria-hidden="true">&#9654;</span>
+        </div>
+        {% endif %}
+        <div class="video-body">
+          <h3 style="margin:0 0 6px;">{{ vid.title }}</h3>
+          {% if vid.caption %}<p style="margin:0 0 8px; font-size:0.9rem; color:var(--muted);">{{ vid.caption }}</p>{% endif %}
+          {% if vid.source_url %}
+            <a href="{{ vid.source_url }}" target="_blank" rel="noopener noreferrer" style="font-size:0.84rem;">YouTube’da ochish &nearr;</a>
+          {% endif %}
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- 08 — YUTUQLAR VA YANGILIKLAR -->
+{% if latest_news %}
+<section class="section reveal">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <span class="section-kicker">Yangiliklar va yutuqlar</span>
+        <h2>Olimpiadalar va maktab tadbirlari</h2>
+        <p>Rasmiy Telegram kanalimizda e’lon qilingan so‘nggi yutuqlar va tadbirlar.</p>
+      </div>
+      <a href="{% url 'content:news_list' %}" class="btn btn-outline btn-sm">Barcha yangiliklar</a>
+    </div>
+    <div class="grid grid-3">
+      {% for post in latest_news %}
+      <article class="card card-hover-lift">
+        {% if post.resolved_image_url %}
+          <img class="card-img" src="{{ post.resolved_image_url }}" alt="{{ post.title }}" loading="lazy">
+        {% endif %}
+        <div style="display:flex; justify-content:space-between; gap:8px; margin-bottom:8px;">
+          <span class="badge badge-gold">{{ post.get_category_display }}</span>
+          <span style="font-size:0.82rem; color:var(--muted);">{{ post.published_at|date:"d.m.Y" }}</span>
+        </div>
+        <h3><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h3>
+        <p style="margin-bottom:10px;">{{ post.excerpt }}</p>
+        {% if post.source_url %}
+          <a href="{{ post.source_url }}" target="_blank" rel="noopener noreferrer" style="font-size:0.84rem;">Telegram manbasi &nearr;</a>
+        {% endif %}
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- 09 — OTA-ONALAR FIKRI -->
+<section class="section section-alt reveal">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <span class="section-kicker">Ochiq muloqot</span>
         <h2>Ota-onalar fikrlari</h2>
         <p>{{ site_settings.review_invitation_text }}</p>
       </div>
-      <a href="{% url 'reviews:list' %}" class="btn btn-gold btn-sm">Fikr qoldirish va sharhlar</a>
+      <a href="{% url 'reviews:list' %}" class="btn btn-gold btn-sm">Fikr qoldirish va xarita sharhlari</a>
     </div>
 
     {% if review_stats.total %}
@@ -134,40 +316,31 @@
       </article>
       {% empty %}
       <div class="card">
-        <p>Hozircha tasdiqlangan sayt fikrlari yo‘q. Birinchi bo‘lib o‘z xolis fikringizni yuborishingiz mumkin.</p>
+        <p>Birinchi bo‘lib o‘z xolis fikringizni saytga yoki rasmiy xarita sahifasiga yuborishingiz mumkin.</p>
       </div>
       {% endfor %}
     </div>
   </div>
 </section>
 
-{% if latest_news %}
-<section class="section section-alt">
+<!-- 10 & 11 — QABUL CTA VA FURQAT FILIALI XARITASI -->
+<section class="section reveal">
   <div class="container">
-    <div class="section-header">
+    <div class="cta-banner">
       <div>
-        <h2>So‘nggi yangiliklar va tadbirlar</h2>
-        <p>Maktab hayotidagi muhim voqealar, olimpiadalar va e’lonlar.</p>
+        <span class="badge badge-gold" style="margin-bottom:10px;">Yangi o‘quv yili qabuli</span>
+        <h2>Farzandingizning ta’limini bizga ishonib topshiring</h2>
+        <p>
+          Bepul maslahat, maktab bilan tanishish va suhbatga yozilish uchun onlayn ariza qoldiring yoki qo‘ng‘iroq qiling: <strong>{{ site_settings.primary_phone }}</strong>.
+        </p>
       </div>
-      <a href="{% url 'content:news_list' %}" class="btn btn-outline btn-sm">Barcha yangiliklar</a>
-    </div>
-    <div class="grid grid-3">
-      {% for post in latest_news %}
-      <article class="card">
-        {% if post.image %}
-          <img class="card-img" src="{{ post.image.url }}" alt="{{ post.title }}" loading="lazy">
+      <div style="display:flex; flex-wrap:wrap; gap:10px;">
+        <a href="{% url 'content:admission' %}" class="btn btn-gold" data-track-cta="Bottom CTA: Ariza topshirish">Ariza topshirish</a>
+        {% if primary_branch %}
+        <a href="{% url 'branches:detail' primary_branch.slug %}" class="btn btn-light-outline">Filial va xarita</a>
         {% endif %}
-        <div style="display:flex; justify-content:space-between; gap:8px; margin-bottom:8px;">
-          <span class="badge badge-gold">{{ post.get_category_display }}</span>
-          {% if post.is_demo %}<span class="badge badge-demo">Demo</span>{% endif %}
-        </div>
-        <h3><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h3>
-        <p>{{ post.excerpt }}</p>
-        <span style="font-size:0.84rem; color:var(--muted);">{{ post.published_at|date:"d.m.Y" }}</span>
-      </article>
-      {% endfor %}
+      </div>
     </div>
   </div>
 </section>
-{% endif %}
 {% endblock %}

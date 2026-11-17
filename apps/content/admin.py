@@ -46,8 +46,9 @@ class NewsPostAdmin(admin.ModelAdmin):
 
 @admin.register(GalleryItem)
 class GalleryItemAdmin(admin.ModelAdmin):
-    list_display = ("title", "media_type", "branch", "is_published", "sort_order", "is_demo")
-    list_filter = ("media_type", "is_published", "branch", "is_demo")
+    list_display = ("title", "media_type", "category", "permission_status", "branch", "is_published", "sort_order", "is_demo")
+    list_filter = ("media_type", "category", "permission_status", "is_published", "branch", "is_demo")
+    search_fields = ("title", "caption", "alt_text", "source_url", "youtube_id")
 
 
 @admin.register(AdmissionStep)

@@ -4,6 +4,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
 from django.urls import include, path
+from django.views.generic import RedirectView
 
 from apps.core.sitemaps import BranchSitemap, NewsSitemap, StaticPagesSitemap
 
@@ -21,10 +22,18 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("sitemap.xml", sitemap, {"sitemaps": sitemaps}, name="sitemap"),
     path("api/", include("apps.analytics.urls")),
+    path("it-akademiya/", include("apps.it_academy.urls")),
     path("filiallar/", include("apps.branches.urls")),
     path("fikrlar/", include("apps.reviews.urls")),
     path("boshqaruv/", include("apps.accounts.urls")),
     path("boshqaruv/", include("apps.reports.urls")),
+    # Eski turonodob-ilm.uz SEO yo'llari uchun 301 moslik redirectlari
+    path("about/", RedirectView.as_view(pattern_name="core:about", permanent=True)),
+    path("about", RedirectView.as_view(pattern_name="core:about", permanent=True)),
+    path("admissions/", RedirectView.as_view(pattern_name="content:admission", permanent=True)),
+    path("admissions", RedirectView.as_view(pattern_name="content:admission", permanent=True)),
+    path("contact/", RedirectView.as_view(pattern_name="core:contact", permanent=True)),
+    path("contact", RedirectView.as_view(pattern_name="core:contact", permanent=True)),
     path("", include("apps.content.urls")),
     path("", include("apps.core.urls")),
 ]

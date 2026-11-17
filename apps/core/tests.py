@@ -24,6 +24,7 @@ class CorePublicAndSeoTests(TestCase):
         urls = [
             reverse("core:home"),
             reverse("core:about"),
+            reverse("it_academy:index"),
             reverse("content:education"),
             reverse("content:news_list"),
             reverse("content:gallery"),
@@ -40,10 +41,19 @@ class CorePublicAndSeoTests(TestCase):
             res = self.client.get(url)
             self.assertEqual(res.status_code, 200, msg=f"Sahifa xato qaytardi: {url}")
 
+        # Eski turonodob-ilm.uz SEO yo'llari 301 bilan yo'naltirilishi
+        self.assertEqual(self.client.get("/about").status_code, 301)
+        self.assertEqual(self.client.get("/admissions").status_code, 301)
+        self.assertEqual(self.client.get("/contact").status_code, 301)
+
         home_html = self.client.get(reverse("core:home")).content.decode("utf-8")
-        self.assertIn("Qabulga ariza", home_html)
+        self.assertIn("Bilim, odob va kelajak", home_html)
+        self.assertIn("Qabul haqida ma’lumot", home_html)
         self.assertIn("Xaritada ko‘rish", home_html)
-        self.assertIn("Biz bilan bog‘lanish", home_html)
+        self.assertIn("facade.jpg", home_html)
+        self.assertIn("it-lab-active.jpg", home_html)
+        self.assertIn("youtube-nocookie.com/embed/", home_html)
+        self.assertIn("038782", home_html)
         self.assertIn("Demo", home_html)
 
         robots = self.client.get(reverse("core:robots_txt")).content.decode("utf-8")

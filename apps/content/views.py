@@ -69,17 +69,30 @@ def news_detail_view(request, slug):
 
 
 def gallery_view(request):
-    """Foto va video galereya."""
+    """Foto va video galereya (tur va bo'lim filtrlari bilan)."""
     media_type = request.GET.get("turi", "").strip()
+    category = request.GET.get("bolim", "").strip()
     qs = GalleryItem.objects.filter(is_published=True).select_related("branch")
     if media_type in ("photo", "video"):
         qs = qs.filter(media_type=media_type)
     else:
         media_type = ""
+
+    valid_cats = {c[0] for c in GalleryItem.CATEGORY_CHOICES}
+    if category in valid_cats:
+        qs = qs.filter(category=category)
+    else:
+        category = ""
+
     return render(
         request,
         "content/gallery.html",
-        {"items": qs, "active_type": media_type},
+        {
+            "items": qs,
+            "active_type": media_type,
+            "active_category": category,
+            "categories": GalleryItem.CATEGORY_CHOICES,
+        },
     )
 
 

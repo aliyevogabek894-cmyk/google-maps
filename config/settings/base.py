@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     "apps.core.apps.CoreConfig",
     "apps.branches.apps.BranchesConfig",
     "apps.content.apps.ContentConfig",
+    "apps.it_academy.apps.ItAcademyConfig",
     "apps.reviews.apps.ReviewsConfig",
     "apps.analytics.apps.AnalyticsConfig",
     "apps.reports.apps.ReportsConfig",
@@ -117,6 +118,11 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 LANGUAGE_CODE = "uz"
+LANGUAGES = [
+    ("uz", "O‘zbekcha"),
+    ("ru", "Русский"),
+    ("en", "English"),
+]
 TIME_ZONE = "Asia/Tashkent"
 USE_I18N = True
 USE_TZ = True
