@@ -3,7 +3,9 @@
 <html lang="uz">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0D1A38">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="csrf-token" content="{{ csrf_token }}">
   <title>{% block title %}{{ site_settings.school_name|default:"Turon Odob-Ilm xususiy maktabi" }}{% endblock %}</title>
   <meta name="description" content="{% block meta_description %}{{ site_settings.seo_default_description }}{% endblock %}">
@@ -52,9 +54,9 @@
 
   <div class="top-utility">
     <div class="container top-utility-inner">
-      <span>{{ site_settings.license_number|default:"Litsenziya № 038782 · 14.09.2022" }} • {{ primary_branch.address|default:"Furqat tumani, Yangi MFY, Surpa, dom 405" }}</span>
-      <span>
-        Tel: <a href="tel:{{ site_settings.primary_phone|cut:' ' }}">{{ site_settings.primary_phone }}</a>
+      <span class="utility-license">{{ site_settings.license_number|default:"Litsenziya № 038782 · 14.09.2022" }} • {{ primary_branch.address|default:"Furqat tumani, Yangi MFY, Surpa, dom 405" }}</span>
+      <span class="utility-contact">
+        <a href="tel:{{ site_settings.primary_phone|cut:' ' }}">{{ site_settings.primary_phone }}</a>
         {% if site_settings.telegram_url %} • <a href="{{ site_settings.telegram_url }}" target="_blank" rel="noopener noreferrer">@turonodobilm</a>{% endif %}
       </span>
     </div>
@@ -70,9 +72,13 @@
         </span>
       </a>
 
-      <button id="navToggle" class="nav-toggle" type="button" aria-expanded="false" aria-controls="siteNav" aria-label="Menyuni ochish">
-        Menyu
-      </button>
+      <div class="nav-mobile-right">
+        <a href="{% url 'content:admission' %}" class="btn btn-gold btn-sm nav-quick-cta" data-track-cta="Mobile Header: Qabul">Qabul</a>
+        <button id="navToggle" class="nav-toggle" type="button" aria-expanded="false" aria-controls="siteNav" aria-label="Menyuni ochish">
+          <span class="nav-toggle-icon" aria-hidden="true"><span></span><span></span><span></span></span>
+          <span class="nav-toggle-label">Menyu</span>
+        </button>
+      </div>
 
       <nav id="siteNav" class="site-nav" aria-label="Asosiy navigatsiya">
         <ul class="nav-links">
@@ -88,6 +94,7 @@
         </ul>
         <div class="nav-actions">
           <a href="{% url 'content:admission' %}" class="btn btn-gold btn-sm" data-track-cta="Navbar: Qabulga ariza">Qabulga ariza</a>
+          <a href="tel:{{ site_settings.primary_phone|cut:' ' }}" class="btn btn-outline btn-sm nav-call-mobile">Qo‘ng‘iroq: {{ site_settings.primary_phone }}</a>
           {% if portal_caps %}
           <a href="{% url 'reports:dashboard' %}" class="btn btn-outline btn-sm">Panel</a>
           {% endif %}
@@ -176,6 +183,25 @@
       <img id="lightboxImg" src="" alt="">
     </div>
   </div>
+
+  <nav class="mobile-action-dock" aria-label="Telefonda tezkor harakatlar">
+    <a href="tel:{{ site_settings.primary_phone|cut:' ' }}" class="dock-item" data-track-cta="Mobile Dock: Qo'ng'iroq">
+      <span class="dock-ico" aria-hidden="true">&#128222;</span>
+      <span>Qo‘ng‘iroq</span>
+    </a>
+    <a href="{% url 'branches:list' %}" class="dock-item {% if request.resolver_match.app_name == 'branches' %}is-active{% endif %}" data-track-cta="Mobile Dock: Xarita">
+      <span class="dock-ico" aria-hidden="true">&#128205;</span>
+      <span>Xarita</span>
+    </a>
+    <a href="{% url 'it_academy:index' %}" class="dock-item {% if request.resolver_match.app_name == 'it_academy' %}is-active{% endif %}" data-track-cta="Mobile Dock: IT WORLD">
+      <span class="dock-ico" aria-hidden="true">&#127918;</span>
+      <span>IT WORLD</span>
+    </a>
+    <a href="{% url 'content:admission' %}" class="dock-item dock-primary {% if request.resolver_match.url_name == 'admission' %}is-active{% endif %}" data-track-cta="Mobile Dock: Qabul">
+      <span class="dock-ico" aria-hidden="true">&#128221;</span>
+      <span>Ariza</span>
+    </a>
+  </nav>
 
   <script src="{% static 'js/main.js' %}"></script>
   {% block extra_scripts %}{% endblock %}

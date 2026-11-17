@@ -11,7 +11,7 @@
 
 <section class="section">
   <div class="container">
-    <div style="display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap;">
+    <div class="filter-pills">
       <a href="{% url 'content:gallery' %}" class="btn btn-sm {% if not active_type and not active_category %}btn-primary{% else %}btn-outline{% endif %}">Barchasi</a>
       <a href="?turi=photo" class="btn btn-sm {% if active_type == 'photo' %}btn-primary{% else %}btn-outline{% endif %}">Fotosuratlar</a>
       <a href="?turi=video" class="btn btn-sm {% if active_type == 'video' %}btn-primary{% else %}btn-outline{% endif %}">YouTube videolar</a>

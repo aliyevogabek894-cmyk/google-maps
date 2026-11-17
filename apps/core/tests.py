@@ -55,6 +55,12 @@ class CorePublicAndSeoTests(TestCase):
         self.assertIn("youtube-nocookie.com/embed/", home_html)
         self.assertIn("038782", home_html)
         self.assertIn("Demo", home_html)
+        # Mobil moslashuv elementlari
+        self.assertIn("viewport-fit=cover", home_html)
+        self.assertIn("mobile-action-dock", home_html)
+        self.assertIn("subjects-grid", home_html)
+        self.assertIn("leader-inline-card", home_html)
+        self.assertIn("mobile-swipe-hint", home_html)
 
         robots = self.client.get(reverse("core:robots_txt")).content.decode("utf-8")
         self.assertIn("Disallow: /boshqaruv/", robots)

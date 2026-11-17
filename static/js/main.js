@@ -5,9 +5,37 @@
   const navToggle = document.getElementById("navToggle");
   const siteNav = document.getElementById("siteNav");
   if (navToggle && siteNav) {
+    const labelEl = navToggle.querySelector(".nav-toggle-label");
+    function setMenuState(open) {
+      siteNav.classList.toggle("is-open", open);
+      navToggle.classList.toggle("is-open", open);
+      navToggle.setAttribute("aria-expanded", open ? "true" : "false");
+      navToggle.setAttribute("aria-label", open ? "Menyuni yopish" : "Menyuni ochish");
+      document.body.classList.toggle("nav-drawer-open", open);
+      if (labelEl) {
+        labelEl.textContent = open ? "Yopish" : "Menyu";
+      }
+    }
     navToggle.addEventListener("click", function () {
-      const expanded = siteNav.classList.toggle("is-open");
-      navToggle.setAttribute("aria-expanded", expanded ? "true" : "false");
+      setMenuState(!siteNav.classList.contains("is-open"));
+    });
+    siteNav.querySelectorAll("a").forEach(function (link) {
+      link.addEventListener("click", function () { setMenuState(false); });
+    });
+    document.addEventListener("click", function (e) {
+      if (siteNav.classList.contains("is-open") && !siteNav.contains(e.target) && !navToggle.contains(e.target)) {
+        setMenuState(false);
+      }
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && siteNav.classList.contains("is-open")) {
+        setMenuState(false);
+      }
+    });
+    window.addEventListener("resize", function () {
+      if (window.innerWidth >= 1080 && siteNav.classList.contains("is-open")) {
+        setMenuState(false);
+      }
     });
   }
 
@@ -80,6 +108,11 @@
     lightboxClose.addEventListener("click", function () { lightbox.classList.remove("is-open"); });
     lightbox.addEventListener("click", function (e) {
       if (e.target === lightbox) lightbox.classList.remove("is-open");
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && lightbox.classList.contains("is-open")) {
+        lightbox.classList.remove("is-open");
+      }
     });
   }
 

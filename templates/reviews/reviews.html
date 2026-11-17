@@ -45,7 +45,7 @@
           {% endif %}
         </div>
 
-        <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:16px;">
+        <div class="filter-pills">
           <a href="{% url 'reviews:list' %}" class="btn btn-sm {% if not selected_branch_slug %}btn-primary{% else %}btn-outline{% endif %}">Barchasi</a>
           {% for b in branches %}
             <a href="?filial={{ b.slug }}" class="btn btn-sm {% if selected_branch_slug == b.slug %}btn-primary{% else %}btn-outline{% endif %}">{{ b.name }}</a>

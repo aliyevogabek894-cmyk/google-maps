@@ -32,7 +32,7 @@
             “{{ it_teacher.quote }}”
           </blockquote>
         {% endif %}
-        <div style="display:flex; flex-wrap:wrap; gap:10px;">
+        <div class="btn-group-wrap">
           <a href="https://aliyev-turon.netlify.app/" target="_blank" rel="noopener noreferrer" class="btn btn-gold" data-track-cta="IT Academy: IT WORLD ochish">
             IT WORLD O‘yin Saytini Ochish &nearr;
           </a>
@@ -113,6 +113,7 @@
         <p>Biznes, davlat xizmati, ilm-fan yoki tibbiyot — har bir zamonaviy kasbda IT va Sun’iy intellekt eng kuchli tayanchdir.</p>
       </div>
     </div>
+    <div class="mobile-swipe-hint">Videolarni yon tomonga surib tomosha qiling &rarr;</div>
     <div class="career-video-grid">
       {% for cv in career_videos %}
       <article class="career-video-card">
@@ -151,7 +152,7 @@
       <a href="https://aliyev-turon.netlify.app/" target="_blank" rel="noopener noreferrer" class="btn btn-gold">Barcha o‘yinlarni ochish &nearr;</a>
     </div>
 
-    <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:24px;">
+    <div class="filter-pills">
       <a href="{% url 'it_academy:index' %}" class="btn btn-sm {% if not active_category %}btn-gold{% else %}btn-light-outline{% endif %}">Barchasi</a>
       {% for code, label in game_categories %}
         <a href="?turkum={{ code }}" class="btn btn-sm {% if active_category == code %}btn-gold{% else %}btn-light-outline{% endif %}">{{ label }}</a>

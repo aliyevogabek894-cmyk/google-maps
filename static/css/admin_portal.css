@@ -38,6 +38,27 @@ table.data-table tr:last-child td { border-bottom: none; }
 .chart-box { position: relative; min-height: 300px; width: 100%; }
 canvas.chart-canvas { width: 100%; max-height: 320px; }
 
+.dashboard-split-grid { grid-template-columns: 1fr; align-items: start; }
+@media (min-width: 920px) {
+  .dashboard-split-grid { grid-template-columns: 1.5fr 1fr; }
+}
+
+@media (max-width: 767px) {
+  .portal-header-inner { gap: 10px; }
+  .portal-nav {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+  }
+  .portal-nav::-webkit-scrollbar { display: none; }
+  .portal-nav a { flex: 0 0 auto; white-space: nowrap; }
+  .kpi-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .kpi-card { padding: 13px; }
+  .kpi-value { font-size: 1.4rem; }
+  .chart-box { min-height: 240px; }
+}
+
 @media print {
   .no-print, .portal-header, .portal-nav, .filter-bar { display: none !important; }
   body { background: #fff !important; }

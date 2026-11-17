@@ -15,15 +15,15 @@
 
   <div class="container hero-grid">
     <div>
-      <div style="display:flex; align-items:center; gap:14px; margin-bottom:16px; flex-wrap:wrap;">
+      <div class="hero-brand-row">
         <img class="crest-medallion" src="{{ site_settings.resolved_logo_url }}" alt="Turon Odob-Ilm maktabi gerbi">
         <span class="hero-kicker" style="margin-bottom:0;">1–11-sinflar • Litsenziyalangan xususiy maktab • Est. {{ site_settings.founded_year|default:2022 }}</span>
       </div>
       <h1>{{ site_settings.hero_title }}</h1>
       <p class="lead">{{ site_settings.hero_subtitle }}</p>
       <div class="hero-cta-group">
-        <a href="{% url 'content:admission' %}" class="btn btn-gold" data-track-cta="Hero: Qabulga ariza" {% if primary_branch %}data-branch-id="{{ primary_branch.pk }}"{% endif %}>Qabul haqida ma’lumot</a>
-        <a href="{% url 'it_academy:index' %}" class="btn btn-tech" data-track-cta="Hero: IT Akademiya">IT Akademiya va O‘yinlar</a>
+        <a href="{% url 'content:admission' %}" class="btn btn-gold hero-cta-primary" data-track-cta="Hero: Qabulga ariza" {% if primary_branch %}data-branch-id="{{ primary_branch.pk }}"{% endif %}>Qabul haqida ma’lumot</a>
+        <a href="{% url 'it_academy:index' %}" class="btn btn-tech hero-cta-secondary" data-track-cta="Hero: IT Akademiya">IT Akademiya va O‘yinlar</a>
         <a href="{% url 'core:about' %}" class="btn btn-light-outline" data-track-cta="Hero: Maktab bilan tanishish">Maktab bilan tanishish</a>
         {% if primary_branch %}
         <a href="{% url 'branches:detail' primary_branch.slug %}" class="btn btn-light-outline" data-track-cta="Hero: Xaritada ko'rish" data-branch-id="{{ primary_branch.pk }}">Xaritada ko‘rish</a>
@@ -97,30 +97,38 @@
     </div>
 
     <!-- Fanlar HD rasmlar bilan -->
-    <div class="grid grid-4" style="margin-bottom: 36px;">
-      <article class="card card-gold-top card-hover-lift" style="padding:16px;">
-        <img class="card-img" src="{% static 'official_media/students-studying.jpg' %}" alt="Matematika va aniq fanlar darsi" loading="lazy" style="height:175px;">
-        <span class="badge badge-navy">Haftasiga 6 soat • Yillik 270 soat</span>
-        <h3 style="margin-top:10px; font-size:1.05rem;">Matematika va Aniq fanlar</h3>
-        <p style="font-size:0.88rem; color:var(--muted); margin:0;">Aniq, aniq iqtisod, aniq texnika yo‘nalishlari va olimpiadalarga chuqurlashtirilgan tayyorlov.</p>
+    <div class="grid grid-4 subjects-grid">
+      <article class="card card-gold-top card-hover-lift subject-card">
+        <img class="card-img subject-img" src="{% static 'official_media/students-studying.jpg' %}" alt="Matematika va aniq fanlar darsi" loading="lazy">
+        <div class="subject-body">
+          <span class="badge badge-navy">Haftasiga 6 soat • Yillik 270 soat</span>
+          <h3>Matematika va Aniq fanlar</h3>
+          <p>Aniq, aniq iqtisod, aniq texnika yo‘nalishlari va olimpiadalarga chuqurlashtirilgan tayyorlov.</p>
+        </div>
       </article>
-      <article class="card card-gold-top card-hover-lift" style="padding:16px;">
-        <img class="card-img" src="{% static 'official_media/classroom-branded.jpg' %}" alt="Ingliz tili va SAT tayyorgarligi sinfxonasi" loading="lazy" style="height:175px;">
-        <span class="badge badge-gold">Haftasiga 6 soat • SAT imtihoni</span>
-        <h3 style="margin-top:10px; font-size:1.05rem;">Ingliz tili va Xalqaro SAT</h3>
-        <p style="font-size:0.88rem; color:var(--muted); margin:0;">1-sinfdan boshlab kuchaytirilgan ingliz tili, Furqat filialida SAT xalqaro imtihoniga tayyorgarlik.</p>
+      <article class="card card-gold-top card-hover-lift subject-card">
+        <img class="card-img subject-img" src="{% static 'official_media/classroom-branded.jpg' %}" alt="Ingliz tili va SAT tayyorgarligi sinfxonasi" loading="lazy">
+        <div class="subject-body">
+          <span class="badge badge-gold">Haftasiga 6 soat • SAT imtihoni</span>
+          <h3>Ingliz tili va Xalqaro SAT</h3>
+          <p>1-sinfdan boshlab kuchaytirilgan ingliz tili, Furqat filialida SAT xalqaro imtihoniga tayyorgarlik.</p>
+        </div>
       </article>
-      <article class="card card-gold-top card-hover-lift" style="padding:16px;">
-        <img class="card-img" src="{% static 'official_media/it-lab-active.jpg' %}" alt="IT, Dasturlash va Robototexnika laboratoriyasi" loading="lazy" style="height:175px;">
-        <span class="badge badge-tech">Informatika + Robototexnika</span>
-        <h3 style="margin-top:10px; font-size:1.05rem;">IT, Dasturlash va IT WORLD</h3>
-        <p style="font-size:0.88rem; color:var(--muted); margin:0;">Barcha sinflarda kompyuter savodxonligi, HTML/CSS/Python, 3D tarmoqlar va kiberxavfsizlik.</p>
+      <article class="card card-gold-top card-hover-lift subject-card">
+        <img class="card-img subject-img" src="{% static 'official_media/it-lab-active.jpg' %}" alt="IT, Dasturlash va Robototexnika laboratoriyasi" loading="lazy">
+        <div class="subject-body">
+          <span class="badge badge-tech">Informatika + Robototexnika</span>
+          <h3>IT, Dasturlash va IT WORLD</h3>
+          <p>Barcha sinflarda kompyuter savodxonligi, HTML/CSS/Python, 3D tarmoqlar va kiberxavfsizlik.</p>
+        </div>
       </article>
-      <article class="card card-gold-top card-hover-lift" style="padding:16px;">
-        <img class="card-img" src="{% static 'official_media/students-attentive.jpg' %}" alt="Ona tili, rus tili va tabiiy fanlar darsi" loading="lazy" style="height:175px;">
-        <span class="badge badge-navy">O‘zbek va Rus oqimlari</span>
-        <h3 style="margin-top:10px; font-size:1.05rem;">Ona tili, Rus tili va Tabiiy fanlar</h3>
-        <p style="font-size:0.88rem; color:var(--muted); margin:0;">Ona tili, badiiy adabiyot, rus tili, fizika, kimyo, biologiya, tarix va tarbiya darslari.</p>
+      <article class="card card-gold-top card-hover-lift subject-card">
+        <img class="card-img subject-img" src="{% static 'official_media/students-attentive.jpg' %}" alt="Ona tili, rus tili va tabiiy fanlar darsi" loading="lazy">
+        <div class="subject-body">
+          <span class="badge badge-navy">O‘zbek va Rus oqimlari</span>
+          <h3>Ona tili, Rus tili va Tabiiy fanlar</h3>
+          <p>Ona tili, badiiy adabiyot, rus tili, fizika, kimyo, biologiya, tarix va tarbiya darslari.</p>
+        </div>
       </article>
     </div>
 
@@ -185,7 +193,7 @@
           </div>
           {% endfor %}
         </div>
-        <div style="display:flex; flex-wrap:wrap; gap:10px;">
+        <div class="btn-group-wrap">
           <a href="{% url 'it_academy:index' %}" class="btn btn-tech" data-track-cta="IT Section: IT Akademiyaga o'tish">IT Akademiyani ochish</a>
           <a href="https://aliyev-turon.netlify.app/" target="_blank" rel="noopener noreferrer" class="btn btn-gold" data-track-cta="IT Section: IT WORLD ochish">IT WORLD O‘yin Saytini Ochish &nearr;</a>
         </div>
@@ -218,7 +226,7 @@
             “{{ it_teacher.quote }}”
           </blockquote>
         {% endif %}
-        <div style="display:flex; flex-wrap:wrap; gap:10px;">
+        <div class="btn-group-wrap">
           <a href="{% url 'it_academy:index' %}" class="btn btn-light-outline btn-sm">IT metodikasi bilan tanishish</a>
           <a href="https://aliyev-turon.netlify.app/" target="_blank" rel="noopener noreferrer" class="btn btn-gold btn-sm">IT WORLD’da o‘yinlarni ko‘rish &nearr;</a>
         </div>
@@ -287,6 +295,7 @@
       <a href="{% url 'it_academy:index' %}" class="btn btn-outline btn-sm">IT Akademiyada batafsil</a>
     </div>
 
+    <div class="mobile-swipe-hint">Videolarni yon tomonga surib tomosha qiling &rarr;</div>
     <div class="career-video-grid">
       {% for cv in career_videos %}
       <article class="career-video-card">
@@ -353,9 +362,9 @@
     </div>
     <div class="grid grid-2">
       {% if leadership %}
-      <article class="card card-gold-top card-hover-lift" style="display:grid; grid-template-columns: 140px 1fr; gap:18px; align-items:center;">
+      <article class="card card-gold-top card-hover-lift leader-inline-card">
         {% if leadership.resolved_photo_url %}
-          <img src="{{ leadership.resolved_photo_url }}" alt="{{ leadership.full_name }}" style="width:140px; height:160px; object-fit:cover; object-position:center 15%; border-radius:12px;">
+          <img class="leader-inline-photo" src="{{ leadership.resolved_photo_url }}" alt="{{ leadership.full_name }}" loading="lazy">
         {% endif %}
         <div>
           <span class="badge badge-gold">Maktab rahbariyati</span>
@@ -367,9 +376,9 @@
       {% endif %}
 
       {% if it_teacher %}
-      <article class="card card-gold-top card-hover-lift" style="display:grid; grid-template-columns: 140px 1fr; gap:18px; align-items:center;">
+      <article class="card card-gold-top card-hover-lift leader-inline-card">
         {% if it_teacher.resolved_photo_url %}
-          <img src="{{ it_teacher.resolved_photo_url }}" alt="{{ it_teacher.full_name }}" style="width:140px; height:160px; object-fit:cover; object-position:center 12%; border-radius:12px;">
+          <img class="leader-inline-photo is-top-portrait" src="{{ it_teacher.resolved_photo_url }}" alt="{{ it_teacher.full_name }}" loading="lazy">
         {% endif %}
         <div>
           <span class="badge badge-tech">IT va Dasturlash</span>
@@ -542,7 +551,7 @@
           Bepul maslahat, maktab bilan tanishish va suhbatga yozilish uchun onlayn ariza qoldiring yoki qo‘ng‘iroq qiling: <strong>{{ site_settings.primary_phone }}</strong>.
         </p>
       </div>
-      <div style="display:flex; flex-wrap:wrap; gap:10px;">
+      <div class="btn-group-wrap">
         <a href="{% url 'content:admission' %}" class="btn btn-gold" data-track-cta="Bottom CTA: Ariza topshirish">Ariza topshirish</a>
         {% if primary_branch %}
         <a href="{% url 'branches:detail' primary_branch.slug %}" class="btn btn-light-outline">Filial va xarita</a>
