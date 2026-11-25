@@ -79,11 +79,11 @@ class Command(BaseCommand):
                 "working_hours": "Dushanba–Juma: 08:00–17:00 • Shanba: 08:00–13:00",
                 "latitude": Decimal("40.475827"),
                 "longitude": Decimal("70.746438"),
-                "google_verification_status": "pending",
+                "google_verification_status": "verified",
                 "yandex_verification_status": "verified",
                 "verification_note": (
-                    "Google Business Profile (aliyevogabek894@gmail.com) uchun jonli video tasdiqlash yuborilgan "
-                    "(ko'rib chiqish jarayonida). Xarita koordinatalari: 40.475827, 70.746438 (FPGX+82H)."
+                    "Google Business Profile (aliyevogabek894@gmail.com) va Yandex Business (97373032363) "
+                    "to'liq tasdiqlangan (100% Verified). Xarita koordinatalari: 40.475827, 70.746438 (FPGX+82H)."
                 ),
                 "description": (
                     "Turon Odob-Ilm xususiy maktabining asosiy filiali. 1–11-sinflar, o‘zbek va rus "
@@ -124,8 +124,8 @@ class Command(BaseCommand):
                 "google",
                 "profile",
                 "Google Maps’da ko‘rish",
-                "https://www.google.com/maps/place/Turon+odob-ilm+xususiy+maktabi/@40.4758271,70.7464378,17z/data=!3m1!4b1!4m6!3m5!1s0x38ba934614489b8d:0x845165f9529b8a06!8m2!3d40.4758271!4d70.7464378!16s%2Fg%2F11tdf6s1yk?hl=uz",
-                False,
+                "https://www.google.com/maps/place/Turon+odob-ilm+xususiy+maktabi/@40.4758271,70.7464378,17z/data=!3m1!4b1!4m6!3m5!1s0x38ba934614489b8d:0x845f65f9529b8a06!8m2!3d40.4758271!4d70.7464378!16s%2Fg%2F11tdf6s1yk?hl=uz",
+                True,
                 40,
             ),
             (
@@ -133,15 +133,15 @@ class Command(BaseCommand):
                 "directions",
                 "Yo‘nalish olish (Google)",
                 "https://www.google.com/maps/dir/?api=1&destination=40.4758271,70.7464378",
-                False,
+                True,
                 50,
             ),
             (
                 "google",
                 "review",
                 "Google’da fikr qoldirish",
-                "https://www.google.com/maps/place/Turon+odob-ilm+xususiy+maktabi/@40.4758271,70.7464378,17z/data=!3m1!4b1!4m6!3m5!1s0x38ba934614489b8d:0x845165f9529b8a06!8m2!3d40.4758271!4d70.7464378!16s%2Fg%2F11tdf6s1yk?hl=uz",
-                False,
+                "https://g.page/r/CQaKm1L5ZV-EEBM/review",
+                True,
                 60,
             ),
         ]
