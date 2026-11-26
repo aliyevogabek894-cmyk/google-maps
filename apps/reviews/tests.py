@@ -61,17 +61,10 @@ class ReviewsFlowAndPrivacyTests(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         review = WebsiteReview.objects.get(author_name="Dilshodbek")
-        self.assertEqual(review.status, "pending")
+        self.assertEqual(review.status, "approved")
         self.assertTrue(ReviewConsent.objects.filter(review=review, accepted_privacy_policy=True).exists())
 
-        # Moderatsiyadan oldin ommaviy sahifada chiqmaydi
-        public_html = self.client.get(reverse("reviews:list")).content.decode("utf-8")
-        self.assertNotIn("D. Rahimov", public_html)
-        self.assertNotIn(secret_phone, public_html)
-
-        # Tasdiqlangandan keyin ko'rinadi, lekin telefon RAQAMI HECH QACHON chiqmaydi!
-        review.status = "approved"
-        review.save()
+        # Yuborilishi bilan ommaviy sahifada chiqadi, lekin telefon RAQAMI HECH QACHON chiqmaydi!
         public_html_after = self.client.get(reverse("reviews:list")).content.decode("utf-8")
         self.assertIn("D. Rahimov", public_html_after)
         self.assertNotIn(secret_phone, public_html_after)

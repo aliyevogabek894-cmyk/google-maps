@@ -155,20 +155,127 @@
   } else {
     revealItems.forEach(function (el) { el.classList.add("is-visible"); });
   }
-  // GitHub Pages statik rejimda formalarni xatosiz yo'naltirish
+  // GitHub Pages statik rejimda formalarni xatosiz yo'naltirish va izohlarni darhol chiqarish
   if (isStaticMode) {
+    const reviewsStorageKey = "turon_live_reviews_v1";
+    const reviewArticlesContainer = document.querySelector(".grid.grid-2 > div:first-child");
+
+    function renderSavedStaticReviews() {
+      if (!reviewArticlesContainer || !window.location.pathname.includes("/fikrlar")) return;
+      let saved = [];
+      try {
+        saved = JSON.parse(localStorage.getItem(reviewsStorageKey) || "[]");
+      } catch (err) {
+        saved = [];
+      }
+      document.querySelectorAll(".user-live-review-card").forEach(function (el) { el.remove(); });
+      const filterPills = reviewArticlesContainer.querySelector(".filter-pills");
+      saved.slice().reverse().forEach(function (item) {
+        const card = document.createElement("article");
+        card.className = "card user-live-review-card";
+        card.style.marginBottom = "16px";
+        let starsHtml = "";
+        for (let i = 1; i <= 5; i++) {
+          starsHtml += i <= item.rating ? "&#9733;" : "&#9734;";
+        }
+        const safeComment = document.createElement("p");
+        safeComment.style.marginTop = "0";
+        safeComment.textContent = item.comment;
+        const safeAuthor = document.createElement("strong");
+        safeAuthor.textContent = item.author;
+        card.innerHTML =
+          '<div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px;">' +
+          '<span class="stars" aria-label="' + item.rating + ' dan 5 baho">' + starsHtml + "</span>" +
+          '<div><small style="color:var(--muted);">' + item.date + "</small></div>" +
+          "</div>";
+        card.appendChild(safeComment);
+        const metaDiv = document.createElement("div");
+        metaDiv.style.fontSize = "0.88rem";
+        metaDiv.style.color = "var(--muted)";
+        metaDiv.appendChild(safeAuthor);
+        metaDiv.appendChild(document.createTextNode(" • " + (item.branch || "Turon Odob-Ilm — Furqat filiali")));
+        card.appendChild(metaDiv);
+        if (filterPills && filterPills.nextSibling) {
+          reviewArticlesContainer.insertBefore(card, filterPills.nextSibling);
+        } else {
+          reviewArticlesContainer.appendChild(card);
+        }
+      });
+    }
+
+    renderSavedStaticReviews();
+
     document.querySelectorAll('form[method="post"]').forEach(function (form) {
       form.addEventListener("submit", function (e) {
         e.preventDefault();
+        const commentField = form.querySelector('textarea[name="comment"]');
+        const authorField = form.querySelector('input[name="author_name"]');
+        if (commentField && authorField) {
+          const authorVal = (authorField.value || "").trim() || "Ota-ona";
+          const displayField = form.querySelector('input[name="display_name"]');
+          const displayVal = (displayField && displayField.value ? displayField.value.trim() : "") || authorVal;
+          const commentVal = (commentField.value || "").trim();
+          const ratingChecked = form.querySelector('input[name="rating"]:checked');
+          const ratingVal = ratingChecked ? parseInt(ratingChecked.value, 10) || 5 : 5;
+          const branchSelect = form.querySelector('select[name="branch"]');
+          const branchText = branchSelect && branchSelect.options[branchSelect.selectedIndex]
+            ? branchSelect.options[branchSelect.selectedIndex].text
+            : "Turon Odob-Ilm — Furqat filiali";
+
+          if (commentVal.length < 3) {
+            let errBox = form.querySelector(".static-form-notice");
+            if (!errBox) {
+              errBox = document.createElement("div");
+              errBox.className = "alert alert-info static-form-notice";
+              errBox.style.marginTop = "14px";
+              form.appendChild(errBox);
+            }
+            errBox.textContent = "Iltimos, fikr matnini kiriting.";
+            return;
+          }
+
+          let saved = [];
+          try {
+            saved = JSON.parse(localStorage.getItem(reviewsStorageKey) || "[]");
+          } catch (err) {
+            saved = [];
+          }
+          const now = new Date();
+          const dd = String(now.getDate()).padStart(2, "0");
+          const mm = String(now.getMonth() + 1).padStart(2, "0");
+          const yyyy = now.getFullYear();
+          saved.push({
+            author: displayVal,
+            comment: commentVal,
+            rating: ratingVal,
+            branch: branchText,
+            date: dd + "." + mm + "." + yyyy
+          });
+          localStorage.setItem(reviewsStorageKey, JSON.stringify(saved));
+          renderSavedStaticReviews();
+          form.reset();
+
+          let notice = form.querySelector(".static-form-notice");
+          if (!notice) {
+            notice = document.createElement("div");
+            notice.className = "alert alert-success static-form-notice";
+            notice.style.marginTop = "14px";
+            form.appendChild(notice);
+          }
+          notice.className = "alert alert-success static-form-notice";
+          notice.innerHTML = "<strong>Fikringiz uchun rahmat!</strong> Izohingiz muvaffaqiyatli qabul qilindi va ro‘yxatga qo‘shildi.";
+          return;
+        }
+
         let notice = form.querySelector(".static-form-notice");
         if (!notice) {
           notice = document.createElement("div");
-          notice.className = "alert alert-info static-form-notice";
+          notice.className = "alert alert-success static-form-notice";
           notice.style.marginTop = "14px";
           form.appendChild(notice);
         }
         notice.innerHTML =
-          "<strong>Tezkor bog‘lanish:</strong> GitHub Pages ko‘rgazma rejimida ma’lumotlar to‘g‘ridan-to‘g‘ri telefon yoki Telegram orqali qabul qilinadi." +
+          "<strong>Murojaatingiz qabul qilindi!</strong> Tezkor bog‘lanish uchun telefon yoki Telegram orqali ham murojaat qilishingiz mumkin:" +
           '<div class="btn-group-wrap" style="margin-top:10px;">' +
           '<a href="tel:+998558085575" class="btn btn-gold btn-sm">Qo‘ng‘iroq: +998 55 808 55 75</a>' +
           '<a href="https://t.me/turonodobilm" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">Telegram (@turonodobilm)</a>' +

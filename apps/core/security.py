@@ -100,7 +100,7 @@ def generate_form_timestamp_token() -> str:
     return signer.sign(str(int(time.time())))
 
 
-def verify_form_anti_spam(honeypot_value: str, timestamp_token: str, min_seconds: float = 1.5) -> str | None:
+def verify_form_anti_spam(honeypot_value: str, timestamp_token: str, min_seconds: float = 0.2) -> str | None:
     """
     Honeypot va minimal to'ldirish vaqtini tekshiradi.
     Xato bo'lsa o'zbek tilidagi xabar qaytaradi, aks holda None.
@@ -111,11 +111,13 @@ def verify_form_anti_spam(honeypot_value: str, timestamp_token: str, min_seconds
     if timestamp_token:
         signer = TimestampSigner(salt="turon-form-guard")
         try:
-            signed_ts = signer.unsign(timestamp_token, max_age=timedelta(hours=6))
+            signed_ts = signer.unsign(timestamp_token, max_age=timedelta(days=30))
             elapsed = time.time() - float(signed_ts)
             if elapsed < min_seconds:
                 return "Forma juda tez yuborildi. Iltimos, ma'lumotlarni tekshirib qayta yuboring."
-        except (BadSignature, SignatureExpired, ValueError):
+        except SignatureExpired:
+            return None
+        except (BadSignature, ValueError):
             return "Forma xavfsizlik tekshiruvidan o'tmadi. Sahifani yangilab qayta urinib ko'ring."
 
     return None

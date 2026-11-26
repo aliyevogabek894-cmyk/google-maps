@@ -74,8 +74,8 @@ class WebsiteReviewForm(forms.ModelForm):
 
     def clean_comment(self):
         comment = (self.cleaned_data.get("comment") or "").strip()
-        if len(comment) < 10:
-            raise forms.ValidationError("Iltimos, kamida 10 ta belgidan iborat mazmunli fikr yozing.")
+        if len(comment) < 3:
+            raise forms.ValidationError("Iltimos, kamida 3 ta belgidan iborat fikr yozing.")
         return comment
 
     def clean(self):

@@ -42,7 +42,7 @@ def reviews_page_view(request):
         allowed, retry_after = check_rate_limit(
             scope="review_submit",
             identifier=ip_hash,
-            limit=3,
+            limit=30,
             window_seconds=3600,
         )
         if not allowed:
@@ -68,7 +68,7 @@ def reviews_page_view(request):
         if form.is_valid():
             with transaction.atomic():
                 review = form.save(commit=False)
-                review.status = "pending"
+                review.status = "approved"
                 review.save()
                 ReviewConsent.objects.create(
                     review=review,
@@ -87,7 +87,7 @@ def reviews_page_view(request):
             )
             messages.success(
                 request,
-                "Fikringiz uchun rahmat! Xolis mulohazangiz moderatsiyadan so‘ng saytda e’lon qilinadi.",
+                "Fikringiz uchun rahmat! Izohingiz muvaffaqiyatli qabul qilindi va saytda e’lon qilindi.",
             )
             return redirect("reviews:list")
 
