@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360">
+  <defs><linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#08142E"/><stop offset="100%" stop-color="#15326B"/></linearGradient></defs>
+  <rect width="640" height="360" fill="url(#bg2)"/>
+  <rect x="70" y="54" width="500" height="252" rx="16" fill="#0B1939" stroke="#3D7BFA" stroke-width="2.5"/>
+  <rect x="70" y="54" width="500" height="36" rx="16" fill="#13285B"/>
+  <circle cx="96" cy="72" r="6" fill="#EF4444"/><circle cx="116" cy="72" r="6" fill="#D5AD55"/><circle cx="136" cy="72" r="6" fill="#22C55E"/>
+  <text x="320" y="77" text-anchor="middle" fill="#D5AD55" font-family="monospace" font-weight="700" font-size="13">WEB STUDIO • 100 BOSQICH</text>
+  <text x="98" y="130" fill="#7DD3FC" font-family="monospace" font-size="16">&lt;section class="turon-it"&gt;</text>
+  <text x="122" y="162" fill="#D5AD55" font-family="monospace" font-size="16">&lt;h1&gt;Salom, Dasturchi!&lt;/h1&gt;</text>
+  <text x="122" y="194" fill="#A5F3FC" font-family="monospace" font-size="16">def salom_bolalar():</text>
+  <text x="148" y="226" fill="#86EFAC" font-family="monospace" font-size="16">return "HTML • CSS • Python"</text>
+  <text x="98" y="260" fill="#7DD3FC" font-family="monospace" font-size="16">&lt;/section&gt;</text>
+  <rect x="425" y="112" width="120" height="162" rx="12" fill="rgba(61,123,250,0.16)" stroke="#D5AD55" stroke-width="2"/>
+  <text x="485" y="188" text-anchor="middle" fill="#FFFFFF" font-family="sans-serif" font-weight="800" font-size="22">HTML</text>
+  <text x="485" y="216" text-anchor="middle" fill="#D5AD55" font-family="sans-serif" font-weight="700" font-size="16">CSS • PY</text>
+</svg>
